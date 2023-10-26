@@ -1,0 +1,29 @@
+{
+  "code-runner.executorMap": {
+    "typescript": "clear && npx ts-node --files --transpile-only",
+  },
+  "liveServer.settings.port": 5501,
+  "[typescript]": {
+    "editor.rulers": [
+      {
+        "column": 80,
+        "color": "#424142"
+      }
+    ],
+    "editor.defaultFormatter": null,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  },
+  "editor.defaultFormatter": null,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+  },
+  "editor.tabSize": 2,
+  "cSpell.words": [
+    "eagle",
+    "eaglereport",
+    "eaglerequest",
+    "eagleuser"
+  ],
+}

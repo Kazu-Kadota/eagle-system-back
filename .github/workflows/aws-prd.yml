@@ -1,0 +1,38 @@
+on:
+  push:
+    branches:
+      - main
+
+name: Deploy to S3 in PRD
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.PRD_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PRD_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run clean
+      - run: npm run tsc
+      - run: npm run prune
+      - run: npm run mv:node_modules
+      - run: npm run cp:templates
+      - run: npm run zip
+
+      - name: Upload to S3 and update lambdas
+        run: |
+          lambdas=`cat lambda-list.cd`
+          for i in $lambdas; do aws s3 cp dist/latest.zip s3://eagleinfra-src-prd/deploy/$i-prd/latest.zip; done
+          for i in $lambdas; do aws lambda update-function-code --function-name $i-prd --zip-file fileb://dist/latest.zip; done
+

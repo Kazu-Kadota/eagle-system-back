@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": ".build",
+    "rootDir": "./",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": false,
+    "strict": true,
+    "target": "es2020",
+  },
+  "include": ["src", "test.ts"],
+  "exclude": [
+    "node_modules",
+    "node_modules/**/*",
+    ".serverless/**/*",
+    "terraform/**/*",
+    ".webpack/**/*",
+    ".esbuild/**/*",
+    "_warmup/**/*",
+    ".vscode/**/*",
+    ".idea/**/*",
+    "dist/**/*",
+    "tests/**/*"
+  ]
+}

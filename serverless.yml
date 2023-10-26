@@ -1,0 +1,296 @@
+service: eagle-system-back
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: nodejs16.x
+  stage: stage
+  environment:
+    AWS_REGION: us-east-1
+    WORKSPACE: sdx
+    AUTH_ES256_PRIVATE_KEY: ${ssm:/sdx/auth-key/ecdsa/private}
+    DYNAMO_TABLE_eagleUSER_ACCESS_TOKEN: eagleuser-access-token-sdx
+    DYNAMO_TABLE_eagleUSER_COMPANY: eagleuser-company-sdx
+    DYNAMO_TABLE_eagleUSER_USER: eagleuser-users-sdx
+    DYNAMO_TABLE_eagleUSER_RECOVERY_PASSWORD: eagleuser-recovery-password-sdx
+    DYNAMO_TABLE_eagleUSER_PASSWORD_HISTORY: eagleuser-password-history-sdx
+    DYNAMO_TABLE_eagleREQUEST_ANALYSIS_PERSON: eaglerequest-analysis-person-sdx
+    DYNAMO_TABLE_eagleREQUEST_ANALYSIS_VEHICLE: eaglerequest-analysis-vehicle-sdx
+    DYNAMO_TABLE_eagleANALYSIS_PEOPLE: eagleanalysis-people-sdx
+    DYNAMO_TABLE_eagleANALYSIS_VEHICLES: eagleanalysis-vehicles-sdx
+    DYNAMO_TABLE_eagleREQUEST_FINISHED_ANALYSIS_PERSON: eaglerequest-finished-analysis-person-sdx
+    DYNAMO_TABLE_eagleREQUEST_FINISHED_ANALYSIS_VEHICLE: eaglerequest-finished-analysis-vehicle-sdx
+    USER_RECOVERY_KEY_URL: https://user.api.sdx.eaglesystem.com.br/reset-password
+    eagleSYSTEM_EMAIL: sdx.admin@eaglesystem.com.br
+
+package:
+  individually: false
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline-local-authorizers-plugin
+  - serverless-offline
+
+custom:
+  esbuild:
+    sourcemap: true
+    watch:
+      pattern: 'src/**/*'
+
+  serverless-offline:
+    noPrependStageInUrl: true
+
+functions:
+  auth:
+    handler: src/auth/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /auth
+
+  eagleuser-login:
+    handler: src/controllers/eagleuser/login/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /login
+
+  eagleuser-register-user:
+    handler: src/controllers/eagleuser/register/user/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /register/user
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-register-company:
+    handler: src/controllers/eagleuser/register/company/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /register/company
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-change-password:
+    handler: src/controllers/eagleuser/change-password/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /change-password
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-recovery-password:
+    handler: src/controllers/eagleuser/recovery-password/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /recovery-password
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-reset-password:
+    handler: src/controllers/eagleuser/reset-password/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /reset-password
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-list-companies:
+    handler: src/controllers/eagleuser/list-companies/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /companies
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-analysis-combo:
+    handler: src/controllers/eaglerequest/send-request-analysis/combo/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/combo
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-analysis-person:
+    handler: src/controllers/eaglerequest/send-request-analysis/person/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/person
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-analysis-vehicle-default:
+    handler: src/controllers/eaglerequest/send-request-analysis/vehicle/default/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/vehicle
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-analysis-vehicle-plate-history:
+    handler: src/controllers/eaglerequest/send-request-analysis/vehicle/plate-history/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/vehicle/plate-history
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-list-people:
+    handler: src/controllers/eaglerequest/consult/analysis/list-people/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /analysis/people
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-list-vehicles:
+    handler: src/controllers/eaglerequest/consult/analysis/list-vehicles/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /analysis/vehicles
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-get-person:
+    handler: src/controllers/eaglerequest/consult/analysis/get-person/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /analysis/person/{person_id}
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-get-vehicle:
+    handler: src/controllers/eaglerequest/consult/analysis/get-vehicle/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /analysis/vehicle/{vehicle_id}
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-query-analysis-by-document-plate:
+    handler: src/controllers/eaglerequest/consult/query-analysis-by-document-plate/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /{path_type}
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-answer-analysis:
+    handler: src/controllers/eaglerequest/send-answer/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/{analysis_type}/{id}/answer
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglereport-analysis:
+    handler: src/controllers/eaglereport/generate-analysis-request/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /report/analysis/{path_type}
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
