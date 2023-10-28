@@ -9,19 +9,19 @@ provider:
     AWS_REGION: us-east-1
     WORKSPACE: sdx
     AUTH_ES256_PRIVATE_KEY: ${ssm:/sdx/auth-key/ecdsa/private}
-    DYNAMO_TABLE_eagleUSER_ACCESS_TOKEN: eagleuser-access-token-sdx
-    DYNAMO_TABLE_eagleUSER_COMPANY: eagleuser-company-sdx
-    DYNAMO_TABLE_eagleUSER_USER: eagleuser-users-sdx
-    DYNAMO_TABLE_eagleUSER_RECOVERY_PASSWORD: eagleuser-recovery-password-sdx
-    DYNAMO_TABLE_eagleUSER_PASSWORD_HISTORY: eagleuser-password-history-sdx
-    DYNAMO_TABLE_eagleREQUEST_ANALYSIS_PERSON: eaglerequest-analysis-person-sdx
-    DYNAMO_TABLE_eagleREQUEST_ANALYSIS_VEHICLE: eaglerequest-analysis-vehicle-sdx
-    DYNAMO_TABLE_eagleANALYSIS_PEOPLE: eagleanalysis-people-sdx
-    DYNAMO_TABLE_eagleANALYSIS_VEHICLES: eagleanalysis-vehicles-sdx
-    DYNAMO_TABLE_eagleREQUEST_FINISHED_ANALYSIS_PERSON: eaglerequest-finished-analysis-person-sdx
-    DYNAMO_TABLE_eagleREQUEST_FINISHED_ANALYSIS_VEHICLE: eaglerequest-finished-analysis-vehicle-sdx
-    USER_RECOVERY_KEY_URL: https://user.api.sdx.eaglesystem.com.br/reset-password
-    eagleSYSTEM_EMAIL: sdx.admin@eaglesystem.com.br
+    DYNAMO_TABLE_EAGLEUSER_ACCESS_TOKEN: eagleuser-access-token-sdx
+    DYNAMO_TABLE_EAGLEUSER_COMPANY: eagleuser-company-sdx
+    DYNAMO_TABLE_EAGLEUSER_USER: eagleuser-users-sdx
+    DYNAMO_TABLE_EAGLEUSER_RECOVERY_PASSWORD: eagleuser-recovery-password-sdx
+    DYNAMO_TABLE_EAGLEUSER_PASSWORD_HISTORY: eagleuser-password-history-sdx
+    DYNAMO_TABLE_EAGLEREQUEST_ANALYSIS_PERSON: eaglerequest-analysis-person-sdx
+    DYNAMO_TABLE_EAGLEREQUEST_ANALYSIS_VEHICLE: eaglerequest-analysis-vehicle-sdx
+    DYNAMO_TABLE_EAGLEANALYSIS_PEOPLE: eagleanalysis-people-sdx
+    DYNAMO_TABLE_EAGLEANALYSIS_VEHICLES: eagleanalysis-vehicles-sdx
+    DYNAMO_TABLE_EAGLEREQUEST_FINISHED_ANALYSIS_PERSON: eaglerequest-finished-analysis-person-sdx
+    DYNAMO_TABLE_EAGLEREQUEST_FINISHED_ANALYSIS_VEHICLE: eaglerequest-finished-analysis-vehicle-sdx
+    USER_RECOVERY_KEY_URL: https://user.api.sdx.systemeagle.com.br/reset-password
+    SYSTEMEAGLE_EMAIL: sdx.admin@systemeagle.com.br
 
 package:
   individually: false
