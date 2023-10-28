@@ -64,8 +64,8 @@ const recoveryPasswordController = async (event: APIGatewayProxyEvent): Promise<
 
   const send_email: SESSendEmailOptions = {
     destination: email,
-    from: getStringEnv('EAGLESYSTEM_EMAIL'),
-    subject: 'Recuperação de Senha - EAGLESystem',
+    from: getStringEnv('SYSTEMEAGLE_EMAIL'),
+    subject: 'Recuperação de Senha - EagleSystem',
     html: body_html,
   }
 
