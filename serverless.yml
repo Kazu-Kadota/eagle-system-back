@@ -197,6 +197,20 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
+  eaglerequest-analysis-vehicle-second-driver:
+    handler: src/controllers/eaglerequest/send-request-analysis/vehicle/second-driver/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/vehicle/second-driver
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
   eaglerequest-list-people:
     handler: src/controllers/eaglerequest/consult/analysis/list-people/index.handler
     timeout: 600
