@@ -4,6 +4,7 @@ import { ReturnResponse } from 'src/models/lambda'
 import queryVehicleByStatusProcessingWaiting, { QueryVehicleByStatusResponse, ScanVehicleRequest } from 'src/services/aws/dynamo/request/analysis/vehicle/scan'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import logger from 'src/utils/logger'
+import memorySizeOf from 'src/utils/memory-size-of'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 
@@ -37,8 +38,15 @@ const requestVehicles = async (user_info: UserInfoFromJwt): Promise<ReturnRespon
     }
 
     if (query_result?.result) {
-      for (const item of query_result.result) {
-        vehicles.push(item)
+      const vehicle_memory_size = Number(memorySizeOf(vehicles).split(' ')[0])
+      const result_memory_size = Number(memorySizeOf(query_result.result).split(' ')[0])
+
+      if (vehicle_memory_size + result_memory_size >= 6) {
+        last_evaluated_key = undefined
+      } else {
+        for (const item of query_result.result) {
+          vehicles.push(item)
+        }
       }
     }
 
