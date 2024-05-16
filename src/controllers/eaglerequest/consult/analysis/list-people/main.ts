@@ -38,10 +38,24 @@ const listPeopleController = async (user_info: UserInfoFromJwt): Promise<ReturnR
     }
 
     if (query_result?.result) {
-      const people_memory_size = Number(memorySizeOf(people).split(' ')[0])
-      const result_memory_size = Number(memorySizeOf(query_result.result).split(' ')[0])
+      const people_memory_size = memorySizeOf(people)
+      const people_memory_size_number = Number(people_memory_size)
+      const people_memory_size_unit = people_memory_size.split(' ')[1]
 
-      if (people_memory_size + result_memory_size >= 6) {
+      const result_memory_size = memorySizeOf(query_result.result)
+      const result_memory_size_number = Number(result_memory_size.split(' ')[0])
+      const result_memory_size_unit = result_memory_size.split(' ')[1]
+
+      const is_gigabytes = people_memory_size_unit === 'GiB' || result_memory_size_unit === 'GiB'
+      const is_megabytes = people_memory_size_unit === 'MiB' || result_memory_size_unit === 'MiB'
+
+      const is_greater_than_6mb = people_memory_size_number + result_memory_size_number > 6
+
+      const is_greater_than_lambda_limit = is_gigabytes
+        ? true
+        : !!(is_megabytes && is_greater_than_6mb)
+
+      if (is_greater_than_lambda_limit) {
         last_evaluated_key = undefined
       } else {
         for (const item of query_result.result) {
