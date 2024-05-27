@@ -4,15 +4,17 @@ import queryRequestVehicleByCompany, { QueryRequestVehicleByCompany, QueryReques
 import queryFinishedRequestVehicleByCompany, { QueryFinishedRequestVehicleByCompanyResponse } from 'src/services/aws/dynamo/request/finished/vehicle/query-by-company'
 
 export interface ResultVehicleReport {
+  combo_id?: string
+  combo_number?: number
+  company_name: string
   created_at: string
   finished_at?: string | undefined
-  company_name: string
-  request_id: string
-  status: RequestStatusEnum
-  vehicle_id: string
   owner_document: string
   owner_name: string
   plate: string
+  request_id: string
+  status: RequestStatusEnum
+  vehicle_id: string
   vehicle_type: VehicleType
 }
 

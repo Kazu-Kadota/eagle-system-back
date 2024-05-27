@@ -41,13 +41,14 @@ export interface PersonRequestKey {
 
 export interface PersonRequestBody extends PersonRequestForms {
   analysis_type: AnalysisTypeEnum
+  combo_id?: string
+  combo_number?: number
+  company_name: string
   person_analysis_type: PersonAnalysisTypeEnum
   region_type?: PersonRegionTypeEnum
   region?: StateEnum
-  combo_number?: number
-  company_name: string
-  user_id: string
   status: RequestStatusEnum
+  user_id: string
 }
 
 export interface PersonRequest extends PersonRequestKey, PersonRequestBody {
