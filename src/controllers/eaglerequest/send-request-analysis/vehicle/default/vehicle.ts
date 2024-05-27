@@ -21,9 +21,10 @@ export interface ReturnVehicleAnalysis {
 export interface VehicleAnalysisRequest {
   analysis_type: AnalysisTypeEnum
   body: VehicleRequestForms
+  combo_id?: string
+  combo_number?: number
   dynamodbClient: DynamoDBClient
   user_info: UserInfoFromJwt
-  combo_number?: number
 }
 
 const vehicleAnalysis = async (
@@ -32,9 +33,10 @@ const vehicleAnalysis = async (
   const {
     analysis_type,
     body,
+    combo_id,
+    combo_number,
     dynamodbClient,
     user_info,
-    combo_number,
   } = data
 
   const request_id = uuid()
@@ -44,6 +46,7 @@ const vehicleAnalysis = async (
   const data_request_vehicle: VehicleRequestBody = {
     ...body,
     analysis_type,
+    combo_id,
     combo_number: combo_number || undefined,
     company_name: user_info.user_type === 'admin' ? body.company_name as string : user_info.company_name,
     user_id: user_info.user_id,

@@ -5,6 +5,7 @@ import ErrorHandler from 'src/utils/error-handler'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import logger from 'src/utils/logger'
 import removeEmpty from 'src/utils/remove-empty'
+import { v4 as uuid } from 'uuid'
 
 import personAnalysisConstructor, { PersonAnalysisConstructor } from '../person/person_analysis_constructor'
 import vehicleAnalysis, { ReturnVehicleAnalysis, VehicleAnalysisRequest } from '../vehicle/default/vehicle'
@@ -28,15 +29,18 @@ const requestAnalysisCombo: Controller = async (req) => {
     throw new ErrorHandler('Número de veículos informado é diferente ao númbero de veículos solicitados', 400)
   }
 
+  const combo_id = uuid()
+
   let person_analyzes
 
   for (const person_analysis of body.person_analysis) {
     const person_analysis_request: PersonAnalysisConstructor = {
       analysis_type: AnalysisTypeEnum.COMBO,
-      person_data: body.person,
-      dynamodbClient,
-      user_info,
+      combo_id,
       combo_number: body.combo_number,
+      dynamodbClient,
+      person_data: body.person,
+      user_info,
     }
 
     person_analyzes = await personAnalysisConstructor(person_analysis, person_analysis_request)
@@ -50,9 +54,10 @@ const requestAnalysisCombo: Controller = async (req) => {
     const vehicle_analysis_constructor: VehicleAnalysisRequest = {
       analysis_type: AnalysisTypeEnum.VEHICLE,
       body: vehicle,
+      combo_id,
+      combo_number: body.combo_number,
       dynamodbClient,
       user_info,
-      combo_number: body.combo_number,
     }
 
     vehicles_analysis.push(await vehicleAnalysis(vehicle_analysis_constructor))
@@ -62,6 +67,7 @@ const requestAnalysisCombo: Controller = async (req) => {
     body: {
       message: 'Successfully requested to analyze combo',
       analysis_type: AnalysisTypeEnum.COMBO,
+      combo_id,
       person: person_analyzes,
       vehicles: vehicles_analysis,
     },
