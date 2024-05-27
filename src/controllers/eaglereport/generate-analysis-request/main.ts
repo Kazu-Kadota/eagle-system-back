@@ -166,7 +166,7 @@ const reportAnalysis = async (
     vehicle_type: 'Tipo do veículo',
     owner_name: 'Nome do dono',
     owner_document: 'Documento do dono',
-    status: 'status',
+    status: 'Status da análise',
     created_at: 'Data de criação da análise',
     finished_at: 'Data de resposta da análise',
   }
