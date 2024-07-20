@@ -11,6 +11,7 @@ provider:
     AUTH_ES256_PRIVATE_KEY: ${ssm:/sdx/auth-key/ecdsa/private}
     DYNAMO_TABLE_EAGLEUSER_ACCESS_TOKEN: eagleuser-access-token-sdx
     DYNAMO_TABLE_EAGLEUSER_COMPANY: eagleuser-company-sdx
+    DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG: eagleuser-feature-flag-sdx
     DYNAMO_TABLE_EAGLEUSER_USER: eagleuser-users-sdx
     DYNAMO_TABLE_EAGLEUSER_RECOVERY_PASSWORD: eagleuser-recovery-password-sdx
     DYNAMO_TABLE_EAGLEUSER_PASSWORD_HISTORY: eagleuser-password-history-sdx
@@ -134,6 +135,48 @@ functions:
       - http:
           method: get
           path: /companies
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-my-company:
+    handler: src/controllers/eagleuser/my-company/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /my-company
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-modify-allowance:
+    handler: src/controllers/eagleuser/feature-flag/modify-allowance/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /feature-flag/modify-allowance
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-set:
+    handler: src/controllers/eagleuser/feature-flag/set/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: put
+          path: /feature-flag/set
           authorizer:
             type: CUSTOM
             authorizerId: abcjfk
