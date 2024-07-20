@@ -20,7 +20,8 @@ export enum PersonAnalysisTypeEnum {
 
 export enum PersonRegionTypeEnum {
   STATES = 'states',
-  NATIONAL = 'national'
+  NATIONAL = 'national',
+  NATIONAL_DB = 'national + db'
 }
 
 export enum DriverCategoryEnum {

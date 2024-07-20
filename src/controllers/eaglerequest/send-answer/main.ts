@@ -3,7 +3,7 @@ import { APIGatewayProxyEvent } from 'aws-lambda'
 import { ReturnResponse } from 'src/models/lambda'
 import logger from 'src/utils/logger'
 
-import sendPersonAnswer from './person/send-person-answer'
+import sendPersonAnswer, { SendPersonAnswer } from './person/send-person-answer'
 import validateQueryPerson from './person/validate-query-person'
 import validateBody from './validate-body'
 import validatePath from './validate-path'
@@ -15,16 +15,17 @@ const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 const sendAnswerController = async (
   event: APIGatewayProxyEvent,
 ): Promise<ReturnResponse<any>> => {
-  const { analysis_result, analysis_info } = validateBody(JSON.parse(event.body as string))
+  const { analysis_result, analysis_info, from_db } = validateBody(JSON.parse(event.body as string))
   const { analysis_type, id } = validatePath({ ...event.pathParameters })
 
   if (analysis_type === 'person') {
     const { person_id } = validateQueryPerson({ ...event.queryStringParameters })
 
-    const data = {
+    const data: SendPersonAnswer = {
       request_id: id,
       analysis_result,
       analysis_info,
+      from_db,
       person_id,
     }
 
@@ -48,6 +49,7 @@ const sendAnswerController = async (
     request_id: id,
     analysis_result,
     analysis_info,
+    from_db,
     vehicle_id,
   }
 

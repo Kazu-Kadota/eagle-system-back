@@ -26,6 +26,7 @@ export interface VehicleSecondDriverRequest extends VehicleRequestKey, VehicleRe
   finished_at?: string
   analysis_info?: string
   analysis_result?: string
+  from_db?: boolean
 }
 
 export interface FinishedVehicleRequestSecondDriverBody extends VehicleRequestSecondDriverBody {
@@ -34,6 +35,7 @@ export interface FinishedVehicleRequestSecondDriverBody extends VehicleRequestSe
   finished_at?: string
   analysis_info?: string
   analysis_result?: string
+  from_db?: boolean
 }
 
 export interface FinishedVehicleRequestSecondDriver extends VehicleRequestKey, FinishedVehicleRequestSecondDriverBody {}

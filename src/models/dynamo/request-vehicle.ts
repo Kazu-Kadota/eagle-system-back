@@ -38,6 +38,7 @@ export interface VehicleRequest extends VehicleRequestKey, VehicleRequestBody {
   finished_at?: string
   analysis_info?: string
   analysis_result?: string
+  from_db?: boolean
 }
 
 export interface FinishedVehicleRequestBody extends VehicleRequestBody {
@@ -46,6 +47,7 @@ export interface FinishedVehicleRequestBody extends VehicleRequestBody {
   finished_at?: string
   analysis_info?: string
   analysis_result?: string
+  from_db?: boolean
 }
 
 export interface FinishedVehicleRequest extends VehicleRequestKey, FinishedVehicleRequestBody {}

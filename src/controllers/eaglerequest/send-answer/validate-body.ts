@@ -4,7 +4,7 @@ import { AnalysisResultEnum, RequestAnswerBody } from 'src/models/dynamo/answer'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
-const schema = Joi.object({
+const schema = Joi.object<RequestAnswerBody, true>({
   analysis_result: Joi
     .string()
     .valid(...Object.values(AnalysisResultEnum))
@@ -16,6 +16,9 @@ const schema = Joi.object({
       then: Joi.required(),
       otherwise: Joi.optional(),
     }),
+  from_db: Joi
+    .boolean()
+    .required(),
 }).required()
 
 const validateBody = (
