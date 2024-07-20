@@ -11,6 +11,7 @@ export interface ResultPersonReport {
   created_at: string
   document: string
   finished_at?: string | undefined
+  from_db?: boolean
   name: string
   person_id: string
   region?: StateEnum
