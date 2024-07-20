@@ -9,6 +9,9 @@ import { v4 as uuid } from 'uuid'
 import getUserByEmailAdapter from './get-user-by-email-adapter'
 import validateLogin from './validate'
 import validatePassword from './validate-password'
+import { Without } from 'src/utils/types/without'
+import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
+import getCompanyByNameAdapter from './get-company-adapter'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 const AUTH_ES256_PRIVATE_KEY = getStringEnv('AUTH_ES256_PRIVATE_KEY')
@@ -21,6 +24,8 @@ const login = async (event: APIGatewayProxyEvent): Promise<ReturnResponse<any>> 
   const { email, password } = validateLogin(JSON.parse(event.body as string))
 
   const user = await getUserByEmailAdapter(email, dynamodbClient)
+
+  const company = await getCompanyByNameAdapter(user.company_name, dynamodbClient)
 
   validatePassword(user, password)
 
@@ -38,9 +43,14 @@ const login = async (event: APIGatewayProxyEvent): Promise<ReturnResponse<any>> 
 
   expires_date.setSeconds(expires_date.getSeconds() + expires_seconds)
 
-  const payload = {
+  const payload: Without<UserInfoFromJwt, 'user_id'> = {
+    api: user.api,
+    email: user.email,
+    user_first_name: user.user_first_name,
+    user_last_name: user.user_last_name,
     user_type: user.user_type,
     company_name: user.company_name,
+    company_id: company.company_id,
   }
 
   const private_key = AUTH_ES256_PRIVATE_KEY
@@ -66,7 +76,15 @@ const login = async (event: APIGatewayProxyEvent): Promise<ReturnResponse<any>> 
   return {
     body: {
       message: 'User logged successfully',
-      user,
+      user: {
+        api: user.api,
+        email: user.email,
+        user_first_name: user.user_first_name,
+        user_last_name: user.user_last_name,
+        user_type: user.user_type,
+        company_name: user.company_name,
+        company_id: company.company_id,
+      },
       jwtToken,
       expires_date,
     },
