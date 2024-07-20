@@ -4,6 +4,7 @@ import { Response } from 'src/models/lambda'
 import catchError from 'src/utils/catch-error'
 import ErrorHandler from 'src/utils/error-handler'
 import extractJwtLambda from 'src/utils/extract-jwt-lambda'
+
 import setFeatureFlagHandler from './main'
 
 export const handler = async (

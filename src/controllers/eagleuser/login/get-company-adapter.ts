@@ -10,7 +10,7 @@ const getCompanyByNameAdapter = async (
 ): Promise<Company> => {
   const company = await queryByName(company_name, dynamodbClient)
 
-  if (!company || !!company[0]) {
+  if (!company || !company[0]) {
     logger.warn({
       message: 'Company not exist',
       company_name,

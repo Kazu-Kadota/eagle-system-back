@@ -1,10 +1,11 @@
 import { PersonAnalysisTypeEnum, PersonRegionTypeEnum } from 'src/models/dynamo/request-enum'
 import { PersonAnalysisItems } from 'src/models/dynamo/request-person'
 
-import personAnalysis, { PersonAnalysisRequest, PersonAnalysisResponse } from './person'
-import logger from 'src/utils/logger'
 import ErrorHandler from 'src/utils/error-handler'
+import logger from 'src/utils/logger'
+
 import getCompanyByNameAdapter from './get-company-adapter'
+import personAnalysis, { PersonAnalysisRequest, PersonAnalysisResponse } from './person'
 import verifyAllowanceToNationalDB from './verify-allowance-to-national-db'
 
 export interface PersonAnalysisConstructor extends Omit<

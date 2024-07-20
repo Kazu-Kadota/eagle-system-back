@@ -9,7 +9,7 @@ import logger from 'src/utils/logger'
 
 const DYNAMO_TABLE_EAGLEUSER_COMPANY = getStringEnv('DYNAMO_TABLE_EAGLEUSER_COMPANY')
 
-const getCompany= async (
+const getCompany = async (
   key: CompanyKey,
   dynamodbClient: DynamoDBClient,
 ): Promise<Company | undefined> => {

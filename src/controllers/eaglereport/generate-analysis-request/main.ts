@@ -6,12 +6,11 @@ import ErrorHandler from 'src/utils/error-handler'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import logger from 'src/utils/logger'
 
+import getCompanyByNameAdapter from './get-company-adapter'
 import personReport from './person'
 import validateReportPath from './validate-report-path'
-
 import validateReportQuery from './validate-report-query'
 import vehicleReport from './vehicle'
-import getCompanyByNameAdapter from './get-company-adapter'
 import verifyAllowanceToNationalDB from './verify-allowance-to-national-db'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })

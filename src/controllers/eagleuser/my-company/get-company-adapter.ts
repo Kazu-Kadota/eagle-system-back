@@ -16,7 +16,7 @@ const getCompanyByNameAdapter = async (
   if (!company) {
     logger.warn({
       message: 'Company not exist',
-      company_id: company_id,
+      company_id,
     })
 
     throw new ErrorHandler('Company not exist', 404)

@@ -1,10 +1,10 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { APIGatewayProxyEvent } from 'aws-lambda'
 import { ReturnResponse } from 'src/models/lambda'
 import logger from 'src/utils/logger'
 
-import { APIGatewayProxyEvent } from 'aws-lambda'
-import validateBody from './validate-body'
 import setFeatureFlagAdapter from './set-feature-flag-adapter'
+import validateBody from './validate-body'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 
@@ -21,13 +21,13 @@ const setFeatureFlagHandler = async (event: APIGatewayProxyEvent): Promise<Retur
     message: 'Success on set feature flag',
     company_id: body.company_id,
     feature_flag: body.feature_flag,
-    enabled: body.enabled
+    enabled: body.enabled,
   })
 
   return {
     body: {
       message: 'Success on set feature flag',
-    }
+    },
   }
 }
 

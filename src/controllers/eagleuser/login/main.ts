@@ -2,16 +2,16 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 import jwt, { SignOptions } from 'jsonwebtoken'
 import { ReturnResponse } from 'src/models/lambda'
+import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
+import { Without } from 'src/utils/types/without'
 import { v4 as uuid } from 'uuid'
 
+import getCompanyByNameAdapter from './get-company-adapter'
 import getUserByEmailAdapter from './get-user-by-email-adapter'
 import validateLogin from './validate'
 import validatePassword from './validate-password'
-import { Without } from 'src/utils/types/without'
-import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
-import getCompanyByNameAdapter from './get-company-adapter'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 const AUTH_ES256_PRIVATE_KEY = getStringEnv('AUTH_ES256_PRIVATE_KEY')

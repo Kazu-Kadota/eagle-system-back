@@ -1,8 +1,8 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { ReturnResponse } from 'src/models/lambda'
+import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import logger from 'src/utils/logger'
 
-import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import getCompanyByNameAdapter from './get-company-adapter'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
