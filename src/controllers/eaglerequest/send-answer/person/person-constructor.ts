@@ -75,7 +75,8 @@ const personConstructor = ({
       })
 
       return person_constructor
-    } else if (region_type === PersonRegionTypeEnum.NATIONAL) {
+    } else if (region_type === PersonRegionTypeEnum.NATIONAL
+      || region_type === PersonRegionTypeEnum.NATIONAL_DB) {
       person_constructor = removeEmpty({
         birth_date: request_person.birth_date,
         document: request_person.document,
