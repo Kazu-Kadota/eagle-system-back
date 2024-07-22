@@ -20,6 +20,7 @@ export interface SendPersonAnswer {
   request_id: string
   analysis_info?: string
   analysis_result: AnalysisResultEnum
+  from_db: boolean
   person_id: string
 }
 
@@ -31,6 +32,7 @@ const sendPersonAnswer = async (
     request_id,
     analysis_info,
     analysis_result,
+    from_db,
     person_id,
   } = data
 
@@ -65,6 +67,7 @@ const sendPersonAnswer = async (
     status: RequestStatusEnum.FINISHED,
     analysis_info,
     analysis_result,
+    from_db,
   })
 
   const finished_request_key: PersonRequestKey = {

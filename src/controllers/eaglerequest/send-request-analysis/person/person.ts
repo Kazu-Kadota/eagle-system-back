@@ -4,7 +4,6 @@ import { PersonRequestKey, PersonRequestForms, PersonRequestBody } from 'src/mod
 import queryPersonByDocument from 'src/services/aws/dynamo/analysis/person/query-by-document'
 import putRequestPerson from 'src/services/aws/dynamo/request/analysis/person/put'
 import queryRequestPersonByDocument, { QueryRequestPersonByDocumentQuery } from 'src/services/aws/dynamo/request/analysis/person/query-by-document'
-import ErrorHandler from 'src/utils/error-handler'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import logger from 'src/utils/logger'
 import removeEmpty from 'src/utils/remove-empty'
@@ -51,15 +50,6 @@ const personAnalysis = async (
     company_name: user_info.company_name,
     user_id: user_info.user_id,
   })
-
-  if (user_info.user_type === 'admin' && !person_data.company_name) {
-    logger.warn({
-      message: 'Need to inform company name for admin user',
-      user_type: user_info.user_type,
-    })
-
-    throw new ErrorHandler('É necessário informar o nome da empresa para usuários admin', 400)
-  }
 
   const request_id = uuid()
 

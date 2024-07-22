@@ -26,6 +26,7 @@ export interface VehiclePlateHistoryRequest extends VehicleRequestKey, VehicleRe
   finished_at?: string
   analysis_info?: string
   analysis_result?: string
+  from_db?: boolean
 }
 
 export interface FinishedVehicleRequestPlateHistoryBody extends VehicleRequestPlateHistoryBody {
@@ -34,6 +35,7 @@ export interface FinishedVehicleRequestPlateHistoryBody extends VehicleRequestPl
   finished_at?: string
   analysis_info?: string
   analysis_result?: string
+  from_db?: boolean
 }
 
 export interface FinishedVehicleRequestPlateHistory extends VehicleRequestKey, FinishedVehicleRequestPlateHistoryBody {}

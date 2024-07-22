@@ -9,6 +9,7 @@ export interface ResultVehicleReport {
   company_name: string
   created_at: string
   finished_at?: string | undefined
+  from_db?: boolean
   owner_document: string
   owner_name: string
   plate: string

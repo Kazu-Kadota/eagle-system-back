@@ -17,6 +17,7 @@ export interface SendVehicleAnswer {
   request_id: string
   analysis_info?: string
   analysis_result: AnalysisResultEnum
+  from_db: boolean
   vehicle_id: string
 }
 
@@ -28,6 +29,7 @@ const sendVehicleAnswer = async (
     request_id,
     analysis_info,
     analysis_result,
+    from_db,
     vehicle_id,
   } = data
 
@@ -55,6 +57,7 @@ const sendVehicleAnswer = async (
     status: RequestStatusEnum.FINISHED,
     analysis_info,
     analysis_result,
+    from_db,
   })
 
   const finished_request_key: VehicleRequestKey = {

@@ -57,4 +57,5 @@ export interface PersonRequest extends PersonRequestKey, PersonRequestBody {
   finished_at?: string
   analysis_info?: string
   analysis_result?: string
+  from_db?: boolean
 }

@@ -11,6 +11,7 @@ export enum AnalysisPathTypeEnum {
 export interface RequestAnswerBody {
   analysis_result: AnalysisResultEnum
   analysis_info?: string
+  from_db: boolean
 }
 
 export interface RequestAnswerPath {

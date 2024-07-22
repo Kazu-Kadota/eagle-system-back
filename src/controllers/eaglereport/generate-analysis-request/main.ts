@@ -6,11 +6,12 @@ import ErrorHandler from 'src/utils/error-handler'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import logger from 'src/utils/logger'
 
+import getCompanyByNameAdapter from './get-company-adapter'
 import personReport from './person'
 import validateReportPath from './validate-report-path'
-
 import validateReportQuery from './validate-report-query'
 import vehicleReport from './vehicle'
+import verifyAllowanceToNationalDB from './verify-allowance-to-national-db'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 
@@ -59,6 +60,10 @@ const reportAnalysis = async (
     company_name = user_info.company_name
   }
 
+  const user_company = await getCompanyByNameAdapter(company_name, dynamodbClient)
+
+  const is_allowed_national_db = await verifyAllowanceToNationalDB(user_company.company_id, dynamodbClient)
+
   if (path_type === 'person') {
     const data = {
       ...query,
@@ -105,6 +110,11 @@ const reportAnalysis = async (
 
     if (user_info.user_type === 'admin') {
       columns.analysis_result = 'Resposta da análise'
+      columns.from_db = 'Banco de Dados'
+    }
+
+    if (is_allowed_national_db) {
+      columns.from_db = 'Banco de Dados'
     }
 
     const csv = stringify(person_report.result, {
@@ -173,6 +183,11 @@ const reportAnalysis = async (
 
   if (user_info.user_type === 'admin') {
     columns.analysis_result = 'Resposta da análise'
+    columns.from_db = 'Banco de Dados'
+  }
+
+  if (is_allowed_national_db) {
+    columns.from_db = 'Banco de Dados'
   }
 
   const csv = stringify(vehicle_report.result, {
