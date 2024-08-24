@@ -3,7 +3,7 @@ import Joi from 'joi'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
-const documentRegex = /^([0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}|[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2})$/
+const documentRegex = /^([0-9]{3}\.[0-9]{3}\.[0-9]{3}\-[0-9]{2}|[0-9]{2}\.[0-9]{3}\.[0-9]{3}\/[0-9]{4}\-[0-9]{2})$/
 
 export interface RequestPersonByDocumentQuery {
   document: string

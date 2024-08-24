@@ -18,7 +18,7 @@ export interface ValidateRequestCombo extends PersonRequestAnalysis {
   vehicles: VehicleRequestForms[]
 }
 
-const documentRegex = /^([0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}|[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2})$/
+const documentRegex = /^([0-9]{3}\.[0-9]{3}\.[0-9]{3}\-[0-9]{2}|[0-9]{2}\.[0-9]{3}\.[0-9]{3}\/[0-9]{4}\-[0-9]{2})$/
 const cnhRegex = /(?=.*\d)[A-Za-z0-9]{1,11}/
 const plateRegex = /^([A-Za-z0-9]{7})$/
 

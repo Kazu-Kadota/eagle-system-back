@@ -5,7 +5,7 @@ import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
 const plateRegex = /^([A-Za-z0-9]{7})$/
-const documentRegex = /^([0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}|[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2})$/
+const documentRegex = /^([0-9]{3}\.[0-9]{3}\.[0-9]{3}\-[0-9]{2}|[0-9]{2}\.[0-9]{3}\.[0-9]{3}\/[0-9]{4}\-[0-9]{2})$/
 
 const schema = Joi.object<VehicleRequestSecondDriverForms>({
   company_name: Joi
