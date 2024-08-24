@@ -7,7 +7,7 @@
     "start": "AWS_PROFILE=eagle-back-sdx sls offline",
     "debug": "AWS_PROFILE=eagle-back-sdx sls offline",
     "test": "LOGGER_LEVEL=silent jest",
-    "lint": "tsc --noEmit && eslint --ext .ts src",
+    "lint": "tsc --noEmit && eslint --ext .ts src marreta",
     "clean": "rimraf dist",
     "prune": "npm prune --production",
     "tsc": "tsc -p tsconfig.build.json",

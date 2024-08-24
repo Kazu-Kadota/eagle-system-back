@@ -10,7 +10,7 @@ import { PersonAnalysisItems, PersonRequestAnalysis, PersonRequestForms } from '
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
-const documentRegex = /^([0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}|[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2})$/
+const documentRegex = /^([0-9]{3}\.[0-9]{3}\.[0-9]{3}\-[0-9]{2}|[0-9]{2}\.[0-9]{3}\.[0-9]{3}\/[0-9]{4}\-[0-9]{2})$/
 const cnhRegex = /(?=.*\d)[A-Za-z0-9]{1,11}/
 
 const schema = Joi.object<PersonRequestAnalysis, true>({
