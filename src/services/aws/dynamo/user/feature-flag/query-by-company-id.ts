@@ -1,34 +1,44 @@
 import {
-  DynamoDBClient,
-  ScanCommand,
   AttributeValue,
+  DynamoDBClient,
+  QueryCommand,
 } from '@aws-sdk/client-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import { FeatureFlag } from 'src/models/dynamo/feature-flag'
+import {
+  createConditionExpression,
+  createExpressionAttributeNames,
+  createExpressionAttributeValues,
+} from 'src/utils/dynamo/expression'
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
 
 const DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG = getStringEnv('DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG')
 
-export interface ScanFeatureFlagResponse {
-  result: FeatureFlag[],
+export type QueryByCompanyIdResponse = {
   last_evaluated_key?: Record<string, AttributeValue>
+  feature_flag: FeatureFlag[]
 }
 
-export interface ExclusiveStartKey {
-  value?: Record<string, AttributeValue>
+export type QueryByCompanyId = {
+  company_id: string
 }
 
-const scanFeatureFlag = async (
+const queryByCompanyId = async (
+  query: QueryByCompanyId,
   dynamodbClient: DynamoDBClient,
   last_evaluated_key?: Record<string, AttributeValue>,
-): Promise<ScanFeatureFlagResponse | undefined> => {
+): Promise<QueryByCompanyIdResponse | undefined> => {
   logger.debug({
-    message: 'Scanning feature flag',
+    message: 'Querying feature flag by company_id',
+    company_id: query.company_id,
   })
 
-  const command = new ScanCommand({
+  const command = new QueryCommand({
     TableName: DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG,
+    KeyConditionExpression: createConditionExpression(query, true),
+    ExpressionAttributeNames: createExpressionAttributeNames(query),
+    ExpressionAttributeValues: createExpressionAttributeValues(query),
     ExclusiveStartKey: last_evaluated_key,
   })
 
@@ -45,9 +55,9 @@ const scanFeatureFlag = async (
   }
 
   return {
-    result,
     last_evaluated_key,
+    feature_flag: result,
   }
 }
 
-export default scanFeatureFlag
+export default queryByCompanyId

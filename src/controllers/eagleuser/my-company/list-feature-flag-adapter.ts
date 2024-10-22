@@ -1,16 +1,27 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import scanFeatureFlag from 'src/services/aws/dynamo/user/feature-flag/scan'
+import queryByCompanyId, { QueryByCompanyId } from 'src/services/aws/dynamo/user/feature-flag/query-by-company-id'
 
 export type ListFeatureFlagAdapterResponse = Array<string>
 
-const listFeatureFlagAdapter = async (
-  dynamodbClient: DynamoDBClient,
-): Promise<ListFeatureFlagAdapterResponse> => {
+export type ListFeatureFlagAdapterParams = {
+  company_id: string
+  dynamodbClient: DynamoDBClient
+}
+
+const listFeatureFlagAdapter = async ({
+  company_id,
+  dynamodbClient,
+}: ListFeatureFlagAdapterParams): Promise<ListFeatureFlagAdapterResponse> => {
   const result = []
   let last_evaluated_key
 
+  const query_by_company_id_params: QueryByCompanyId = {
+    company_id,
+  }
+
   do {
-    const list_feature_flag = await scanFeatureFlag(
+    const list_feature_flag = await queryByCompanyId(
+      query_by_company_id_params,
       dynamodbClient,
       last_evaluated_key,
     )
@@ -19,7 +30,7 @@ const listFeatureFlagAdapter = async (
       break
     }
 
-    for (const item of list_feature_flag.result) {
+    for (const item of list_feature_flag.feature_flag) {
       if (item.enabled) {
         result.push(item.feature_flag)
       }
