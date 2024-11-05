@@ -16,7 +16,7 @@ import removeEmpty from 'src/utils/remove-empty'
 import personConstructor from './person-constructor'
 import updatePersonConstructor from './update-person-constructor'
 
-export interface SendPersonAnswer {
+export type AnswerPersonAnalysis = {
   request_id: string
   analysis_info?: string
   analysis_result: AnalysisResultEnum
@@ -24,8 +24,8 @@ export interface SendPersonAnswer {
   person_id: string
 }
 
-const sendPersonAnswer = async (
-  data: SendPersonAnswer,
+const answerPersonAnalysis = async (
+  data: AnswerPersonAnalysis,
   dynamodbClient: DynamoDBClient,
 ): Promise<void> => {
   const {
@@ -75,8 +75,6 @@ const sendPersonAnswer = async (
     request_id,
   }
 
-  await putFinishedRequestPerson(finished_request_key, finished_request, dynamodbClient)
-
   const get_person_key: PersonKey = {
     person_id: request_person.person_id,
     document: request_person.document,
@@ -105,6 +103,8 @@ const sendPersonAnswer = async (
       person_id,
       document,
     }
+
+    await putFinishedRequestPerson(finished_request_key, finished_request, dynamodbClient)
 
     await updatePerson(person_key, person_body, dynamodbClient)
 
@@ -140,6 +140,8 @@ const sendPersonAnswer = async (
     document,
   }
 
+  await putFinishedRequestPerson(finished_request_key, finished_request, dynamodbClient)
+
   await putPerson(person_key, person_body, dynamodbClient)
 
   const person_request_key: PersonRequestKey = {
@@ -150,4 +152,4 @@ const sendPersonAnswer = async (
   await deleteRequestPerson(person_request_key, dynamodbClient)
 }
 
-export default sendPersonAnswer
+export default answerPersonAnalysis
