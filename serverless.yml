@@ -21,6 +21,8 @@ provider:
     DYNAMO_TABLE_EAGLEANALYSIS_VEHICLES: eagleanalysis-vehicles-sdx
     DYNAMO_TABLE_EAGLEREQUEST_FINISHED_ANALYSIS_PERSON: eaglerequest-finished-analysis-person-sdx
     DYNAMO_TABLE_EAGLEREQUEST_FINISHED_ANALYSIS_VEHICLE: eaglerequest-finished-analysis-vehicle-sdx
+    TECHMIZE_API_V1_DATA_SOURCE_CUSTOM_REQUEST_ENDPOINT: ${ssm:/sdx/techmize/api/v1/data_source/custom_request/endpoint}
+    TECHMIZE_API_V1_DATA_SOURCE_CUSTOM_REQUEST_TOKEN: ${ssm:/sdx/techmize/api/v1/data_source/custom_request/token}
     USER_RECOVERY_KEY_URL: https://user.api.sdx.systemeagle.com.br/reset-password
     SYSTEMEAGLE_EMAIL: sdx.admin@systemeagle.com.br
 
@@ -351,3 +353,6 @@ functions:
           localAuthorizer:
             name: "mylocalAuthProxyFn"
             type: "request"
+
+  worker-techmize-v1-answer-analysis-person-basic-data:
+    handler: src/worker/techmize/v1/answer-analysis/person-basic-data/index.handler
