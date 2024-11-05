@@ -1,3 +1,5 @@
+import { FeatureFlagsEnum } from "./feature-flag"
+
 export enum RequestStatusEnum {
   WAITING = 'WAITING',
   PROCESSING = 'PROCESSING',
@@ -13,9 +15,29 @@ export enum AnalysisTypeEnum {
 }
 
 export enum PersonAnalysisTypeEnum {
-  SIMPLE = 'simple',
+  BASIC_DATA = 'basic-data',
+  CNH_BASIC = 'cnh-basic',
+  CNH_STATUS = 'cnh-status',
   HISTORY = 'history',
-  CNH_STATUS = 'cnh-status'
+  PROCESS = 'process',
+  SIMPLE = 'simple',
+}
+
+export const is_person_analysis_type_automatic = PersonAnalysisTypeEnum.BASIC_DATA
+|| PersonAnalysisTypeEnum.CNH_BASIC
+|| PersonAnalysisTypeEnum.CNH_STATUS
+|| PersonAnalysisTypeEnum.PROCESS
+
+export const personAnalysisTypeFeatureFlagMap: Partial<Record<PersonAnalysisTypeEnum, FeatureFlagsEnum>> = {
+  [PersonAnalysisTypeEnum.BASIC_DATA]: FeatureFlagsEnum.INFORMATION_ACCESS_PERSON_BASIC_DATA,
+  [PersonAnalysisTypeEnum.CNH_BASIC]: FeatureFlagsEnum.INFORMATION_ACCESS_PERSON_CNH_BASIC,
+  [PersonAnalysisTypeEnum.CNH_STATUS]: FeatureFlagsEnum.INFORMATION_ACCESS_PERSON_CNH_STATUS,
+  [PersonAnalysisTypeEnum.PROCESS]: FeatureFlagsEnum.INFORMATION_ACCESS_PERSON_PROCESS,
+}
+
+export enum VehicleAnalysisTypeEnum {
+  BASIC_VEHICLE_INFORMATION = 'basic-vehicle-information',
+  ANTT = 'antt',
 }
 
 export enum PersonRegionTypeEnum {
