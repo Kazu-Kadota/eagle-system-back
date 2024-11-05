@@ -10,7 +10,7 @@ export type PublishThirdPartySnsParams = {
   sns_client: SNSClient
 }
 
-const SNS_REQUESTPLUS_THIRD_PARTY_WORKERS_ARN = getStringEnv('SNS_REQUESTPLUS_THIRD_PARTY_WORKERS_ARN')
+const SNS_EAGLEREQUEST_THIRD_PARTY_WORKERS_ARN = getStringEnv('SNS_EAGLEREQUEST_THIRD_PARTY_WORKERS_ARN')
 
 const publishThirdPartySns = async ({
   content,
@@ -26,7 +26,7 @@ const publishThirdPartySns = async ({
   const command = new PublishCommand({
     Message: sns_message,
     MessageAttributes: sns_message_attributes,
-    TopicArn: SNS_REQUESTPLUS_THIRD_PARTY_WORKERS_ARN,
+    TopicArn: SNS_EAGLEREQUEST_THIRD_PARTY_WORKERS_ARN,
   })
 
   await sns_client.send(command)

@@ -7,7 +7,7 @@ import logger from 'src/utils/logger'
 import datavalidVerifyResultPfFacial from './main'
 
 export const handler = (event: SQSEvent) => {
-  logger.setService('requestplus')
+  logger.setService('eaglerequest')
 
   const releaseExtract = new LambdaHandlerNameSpace
     .LambdaSQSHandlerFunction<TechimzeSQSReceivedMessageAttributes>(datavalidVerifyResultPfFacial)
