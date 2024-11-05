@@ -28,12 +28,15 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.395.0",
     "@aws-sdk/client-ses": "^3.395.0",
+    "@aws-sdk/client-sns": "^3.682.0",
     "@aws-sdk/lib-dynamodb": "^3.395.0",
     "@aws-sdk/util-dynamodb": "^3.395.0",
+    "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "csv-stringify": "^6.4.0",
     "joi": "~17.9.2",
     "jsonwebtoken": "^9.0.1",
+    "lru-cache": "^11.0.1",
     "mustache": "^4.2.0",
     "pino": "^8.15.0",
     "uuid": "^9.0.0"
