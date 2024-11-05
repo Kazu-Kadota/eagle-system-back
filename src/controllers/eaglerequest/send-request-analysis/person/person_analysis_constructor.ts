@@ -49,7 +49,6 @@ const personAnalysisConstructor = async (
         }
       } else if (region_type === PersonRegionTypeEnum.NATIONAL || PersonRegionTypeEnum.NATIONAL_DB) {
         person_analyzes.push(await personAnalysis(person_analysis_constructor))
-
       } else {
         logger.warn({
           message: 'There is no region type to match',

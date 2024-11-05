@@ -1,11 +1,11 @@
 import axios, { AxiosRequestConfig } from 'axios'
+import { TechmizeV1ConsultarCNHV2RequestBody, techmizeV1ConsultarCNHV2TypeRequest } from 'src/models/techmize/v1/consultar-cnh-v2/request-body'
+import { TechmizeV1ConsultarCNHV2Response } from 'src/models/techmize/v1/consultar-cnh-v2/response'
 import ErrorHandler from 'src/utils/error-handler'
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
 
 import techmizeApiV1DataSourceCustomRequestHeaders from './headers'
-import { TechmizeV1ConsultarCNHV2Response } from 'src/models/techmize/v1/consultar-cnh-v2/response'
-import { TechmizeV1ConsultarCNHV2RequestBody, techmizeV1ConsultarCNHV2TypeRequest } from 'src/models/techmize/v1/consultar-cnh-v2/request-body'
 
 export type TechmizeV1ConsultarCNHV2Params = {
   cpf: string

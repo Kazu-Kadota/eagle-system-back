@@ -14,10 +14,10 @@ export type VerifyAllowanceWithFeatureFlagParams = {
 
 const verifyAllowanceWithFeatureFlag = async ({
   company_id,
-  dynamodbClient: dynamodbClient,
-  person_analysis
+  dynamodbClient,
+  person_analysis,
 }: VerifyAllowanceWithFeatureFlagParams): Promise<void> => {
-  let last_evaluated_key: Record<string, AttributeValue> | undefined = undefined
+  let last_evaluated_key: Record<string, AttributeValue> | undefined
   const company_feature_flags: FeatureFlagsEnum[] = []
 
   const query_by_company_id_params: QueryByCompanyId = {

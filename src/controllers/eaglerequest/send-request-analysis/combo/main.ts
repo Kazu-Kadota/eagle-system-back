@@ -8,12 +8,12 @@ import logger from 'src/utils/logger'
 import removeEmpty from 'src/utils/remove-empty'
 import { v4 as uuid } from 'uuid'
 
+import getCompanyByNameAdapter from '../person/get-company-adapter'
 import personAnalysisConstructor, { PersonAnalysisConstructor } from '../person/person_analysis_constructor'
+import verifyAllowanceWithFeatureFlag, { VerifyAllowanceWithFeatureFlagParams } from '../person/verify-allowance-with-feature-flag-'
 import vehicleAnalysis, { ReturnVehicleAnalysis, VehicleAnalysisRequest } from '../vehicle/default/vehicle'
 
 import validateBodyCombo from './validate-body-combo'
-import getCompanyByNameAdapter from '../person/get-company-adapter'
-import verifyAllowanceWithFeatureFlag, { VerifyAllowanceWithFeatureFlagParams } from '../person/verify-allowance-with-feature-flag-'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 
