@@ -1,8 +1,8 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
+import { APIGatewayProxyEvent, APIGatewayProxyResult, SQSEvent, SQSMessageAttributes } from 'aws-lambda'
 
 import { defaultHeaders } from 'src/constants/headers'
 import { UserGroupEnum } from 'src/models/dynamo/user'
-import { Controller, Request } from 'src/models/lambda'
+import { Controller, Request, SQSController, SQSControllerMessageAttributes } from 'src/models/lambda'
 
 import catchError from '../catch-error'
 import ErrorHandler from '../error-handler'
@@ -68,6 +68,53 @@ namespace LambdaHandlerNameSpace {
         }
       } catch (err: any) {
         return catchError(err)
+      }
+    }
+  }
+
+  /**
+   * This class will handle just one message for each lambda invoke, not a batch
+   * of messages. Make sure that in Terraform is set only 1 batch_size
+   */
+  export class LambdaSQSHandlerFunction<T = SQSMessageAttributes> {
+    controller: SQSController<T>
+
+    constructor (controller: SQSController<T>) {
+      this.controller = controller
+    }
+
+    async handler (event: SQSEvent): Promise<void> {
+      for (const record of event.Records) {
+        const message_attributes = record.messageAttributes as T & SQSControllerMessageAttributes
+
+        if (!message_attributes.requestId?.stringValue) {
+          logger.error({
+            message: 'Lambda requestId is not set from message sender',
+          })
+
+          throw new ErrorHandler('Lambda requestId is not set from message sender', 500)
+        }
+
+        if (!message_attributes.origin?.stringValue) {
+          logger.error({
+            message: 'Lambda origin is not set from message sender',
+          })
+
+          throw new ErrorHandler('Lambda origin is not set from message sender', 500)
+        }
+
+        logger.setRequestId(message_attributes.requestId.stringValue)
+
+        logger.debug({
+          message: 'SQS-LAMBDA: Handling message',
+        })
+
+        await this.controller({
+          attributes: record.attributes,
+          body: JSON.parse(record.body) as unknown,
+          message_attributes,
+          message_id: record.messageId,
+        })
       }
     }
   }
