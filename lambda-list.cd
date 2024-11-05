@@ -11,6 +11,7 @@ eaglerequest-get-vehicle
 eaglerequest-list-people
 eaglerequest-list-vehicles
 eaglerequest-query-analysis-by-document-plate
+eaglerequest-worker-answer-analysis-person-basic-data
 eagleuser-change-password
 eagleuser-feature-flag-modify-allowance
 eagleuser-feature-flag-set
