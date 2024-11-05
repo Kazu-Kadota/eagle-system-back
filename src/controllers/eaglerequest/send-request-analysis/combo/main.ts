@@ -1,4 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { SNSClient } from '@aws-sdk/client-sns'
 import { AnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { Controller } from 'src/models/lambda'
 import ErrorHandler from 'src/utils/error-handler'
@@ -11,8 +12,12 @@ import personAnalysisConstructor, { PersonAnalysisConstructor } from '../person/
 import vehicleAnalysis, { ReturnVehicleAnalysis, VehicleAnalysisRequest } from '../vehicle/default/vehicle'
 
 import validateBodyCombo from './validate-body-combo'
+import getCompanyByNameAdapter from '../person/get-company-adapter'
+import verifyAllowanceWithFeatureFlag, { VerifyAllowanceWithFeatureFlagParams } from '../person/verify-allowance-with-feature-flag-'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
+
+const snsClient = new SNSClient({ region: 'us-east-1' })
 
 const requestAnalysisCombo: Controller = async (req) => {
   const user_info = req.user_info as UserInfoFromJwt
@@ -31,6 +36,22 @@ const requestAnalysisCombo: Controller = async (req) => {
 
   const combo_id = uuid()
 
+  let company_name = user_info.company_name
+
+  if (user_info.user_type === 'admin') {
+    company_name = body.person.company_name as string
+  }
+
+  const company = await getCompanyByNameAdapter(company_name, dynamodbClient)
+
+  const verify_allowance_with_feature_flag_params: VerifyAllowanceWithFeatureFlagParams = {
+    company_id: company.company_id,
+    dynamodbClient,
+    person_analysis: body.person_analysis,
+  }
+
+  await verifyAllowanceWithFeatureFlag(verify_allowance_with_feature_flag_params)
+
   let person_analyzes
 
   for (const person_analysis of body.person_analysis) {
@@ -40,6 +61,7 @@ const requestAnalysisCombo: Controller = async (req) => {
       combo_number: body.combo_number,
       dynamodbClient,
       person_data: body.person,
+      snsClient,
       user_info,
     }
 

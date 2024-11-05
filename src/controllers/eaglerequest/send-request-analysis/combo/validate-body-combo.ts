@@ -1,6 +1,7 @@
 import Joi from 'joi'
 import {
   DriverCategoryEnum,
+  is_person_analysis_type_automatic,
   PersonAnalysisTypeEnum,
   PersonRegionTypeEnum,
   PlateStateEnum,
@@ -38,17 +39,25 @@ const schema = Joi.object({
           Joi.string().valid(...Object.values(PersonRegionTypeEnum)),
         )
         .max(2)
-        .required(),
+        .when('type', {
+          is: is_person_analysis_type_automatic,
+          then: Joi.forbidden(),
+          otherwise: Joi.required(),
+        }),
       regions: Joi
         .array()
         .items(Joi
           .string()
           .valid(...Object.values(StateEnum)))
         .max(27)
-        .when('region_types', {
-          is: Joi.array().items().has(PersonRegionTypeEnum.STATES),
-          then: Joi.required(),
-          otherwise: Joi.forbidden(),
+        .when('type', {
+          is: is_person_analysis_type_automatic,
+          then: Joi.forbidden(),
+          otherwise: Joi.when('region_types', {
+            is: Joi.array().items().has(PersonRegionTypeEnum.STATES),
+            then: Joi.required(),
+            otherwise: Joi.forbidden(),
+          }),
         }),
     }).required(),
   ).required(),

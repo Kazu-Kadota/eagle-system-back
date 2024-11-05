@@ -1,12 +1,11 @@
-import { PersonAnalysisTypeEnum, PersonRegionTypeEnum } from 'src/models/dynamo/request-enum'
+import { is_person_analysis_type_automatic, PersonAnalysisTypeEnum, PersonRegionTypeEnum } from 'src/models/dynamo/request-enum'
 import { PersonAnalysisItems } from 'src/models/dynamo/request-person'
 
+import useCasePublishSnsTopicPerson from 'src/use-cases/publish-techimze-sns-topic-person'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
-import getCompanyByNameAdapter from './get-company-adapter'
 import personAnalysis, { PersonAnalysisRequest, PersonAnalysisResponse } from './person'
-import verifyAllowanceToNationalDB from './verify-allowance-to-national-db'
 
 export interface PersonAnalysisConstructor extends Omit<
   PersonAnalysisRequest,
@@ -32,7 +31,9 @@ const personAnalysisConstructor = async (
     throw new ErrorHandler('É necessário informar o nome da empresa para usuários admin', 400)
   }
 
-  if (person_analysis.type !== PersonAnalysisTypeEnum.CNH_STATUS) {
+  const is_type_simple_or_history = PersonAnalysisTypeEnum.SIMPLE || PersonAnalysisTypeEnum.HISTORY
+
+  if (person_analysis_type === is_type_simple_or_history) {
     for (const region_type of person_analysis.region_types) {
       const person_analysis_constructor: PersonAnalysisRequest = {
         ...person_analysis_request,
@@ -46,32 +47,9 @@ const personAnalysisConstructor = async (
 
           person_analyzes.push(await personAnalysis(person_analysis_constructor))
         }
-      } else if (region_type === PersonRegionTypeEnum.NATIONAL_DB) {
-        let company_name = person_analysis_request.user_info.company_name
-
-        if (person_analysis_request.user_info.user_type === 'admin') {
-          company_name = person_analysis_request.person_data.company_name as string
-        }
-
-        const company = await getCompanyByNameAdapter(company_name, person_analysis_request.dynamodbClient)
-
-        const is_allowed = await verifyAllowanceToNationalDB(company.company_id, person_analysis_request.dynamodbClient)
-
-        if (is_allowed) {
-          person_analyzes.push(await personAnalysis(person_analysis_constructor))
-        } else {
-          logger.warn({
-            message: 'Company not allowed to request this type of analysis',
-            region_type,
-            company_id: company.company_id,
-            company_name: company.name,
-          })
-
-          // Optei por deixar para poder questionar a empresa que tentou solicitar este tipo de análise
-          throw new ErrorHandler('Empresa não autorizada em solicitar este tipo de análise', 403)
-        }
-      } else if (region_type === PersonRegionTypeEnum.NATIONAL) {
+      } else if (region_type === PersonRegionTypeEnum.NATIONAL || PersonRegionTypeEnum.NATIONAL_DB) {
         person_analyzes.push(await personAnalysis(person_analysis_constructor))
+
       } else {
         logger.warn({
           message: 'There is no region type to match',
@@ -83,14 +61,29 @@ const personAnalysisConstructor = async (
     }
 
     return person_analyzes
-  }
+  } else if (person_analysis_type === is_person_analysis_type_automatic) {
+    const person_analysis_constructor: PersonAnalysisRequest = {
+      ...person_analysis_request,
+      person_analysis_type,
+    }
 
-  const person_analysis_constructor: PersonAnalysisRequest = {
-    ...person_analysis_request,
-    person_analysis_type,
-  }
+    person_analyzes.push(await personAnalysis(person_analysis_constructor))
 
-  person_analyzes.push(await personAnalysis(person_analysis_constructor))
+    await useCasePublishSnsTopicPerson({
+      cpf: person_analysis_request.person_data.document,
+      person_analysis_type,
+      person_id: person_analyzes[0].person_id,
+      request_id: person_analyzes[0].request_id,
+      snsClient: person_analysis_constructor.snsClient,
+    })
+  } else {
+    logger.warn({
+      message: 'There is no person analysis type that match condition',
+      person_analysis_type,
+    })
+
+    throw new ErrorHandler('Não existe o tipo de anáise de pessoa especificada', 500)
+  }
 
   return person_analyzes
 }
