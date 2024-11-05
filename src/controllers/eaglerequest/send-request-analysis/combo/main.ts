@@ -10,7 +10,7 @@ import { v4 as uuid } from 'uuid'
 
 import getCompanyByNameAdapter from '../person/get-company-adapter'
 import personAnalysisConstructor, { PersonAnalysisConstructor } from '../person/person_analysis_constructor'
-import verifyAllowanceWithFeatureFlag, { VerifyAllowanceWithFeatureFlagParams } from '../person/verify-allowance-with-feature-flag-'
+import verifyAllowanceWithFeatureFlag, { VerifyAllowanceWithFeatureFlagParams } from '../person/verify-allowance-with-feature-flag'
 import vehicleAnalysis, { ReturnVehicleAnalysis, VehicleAnalysisRequest } from '../vehicle/default/vehicle'
 
 import validateBodyCombo from './validate-body-combo'

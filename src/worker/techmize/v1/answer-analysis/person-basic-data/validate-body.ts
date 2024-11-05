@@ -1,6 +1,5 @@
 import Joi from 'joi'
-import { PersonAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
-import { TechmizeV1ConsultarDadosBasicosPessoaFisicaRequestBody } from 'src/models/techmize/v1/consultar-dados-basicos-pessoa-fisica/request-body'
+import { TechmizeV1ConsultarDadosBasicosPessoaFisicaRequestBody, techmizeV1ConsultarDadosBasicosPessoaFisicaTypeRequest } from 'src/models/techmize/v1/consultar-dados-basicos-pessoa-fisica/request-body'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
@@ -13,7 +12,7 @@ const schema = Joi.object<TechmizeV1ConsultarDadosBasicosPessoaFisicaRequestBody
     .required(),
   type_request: Joi
     .string()
-    .valid(PersonAnalysisTypeEnum.BASIC_DATA)
+    .valid(techmizeV1ConsultarDadosBasicosPessoaFisicaTypeRequest)
     .required(),
 }).required()
 

@@ -1,4 +1,4 @@
-import { is_person_analysis_type_automatic, PersonAnalysisTypeEnum, PersonRegionTypeEnum } from 'src/models/dynamo/request-enum'
+import { is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, PersonRegionTypeEnum } from 'src/models/dynamo/request-enum'
 import { PersonAnalysisItems } from 'src/models/dynamo/request-person'
 
 import useCasePublishSnsTopicPerson from 'src/use-cases/publish-techimze-sns-topic-person'
@@ -60,7 +60,7 @@ const personAnalysisConstructor = async (
     }
 
     return person_analyzes
-  } else if (person_analysis_type === is_person_analysis_type_automatic) {
+  } else if (is_person_analysis_type_automatic_arr.includes(person_analysis_type)) {
     const person_analysis_constructor: PersonAnalysisRequest = {
       ...person_analysis_request,
       person_analysis_type,

@@ -8,7 +8,7 @@ import removeEmpty from 'src/utils/remove-empty'
 import getCompanyByNameAdapter from './get-company-adapter'
 import personAnalysisConstructor, { PersonAnalysisConstructor } from './person_analysis_constructor'
 import validateBodyPerson from './validate-body-person'
-import verifyAllowanceWithFeatureFlag, { VerifyAllowanceWithFeatureFlagParams } from './verify-allowance-with-feature-flag-'
+import verifyAllowanceWithFeatureFlag, { VerifyAllowanceWithFeatureFlagParams } from './verify-allowance-with-feature-flag'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 

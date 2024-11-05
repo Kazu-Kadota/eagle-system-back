@@ -3,7 +3,7 @@ import {
   PersonRegionType,
   PersonValidatedContent,
 } from 'src/models/dynamo/person'
-import { is_person_analysis_type_automatic, PersonAnalysisTypeEnum, StateEnum } from 'src/models/dynamo/request-enum'
+import { is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, StateEnum } from 'src/models/dynamo/request-enum'
 import ErrorHandler from 'src/utils/error-handler'
 
 export interface UpdatePersonCompaniesConstructorReturn {
@@ -29,7 +29,7 @@ const updatePersonValidatedConstructor = (
     person_validated_analysis_constructor = person.validated.history
     person_validated_national_constructor = person.validated.history?.national
     person_validated_region_constructor = person.validated.history?.states
-  } else if (person_analysis_type === is_person_analysis_type_automatic) {
+  } else if (is_person_analysis_type_automatic_arr.includes(person_analysis_type)) {
     person_validated_analysis_constructor = person.validated[person_analysis_type]
   } else {
     throw new ErrorHandler('Tipo de análise de pessoa não definida', 500)

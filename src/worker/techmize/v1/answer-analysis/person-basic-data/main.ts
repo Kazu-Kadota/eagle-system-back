@@ -54,11 +54,11 @@ const techmizeV1AnswerAnalysisPersonBasicData: SQSController<TechimzeSQSReceived
   })
 
   const answer_person_analysis_params: AnswerPersonAnalysis = {
-    analysis_result: AnalysisResultEnum.APPROVED,
+    analysis_result: AnalysisResultEnum.REJECTED,
     from_db: false,
     person_id,
     request_id,
-    analysis_info: JSON.stringify(person_basic_data_result.data.dados_cadastrais),
+    analysis_info: JSON.stringify(person_basic_data_result.data.dados_cadastrais, null, 2),
   }
 
   await answerPersonAnalysis(answer_person_analysis_params, dynamodbClient)

@@ -1,7 +1,7 @@
 import Joi from 'joi'
 import {
   DriverCategoryEnum,
-  is_person_analysis_type_automatic,
+  is_person_analysis_type_automatic_arr,
   PersonAnalysisTypeEnum,
   PersonRegionTypeEnum,
   StateEnum,
@@ -13,6 +13,8 @@ import logger from 'src/utils/logger'
 
 const documentRegex = /^([0-9]{3}\.[0-9]{3}\.[0-9]{3}\-[0-9]{2}|[0-9]{2}\.[0-9]{3}\.[0-9]{3}\/[0-9]{4}\-[0-9]{2})$/
 const cnhRegex = /(?=.*\d)[A-Za-z0-9]{1,11}/
+
+const is_person_analysis_type_automatic_arr_joi = Joi.valid(...is_person_analysis_type_automatic_arr)
 
 const schema = Joi.object<PersonRequestAnalysis, true>({
   person_analysis: Joi.array<PersonAnalysisItems[]>().items(
@@ -28,7 +30,7 @@ const schema = Joi.object<PersonRequestAnalysis, true>({
         )
         .max(2)
         .when('type', {
-          is: is_person_analysis_type_automatic,
+          is: is_person_analysis_type_automatic_arr_joi,
           then: Joi.forbidden(),
           otherwise: Joi.required(),
         }),
@@ -38,7 +40,7 @@ const schema = Joi.object<PersonRequestAnalysis, true>({
           Joi.string().valid(...Object.values(StateEnum)))
         .max(27)
         .when('type', {
-          is: is_person_analysis_type_automatic,
+          is: is_person_analysis_type_automatic_arr_joi,
           then: Joi.forbidden(),
           otherwise: Joi.when('region_types', {
             is: Joi.array().items().has(PersonRegionTypeEnum.STATES),

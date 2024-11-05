@@ -23,10 +23,12 @@ export enum PersonAnalysisTypeEnum {
   SIMPLE = 'simple',
 }
 
-export const is_person_analysis_type_automatic = PersonAnalysisTypeEnum.BASIC_DATA
-|| PersonAnalysisTypeEnum.CNH_BASIC
-|| PersonAnalysisTypeEnum.CNH_STATUS
-|| PersonAnalysisTypeEnum.PROCESS
+export const is_person_analysis_type_automatic_arr = [
+  PersonAnalysisTypeEnum.BASIC_DATA,
+  PersonAnalysisTypeEnum.CNH_BASIC,
+  PersonAnalysisTypeEnum.CNH_STATUS,
+  PersonAnalysisTypeEnum.PROCESS,
+]
 
 export const personAnalysisTypeFeatureFlagMap: Partial<Record<PersonAnalysisTypeEnum, FeatureFlagsEnum>> = {
   [PersonAnalysisTypeEnum.BASIC_DATA]: FeatureFlagsEnum.INFORMATION_ACCESS_PERSON_BASIC_DATA,
