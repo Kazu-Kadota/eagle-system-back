@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import { TechmizeV1ConsultarCNHRequestBody, techmizeV1ConsultarCNHTypeRequest } from 'src/models/techmize/v1/consultar-cnh/request-body'
-import { TechmizeV1ConsultarCNHResponse } from 'src/models/techmize/v1/consultar-cnh/response'
+import { TechmizeV1ConsultarCNHResponse, TechmizeV1ConsultarCNHResponseSuccess } from 'src/models/techmize/v1/consultar-cnh/response'
 import ErrorHandler from 'src/utils/error-handler'
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
@@ -15,7 +15,7 @@ const TECHMIZE_API_V1_DATA_SOURCE_CUSTOM_REQUEST_ENDPOINT = getStringEnv('TECHMI
 
 const techmizeV1ConsultarCNH = async ({
   cpf,
-}: techmizeV1ConsultarCNHParams): Promise<TechmizeV1ConsultarCNHResponse> => {
+}: techmizeV1ConsultarCNHParams): Promise<TechmizeV1ConsultarCNHResponseSuccess> => {
   logger.debug({
     message: 'TECHMIZE: Consult CNH',
     service: 'techmize',
