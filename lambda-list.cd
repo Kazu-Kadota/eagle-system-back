@@ -11,7 +11,10 @@ eaglerequest-get-vehicle
 eaglerequest-list-people
 eaglerequest-list-vehicles
 eaglerequest-query-analysis-by-document-plate
+eaglerequest-worker-answer-analysis-cnh
+eaglerequest-worker-answer-analysis-cnh-v2
 eaglerequest-worker-answer-analysis-person-basic-data
+eaglerequest-worker-answer-analysis-process
 eagleuser-change-password
 eagleuser-feature-flag-modify-allowance
 eagleuser-feature-flag-set
