@@ -5,13 +5,13 @@ import { PersonAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { SQSController } from 'src/models/lambda'
 
 import { TechimzeSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
+import { TechmizeV1ConsultarProcessosRequestBody } from 'src/models/techmize/v1/consultar-processos/request-body'
+import techmizeV1ConsultarProcessos from 'src/services/techmize/v1/consultar-processos'
 import answerPersonAnalysis, { AnswerPersonAnalysis } from 'src/use-cases/answer-person-analysis'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
 import validateBody from './validate-body'
-import { TechmizeV1ConsultarProcessosRequestBody } from 'src/models/techmize/v1/consultar-processos/request-body'
-import techmizeV1ConsultarProcessos from 'src/services/techmize/v1/consultar-processos'
 
 export type TechmizeV1AnswerAnalysisProcessBody = {
   [PersonAnalysisTypeEnum.PROCESS]: TechmizeV1ConsultarProcessosRequestBody
