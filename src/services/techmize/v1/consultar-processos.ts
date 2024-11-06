@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import { TechmizeV1ConsultarProcessosRequestBody, techmizeV1ConsultarProcessosTypeRequest } from 'src/models/techmize/v1/consultar-processos/request-body'
-import { TechmizeV1ConsultarProcessosResponse } from 'src/models/techmize/v1/consultar-processos/response'
+import { TechmizeV1ConsultarProcessosResponse, TechmizeV1ConsultarProcessosResponseSuccess } from 'src/models/techmize/v1/consultar-processos/response'
 import ErrorHandler from 'src/utils/error-handler'
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
@@ -15,7 +15,7 @@ const TECHMIZE_API_V1_DATA_SOURCE_CUSTOM_REQUEST_ENDPOINT = getStringEnv('TECHMI
 
 const techmizeV1ConsultarProcessos = async ({
   cpf,
-}: techmizeV1ConsultarProcessosParams): Promise<TechmizeV1ConsultarProcessosResponse> => {
+}: techmizeV1ConsultarProcessosParams): Promise<TechmizeV1ConsultarProcessosResponseSuccess> => {
   logger.debug({
     message: 'TECHMIZE: Consult Processos',
     service: 'techmize',
