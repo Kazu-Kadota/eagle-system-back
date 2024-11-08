@@ -8,8 +8,10 @@ import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import logger from 'src/utils/logger'
 import removeEmpty from 'src/utils/remove-empty'
 
+import getCompanyByNameAdapter from './get-company-adapter'
 import validateBodyVehicleBasicData from './validate-body-vehicle'
 import vehicleBasicDataAnalysis, { VehicleAnalysisRequest } from './vehicle-basic-data'
+import verifyAllowanceToBasicData from './verify-allowance-to-antt'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 
@@ -32,6 +34,14 @@ const requestAnalysisVehicleBasicData: Controller = async (req) => {
 
     throw new ErrorHandler('É necessário informar o nome da empresa para usuários admin', 400)
   }
+
+  const company_name = user_info.user_type === 'admin'
+    ? body.company_name as string
+    : user_info.company_name
+
+  const company = await getCompanyByNameAdapter(company_name, dynamodbClient)
+
+  await verifyAllowanceToBasicData(company.company_id, dynamodbClient)
 
   const vehicle_analysis_constructor: VehicleAnalysisRequest = {
     analysis_type: AnalysisTypeEnum.VEHICLE,
