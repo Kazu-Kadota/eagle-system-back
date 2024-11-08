@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { AnalysisTypeEnum, PlateStateEnum, RequestStatusEnum } from 'src/models/dynamo/request-enum'
+import { AnalysisTypeEnum, PlateStateEnum, RequestStatusEnum, VehicleAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { VehicleRequestKey } from 'src/models/dynamo/request-vehicle'
 import { VehicleRequestPlateHistoryBody, VehicleRequestPlateHistoryForms } from 'src/models/dynamo/request-vehicle-plate-history'
 import putRequestVehiclePlateHistory from 'src/services/aws/dynamo/request/analysis/vehicle/plate-history/put'
@@ -44,6 +44,7 @@ const vehiclePlateHistoryAnalysis = async (
     company_name: user_info.user_type === 'admin' ? body.company_name as string : user_info.company_name,
     user_id: user_info.user_id,
     status: RequestStatusEnum.WAITING,
+    vehicle_analysis_type: VehicleAnalysisTypeEnum.VEHICLE_PLATE_HISTORY,
   }
 
   const request_vehicle_body = removeEmpty(data_request_vehicle)

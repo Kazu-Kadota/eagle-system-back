@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { AnalysisTypeEnum, PlateStateEnum, RequestStatusEnum } from 'src/models/dynamo/request-enum'
+import { AnalysisTypeEnum, PlateStateEnum, RequestStatusEnum, VehicleAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { VehicleRequestKey } from 'src/models/dynamo/request-vehicle'
 import { VehicleRequestSecondDriverBody, VehicleRequestSecondDriverForms } from 'src/models/dynamo/request-vehicle-second-driver'
 import putRequestVehicleSecondDriver from 'src/services/aws/dynamo/request/analysis/vehicle/second-driver/put'
@@ -44,6 +44,7 @@ const vehicleSecondDriverAnalysis = async (
     company_name: user_info.user_type === 'admin' ? body.company_name as string : user_info.company_name,
     user_id: user_info.user_id,
     status: RequestStatusEnum.WAITING,
+    vehicle_analysis_type: VehicleAnalysisTypeEnum.VEHICLE_SECOND_DRIVER,
   }
 
   const request_vehicle_body = removeEmpty(data_request_vehicle)

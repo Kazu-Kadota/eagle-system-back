@@ -27,7 +27,7 @@ const requestAnalysisVehicleSecondDriver: Controller = async (req) => {
   }
 
   const vehicle_analysis_constructor: VehicleAnalysisRequest = {
-    analysis_type: AnalysisTypeEnum.VEHICLE_SECOND_DRIVER,
+    analysis_type: AnalysisTypeEnum.VEHICLE,
     body,
     dynamodbClient,
     user_info,

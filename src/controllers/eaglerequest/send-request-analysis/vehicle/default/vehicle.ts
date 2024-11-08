@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { AnalysisTypeEnum, RequestStatusEnum } from 'src/models/dynamo/request-enum'
+import { AnalysisTypeEnum, RequestStatusEnum, VehicleAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { VehicleRequestBody, VehicleRequestForms, VehicleRequestKey } from 'src/models/dynamo/request-vehicle'
 import putRequestVehicle from 'src/services/aws/dynamo/request/analysis/vehicle/put'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
@@ -51,6 +51,7 @@ const vehicleAnalysis = async (
     company_name: user_info.user_type === 'admin' ? body.company_name as string : user_info.company_name,
     user_id: user_info.user_id,
     status: RequestStatusEnum.WAITING,
+    vehicle_analysis_type: VehicleAnalysisTypeEnum.SIMPLE,
   }
 
   const request_vehicle_body = removeEmpty(data_request_vehicle)
