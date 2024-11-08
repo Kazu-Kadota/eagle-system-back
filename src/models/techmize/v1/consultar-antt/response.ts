@@ -1,4 +1,4 @@
-import { TechmizeV1AuthenticationErrorResponse, TechmizeV1GenericErrorResponse } from '../error'
+import { TechmizeV1AuthenticationErrorResponse, TechmizeV1GenericErrorResponse, TechmizeV1SuccessErrorResponse } from '../error'
 
 export type TechmizeV1ConsultarANTTResponseDataANTTDetails = {
   placa: string
@@ -23,7 +23,7 @@ export type TechmizeV1ConsultarANTTResponseDataANTT = {
 }
 
 export type TechmizeV1ConsultarANTTResponseData = {
-  antt: TechmizeV1ConsultarANTTResponseDataANTT
+  antt: TechmizeV1ConsultarANTTResponseDataANTT | TechmizeV1SuccessErrorResponse
 }
 
 export type TechmizeV1ConsultarANTTResponseSuccess = {

@@ -6,6 +6,7 @@ import { SQSController } from 'src/models/lambda'
 
 import { TechimzePersonSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
 import { TechmizeV1ConsultarProcessosRequestBody } from 'src/models/techmize/v1/consultar-processos/request-body'
+import { techmizeV1SuccessErrorResponse } from 'src/models/techmize/v1/error'
 import techmizeV1ConsultarProcessos from 'src/services/techmize/v1/consultar-processos'
 import useCaseAnswerPersonAnalysis, { UseCaseAnswerPersonAnalysisParams } from 'src/use-cases/answer-person-analysis'
 import ErrorHandler from 'src/utils/error-handler'
@@ -55,12 +56,23 @@ const techmizeV1AnswerAnalysisPersonProcess: SQSController<TechimzePersonSQSRece
     cpf: body.cpf,
   })
 
+  const process = process_result.data.processos
+
+  if (process === techmizeV1SuccessErrorResponse) {
+    logger.warn({
+      message: 'TECHMIZE: Returned success on request process result, but received error instead',
+      process_result,
+    })
+
+    throw new ErrorHandler('TECHMIZE: Returned success on request process result, but received error instead', 500)
+  }
+
   const answer_person_analysis_params: UseCaseAnswerPersonAnalysisParams = {
     analysis_result: AnalysisResultEnum.REJECTED,
     from_db: false,
     person_id,
     request_id,
-    analysis_info: JSON.stringify(process_result.data.processos, null, 2),
+    analysis_info: JSON.stringify(process, null, 2),
   }
 
   await useCaseAnswerPersonAnalysis(answer_person_analysis_params, dynamodbClient)

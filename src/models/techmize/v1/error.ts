@@ -1,3 +1,7 @@
+export const techmizeV1SuccessErrorResponse = 'Erro ao realizar consulta!'
+
+export type TechmizeV1SuccessErrorResponse = typeof techmizeV1SuccessErrorResponse
+
 export type TechmizeV1GenericErrorResponse = {
   code: 0
   message: string

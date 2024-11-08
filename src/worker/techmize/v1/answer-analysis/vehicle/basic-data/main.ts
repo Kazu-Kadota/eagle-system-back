@@ -5,6 +5,7 @@ import { VehicleAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { SQSController } from 'src/models/lambda'
 import { TechimzeVehicleSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
 import { TechmizeV1ConsultarDadosBasicosVeiculoRequestBody } from 'src/models/techmize/v1/consultar-dados-basicos-veiculo/request-body'
+import { techmizeV1SuccessErrorResponse } from 'src/models/techmize/v1/error'
 import techmizeV1ConsultarDadosBasicosVeiculo from 'src/services/techmize/v1/consultar-dados-basicos-veiculo'
 import useCaseAnswerVehicleAnalysis, { UseCaseAnswerVehicleAnalysisParams } from 'src/use-cases/answer-vehicle-analysis'
 import ErrorHandler from 'src/utils/error-handler'
@@ -55,12 +56,23 @@ const techmizeV1AnswerAnalysisVehicleBasicData: SQSController<TechimzeVehicleSQS
     licenseplate: body.licenseplate,
   })
 
+  const vehicle_basic_data = vehicle_basic_data_result.data.dados_basicos
+
+  if (vehicle_basic_data === techmizeV1SuccessErrorResponse) {
+    logger.warn({
+      message: 'TECHMIZE: Returned success on request vehicle_basic_data result, but received error instead',
+      vehicle_basic_data_result,
+    })
+
+    throw new ErrorHandler('TECHMIZE: Returned success on request vehicle_basic_data result, but received error instead', 500)
+  }
+
   const answer_vehicle_analysis_params: UseCaseAnswerVehicleAnalysisParams = {
     analysis_result: AnalysisResultEnum.REJECTED,
     from_db: false,
     vehicle_id,
     request_id,
-    analysis_info: JSON.stringify(vehicle_basic_data_result.data.dados_basicos, null, 2),
+    analysis_info: JSON.stringify(vehicle_basic_data, null, 2),
   }
 
   await useCaseAnswerVehicleAnalysis(answer_vehicle_analysis_params, dynamodbClient)

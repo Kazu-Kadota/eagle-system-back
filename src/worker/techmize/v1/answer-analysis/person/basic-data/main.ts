@@ -6,6 +6,7 @@ import { SQSController } from 'src/models/lambda'
 
 import { TechimzePersonSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
 import { TechmizeV1ConsultarDadosBasicosPessoaFisicaRequestBody } from 'src/models/techmize/v1/consultar-dados-basicos-pessoa-fisica/request-body'
+import { techmizeV1SuccessErrorResponse } from 'src/models/techmize/v1/error'
 import techmizeV1ConsultarDadosBasicosPessoaFisica from 'src/services/techmize/v1/consultar-dados-basicos-pessoa-fisica'
 import useCaseAnswerPersonAnalysis, { UseCaseAnswerPersonAnalysisParams } from 'src/use-cases/answer-person-analysis'
 import ErrorHandler from 'src/utils/error-handler'
@@ -55,12 +56,23 @@ const techmizeV1AnswerAnalysisPersonBasicData: SQSController<TechimzePersonSQSRe
     cpf: body.cpf,
   })
 
+  const dados_cadastrais = person_basic_data_result.data.dados_cadastrais
+
+  if (dados_cadastrais === techmizeV1SuccessErrorResponse) {
+    logger.warn({
+      message: 'TECHMIZE: Returned success on request person basic data result, but received error instead',
+      person_basic_data_result,
+    })
+
+    throw new ErrorHandler('TECHMIZE: Returned success on request person basic data result, but received error instead', 500)
+  }
+
   const answer_person_analysis_params: UseCaseAnswerPersonAnalysisParams = {
     analysis_result: AnalysisResultEnum.REJECTED,
     from_db: false,
     person_id,
     request_id,
-    analysis_info: JSON.stringify(person_basic_data_result.data.dados_cadastrais, null, 2),
+    analysis_info: JSON.stringify(dados_cadastrais, null, 2),
   }
 
   await useCaseAnswerPersonAnalysis(answer_person_analysis_params, dynamodbClient)

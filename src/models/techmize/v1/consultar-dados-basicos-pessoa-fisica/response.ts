@@ -1,4 +1,4 @@
-import { TechmizeV1AuthenticationErrorResponse, TechmizeV1GenericErrorResponse } from '../error'
+import { TechmizeV1AuthenticationErrorResponse, TechmizeV1GenericErrorResponse, TechmizeV1SuccessErrorResponse } from '../error'
 
 export type TechmizeV1ConsultarDadosBasicosPessoaFisicaResponsePhoneContactDetails = {
   Number: string
@@ -71,7 +71,7 @@ export type TechmizeV1ConsultarDadosBasicosPessoaFisicaResponseDadosBasicosPesso
 }
 
 export type TechmizeV1ConsultarDadosBasicosPessoaFisicaResponseData = {
-  dados_cadastrais: TechmizeV1ConsultarDadosBasicosPessoaFisicaResponseDadosBasicosPessoaFisicaResult[]
+  dados_cadastrais: TechmizeV1ConsultarDadosBasicosPessoaFisicaResponseDadosBasicosPessoaFisicaResult[] | TechmizeV1SuccessErrorResponse
 }
 
 export type TechmizeV1ConsultarDadosBasicosPessoaFisicaSuccessResponse = {

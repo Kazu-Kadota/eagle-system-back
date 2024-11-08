@@ -6,6 +6,7 @@ import { SQSController } from 'src/models/lambda'
 
 import { TechimzePersonSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
 import { TechmizeV1ConsultarCNHRequestBody } from 'src/models/techmize/v1/consultar-cnh/request-body'
+import { techmizeV1SuccessErrorResponse } from 'src/models/techmize/v1/error'
 import techmizeV1ConsultarCNH from 'src/services/techmize/v1/consultar-cnh'
 import useCaseAnswerPersonAnalysis, { UseCaseAnswerPersonAnalysisParams } from 'src/use-cases/answer-person-analysis'
 import ErrorHandler from 'src/utils/error-handler'
@@ -55,12 +56,23 @@ const techmizeV1AnswerAnalysisPersonCNH: SQSController<TechimzePersonSQSReceived
     cpf: body.cpf,
   })
 
+  const cnh = cnh_result.data.cnh
+
+  if (cnh === techmizeV1SuccessErrorResponse) {
+    logger.warn({
+      message: 'TECHMIZE: Returned success on request cnh result, but received error instead',
+      cnh_result,
+    })
+
+    throw new ErrorHandler('TECHMIZE: Returned success on request cnh result, but received error instead', 500)
+  }
+
   const answer_person_analysis_params: UseCaseAnswerPersonAnalysisParams = {
     analysis_result: AnalysisResultEnum.REJECTED,
     from_db: false,
     person_id,
     request_id,
-    analysis_info: JSON.stringify(cnh_result.data.cnh, null, 2),
+    analysis_info: JSON.stringify(cnh, null, 2),
   }
 
   await useCaseAnswerPersonAnalysis(answer_person_analysis_params, dynamodbClient)

@@ -1,4 +1,4 @@
-import { TechmizeV1AuthenticationErrorResponse, TechmizeV1GenericErrorResponse } from '../error'
+import { TechmizeV1AuthenticationErrorResponse, TechmizeV1GenericErrorResponse, TechmizeV1SuccessErrorResponse } from '../error'
 
 export type TechmizeV1ConsultarProcessosResponseDecisions = {
   DecisionContent: string
@@ -98,7 +98,7 @@ export type TechmizeV1ConsultarProcessosResponseDataDetails = {
 }
 
 export type TechmizeV1ConsultarProcessosResponseData = {
-  processos: TechmizeV1ConsultarProcessosResponseDataDetails[]
+  processos: TechmizeV1ConsultarProcessosResponseDataDetails[] | TechmizeV1SuccessErrorResponse
 }
 
 export type TechmizeV1ConsultarProcessosResponseSuccess = {

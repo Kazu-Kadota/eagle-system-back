@@ -1,4 +1,4 @@
-import { TechmizeV1AuthenticationErrorResponse, TechmizeV1GenericErrorResponse } from '../error'
+import { TechmizeV1AuthenticationErrorResponse, TechmizeV1GenericErrorResponse, TechmizeV1SuccessErrorResponse } from '../error'
 
 export type TechmizeV1ConsultarCNHResponseTiposDebito = {
   guid: string
@@ -26,7 +26,7 @@ export type TechmizeV1ConsultarCNHResponseDataCNH = {
 }
 
 export type TechmizeV1ConsultarCNHResponseData = {
-  cnh: TechmizeV1ConsultarCNHResponseDataCNH
+  cnh: TechmizeV1ConsultarCNHResponseDataCNH | TechmizeV1SuccessErrorResponse
 }
 
 export type TechmizeV1ConsultarCNHResponseSuccess = {

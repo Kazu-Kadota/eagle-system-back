@@ -1,4 +1,4 @@
-import { TechmizeV1AuthenticationErrorResponse, TechmizeV1GenericErrorResponse } from '../error'
+import { TechmizeV1AuthenticationErrorResponse, TechmizeV1GenericErrorResponse, TechmizeV1SuccessErrorResponse } from '../error'
 
 export type TechmizeV1ConsultarDadosBasicosVeiculoDadosBasicos = {
   placa: string
@@ -30,7 +30,7 @@ export type TechmizeV1ConsultarDadosBasicosVeiculoDadosBasicosVeiculo = {
 }
 
 export type TechmizeV1ConsultarDadosBasicosVeiculoResponseData = {
-  dados_basicos: TechmizeV1ConsultarDadosBasicosVeiculoDadosBasicosVeiculo
+  dados_basicos: TechmizeV1ConsultarDadosBasicosVeiculoDadosBasicosVeiculo | TechmizeV1SuccessErrorResponse
 }
 
 export type TechmizeV1ConsultarDadosBasicosVeiculoResponseSuccess = {
