@@ -256,6 +256,34 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
+  eaglerequest-analysis-vehicle-antt:
+    handler: src/controllers/eaglerequest/send-request-analysis/vehicle/antt/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/vehicle/antt
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-analysis-vehicle-basic-data:
+    handler: src/controllers/eaglerequest/send-request-analysis/vehicle/basic-data/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/vehicle/basic-data
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
   eaglerequest-list-people:
     handler: src/controllers/eaglerequest/consult/analysis/list-people/index.handler
     timeout: 600
@@ -340,6 +368,24 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
+  worker-techmize-v1-answer-analysis-person-basic-data:
+    handler: src/worker/techmize/v1/answer-analysis/person/basic-data/index.handler
+
+  worker-techmize-v1-answer-analysis-person-cnh:
+    handler: src/worker/techmize/v1/answer-analysis/person/cnh/index.handler
+
+  worker-techmize-v1-answer-analysis-person-cnh-v2:
+    handler: src/worker/techmize/v1/answer-analysis/person/cnh-v2/index.handler
+
+  worker-techmize-v1-answer-analysis-person-process:
+    handler: src/worker/techmize/v1/answer-analysis/person/process/index.handler
+
+  worker-techmize-v1-answer-analysis-vehicle-antt:
+    handler: src/worker/techmize/v1/answer-analysis/vehicle/antt/index.handler
+
+  worker-techmize-v1-answer-analysis-vehicle-basic-data:
+    handler: src/worker/techmize/v1/answer-analysis/vehicle/basic-data/index.handler
+
   eaglereport-analysis:
     handler: src/controllers/eaglereport/generate-analysis-request/index.handler
     timeout: 600
@@ -353,6 +399,3 @@ functions:
           localAuthorizer:
             name: "mylocalAuthProxyFn"
             type: "request"
-
-  worker-techmize-v1-answer-analysis-person-basic-data:
-    handler: src/worker/techmize/v1/answer-analysis/person-basic-data/index.handler
