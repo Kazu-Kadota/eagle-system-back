@@ -4,6 +4,8 @@ export enum FeatureFlagsEnum {
   INFORMATION_ACCESS_PERSON_CNH_STATUS = 'information_access_person_cnh_status',
   INFORMATION_ACCESS_PERSON_PROCESS = 'information_access_person_process',
   INFORMATION_ACCESS_PERSON_BASIC_DATA = 'information_access_person_basic_data',
+  INFORMATION_ACCESS_VEHICLE_ANTT = 'information_access_vehicle_antt',
+  INFORMATION_ACCESS_VEHICLE_BASIC_DATA = 'information_access_vehicle_basic_data',
 }
 
 export type FeatureFlagKey = {

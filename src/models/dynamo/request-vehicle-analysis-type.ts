@@ -6,7 +6,7 @@ import {
 } from './request-enum'
 import { VehicleRequestKey } from './request-vehicle'
 
-export interface VehicleRequestSecondDriverForms {
+export type VehicleRequestAnalysisTypeForms = {
   company_name?: string
   owner_document: string
   owner_name: string
@@ -14,15 +14,15 @@ export interface VehicleRequestSecondDriverForms {
   plate: string
 }
 
-export interface VehicleRequestSecondDriverBody extends VehicleRequestSecondDriverForms {
+export type VehicleRequestAnalysisTypeBody = VehicleRequestAnalysisTypeForms & {
   analysis_type: AnalysisTypeEnum
   user_id: string
   company_name: string
   status: RequestStatusEnum
-  vehicle_analysis_type: VehicleAnalysisTypeEnum.VEHICLE_SECOND_DRIVER
+  vehicle_analysis_type: Omit<VehicleAnalysisTypeEnum, VehicleAnalysisTypeEnum.VEHICLE_PLATE_HISTORY | VehicleAnalysisTypeEnum.VEHICLE_SECOND_DRIVER>
 }
 
-export interface VehicleSecondDriverRequest extends VehicleRequestKey, VehicleRequestSecondDriverBody {
+export type VehicleAnalysisTypeRequest = VehicleRequestKey & VehicleRequestAnalysisTypeBody & {
   created_at: string
   updated_at: string
   finished_at?: string
@@ -31,7 +31,7 @@ export interface VehicleSecondDriverRequest extends VehicleRequestKey, VehicleRe
   from_db?: boolean
 }
 
-export interface FinishedVehicleRequestSecondDriverBody extends VehicleRequestSecondDriverBody {
+export type FinishedVehicleRequestAnalysisTypeBody = VehicleRequestAnalysisTypeBody & {
   created_at: string
   updated_at: string
   finished_at?: string
@@ -40,4 +40,4 @@ export interface FinishedVehicleRequestSecondDriverBody extends VehicleRequestSe
   from_db?: boolean
 }
 
-export interface FinishedVehicleRequestSecondDriver extends VehicleRequestKey, FinishedVehicleRequestSecondDriverBody {}
+export type FinishedVehicleRequestAnalysisType = VehicleRequestKey & FinishedVehicleRequestAnalysisTypeBody & {}

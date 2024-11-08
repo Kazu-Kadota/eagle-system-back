@@ -2,6 +2,7 @@ import {
   AnalysisTypeEnum,
   PlateStateEnum,
   RequestStatusEnum,
+  VehicleAnalysisTypeEnum,
 } from './request-enum'
 import { VehicleRequestKey } from './request-vehicle'
 
@@ -18,6 +19,7 @@ export interface VehicleRequestPlateHistoryBody extends VehicleRequestPlateHisto
   user_id: string
   company_name: string
   status: RequestStatusEnum
+  vehicle_analysis_type: VehicleAnalysisTypeEnum.VEHICLE_PLATE_HISTORY
 }
 
 export interface VehiclePlateHistoryRequest extends VehicleRequestKey, VehicleRequestPlateHistoryBody {
