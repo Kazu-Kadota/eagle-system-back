@@ -2,7 +2,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { AnalysisResultEnum } from 'src/models/dynamo/answer'
 import { RequestStatusEnum } from 'src/models/dynamo/request-enum'
 import { FinishedVehicleRequestBody, VehicleRequestKey } from 'src/models/dynamo/request-vehicle'
-import { Vehicle, VehicleKey } from 'src/models/dynamo/vehicle'
+import { Vehicle, VehicleCompaniesContent, VehicleKey } from 'src/models/dynamo/vehicle'
 import getVehicle from 'src/services/aws/dynamo/analysis/vehicle/get'
 import putVehicle from 'src/services/aws/dynamo/analysis/vehicle/put'
 import updateVehicle from 'src/services/aws/dynamo/analysis/vehicle/update'
@@ -13,7 +13,7 @@ import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 import removeEmpty from 'src/utils/remove-empty'
 
-export interface SendVehicleAnswer {
+export type UseCaseAnswerVehicleAnalysisParams = {
   request_id: string
   analysis_info?: string
   analysis_result: AnalysisResultEnum
@@ -21,8 +21,8 @@ export interface SendVehicleAnswer {
   vehicle_id: string
 }
 
-const sendVehicleAnswer = async (
-  data: SendVehicleAnswer,
+const useCaseAnswerVehicleAnalysis = async (
+  data: UseCaseAnswerVehicleAnalysisParams,
   dynamodbClient: DynamoDBClient,
 ): Promise<void> => {
   const {
@@ -49,6 +49,8 @@ const sendVehicleAnswer = async (
     throw new ErrorHandler('Veículo não existe', 404)
   }
 
+  const vehicle_analysis_type = request_vehicle.vehicle_analysis_type
+
   const now = new Date().toISOString()
 
   const finished_request_body: FinishedVehicleRequestBody = removeEmpty({
@@ -65,27 +67,23 @@ const sendVehicleAnswer = async (
     vehicle_id,
   }
 
-  await putFinishedRequestVehicle(
-    finished_request_key,
-    finished_request_body,
-    dynamodbClient,
-  )
+  const isApproved = analysis_result === AnalysisResultEnum.APPROVED
 
-  const isApproved = analysis_result === 'APPROVED'
-
-  const verify_vehicle_key: VehicleKey = {
+  const get_vehicle_key: VehicleKey = {
     vehicle_id: request_vehicle.vehicle_id,
     plate: request_vehicle.plate,
   }
 
-  const vehicle = await getVehicle(verify_vehicle_key, dynamodbClient)
+  const vehicle = await getVehicle(get_vehicle_key, dynamodbClient)
 
   let driver_name
 
   if (vehicle) {
-    const companies_array = vehicle.companies.name.includes(request_vehicle.company_name)
-      ? vehicle.companies.name
-      : [...vehicle.companies.name, request_vehicle.company_name]
+    const companies_array = vehicle.companies[vehicle_analysis_type]?.name.includes(request_vehicle.company_name)
+      ? vehicle.companies[vehicle_analysis_type]?.name
+      : vehicle.companies[vehicle_analysis_type]
+        ? [...(vehicle.companies[vehicle_analysis_type] as VehicleCompaniesContent).name, request_vehicle.company_name]
+        : [request_vehicle.company_name]
 
     if (request_vehicle.driver_name) {
       if (vehicle.driver_name) {
@@ -100,16 +98,20 @@ const sendVehicleAnswer = async (
     const vehicle_constructor: Vehicle = {
       ...vehicle,
       companies: {
-        name: companies_array,
-        request_id: request_vehicle.request_id,
-        updated_at: now,
+        [vehicle_analysis_type]: {
+          name: companies_array,
+          request_id: request_vehicle.request_id,
+          updated_at: now,
+        },
       },
       updated_at: now,
       validated: {
-        answer_description: analysis_info || '',
-        approved: isApproved,
-        protocol_id: request_vehicle.request_id,
-        updated_at: now,
+        [vehicle_analysis_type]: {
+          answer_description: analysis_info || '',
+          approved: isApproved,
+          protocol_id: request_vehicle.request_id,
+          updated_at: now,
+        },
       },
       driver_name,
     }
@@ -122,6 +124,12 @@ const sendVehicleAnswer = async (
       vehicle_id,
       plate,
     }
+
+    await putFinishedRequestVehicle(
+      finished_request_key,
+      finished_request_body,
+      dynamodbClient,
+    )
 
     await updateVehicle(vehicle_key, vehicle_body, dynamodbClient)
 
@@ -144,9 +152,11 @@ const sendVehicleAnswer = async (
 
   const vehicle_constructor: Vehicle = {
     companies: {
-      name: [request_vehicle.company_name],
-      request_id: request_vehicle.request_id,
-      updated_at: now,
+      [vehicle_analysis_type]: {
+        name: [request_vehicle.company_name],
+        request_id: request_vehicle.request_id,
+        updated_at: now,
+      },
     },
     created_at: now,
     owner_document: request_vehicle.owner_document,
@@ -154,10 +164,12 @@ const sendVehicleAnswer = async (
     plate: request_vehicle.plate,
     updated_at: now,
     validated: {
-      answer_description: analysis_info || '',
-      approved: isApproved,
-      protocol_id: request_vehicle.request_id,
-      updated_at: now,
+      [vehicle_analysis_type]: {
+        answer_description: analysis_info || '',
+        approved: isApproved,
+        protocol_id: request_vehicle.request_id,
+        updated_at: now,
+      },
     },
     vehicle_id: request_vehicle.vehicle_id,
     vehicle_model: request_vehicle.vehicle_model,
@@ -182,6 +194,12 @@ const sendVehicleAnswer = async (
     plate,
   }
 
+  await putFinishedRequestVehicle(
+    finished_request_key,
+    finished_request_body,
+    dynamodbClient,
+  )
+
   await putVehicle(vehicle_key, vehicle_body, dynamodbClient)
 
   const vehicle_request_key: VehicleRequestKey = {
@@ -195,4 +213,4 @@ const sendVehicleAnswer = async (
   )
 }
 
-export default sendVehicleAnswer
+export default useCaseAnswerVehicleAnalysis
