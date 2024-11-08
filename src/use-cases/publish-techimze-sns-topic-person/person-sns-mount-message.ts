@@ -1,5 +1,5 @@
 import { PersonAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
-import { eagleTechimzeEnumMap } from 'src/models/techmize/eagle-techimze-enum-map'
+import { eagleTechimzePersonAnalysisTypeEnumMap } from 'src/models/techmize/eagle-techimze-enum-map'
 import { TechmizeV1ConsultarCNHRequestBody } from 'src/models/techmize/v1/consultar-cnh/request-body'
 import { TechmizeV1ConsultarCNHV2RequestBody } from 'src/models/techmize/v1/consultar-cnh-v2/request-body'
 import { TechmizeV1ConsultarDadosBasicosPessoaFisicaRequestBody } from 'src/models/techmize/v1/consultar-dados-basicos-pessoa-fisica/request-body'
@@ -24,25 +24,25 @@ const personSnsMountMessage = ({
     case PersonAnalysisTypeEnum.BASIC_DATA: {
       return {
         cpf,
-        type_request: eagleTechimzeEnumMap[PersonAnalysisTypeEnum.BASIC_DATA],
+        type_request: eagleTechimzePersonAnalysisTypeEnumMap[PersonAnalysisTypeEnum.BASIC_DATA],
       }
     }
     case PersonAnalysisTypeEnum.CNH_BASIC: {
       return {
         cpf,
-        type_request: eagleTechimzeEnumMap[PersonAnalysisTypeEnum.CNH_BASIC],
+        type_request: eagleTechimzePersonAnalysisTypeEnumMap[PersonAnalysisTypeEnum.CNH_BASIC],
       }
     }
     case PersonAnalysisTypeEnum.CNH_STATUS: {
       return {
         cpf,
-        type_request: eagleTechimzeEnumMap[PersonAnalysisTypeEnum.CNH_STATUS],
+        type_request: eagleTechimzePersonAnalysisTypeEnumMap[PersonAnalysisTypeEnum.CNH_STATUS],
       }
     }
     case PersonAnalysisTypeEnum.PROCESS:
       return {
         cpf,
-        type_request: eagleTechimzeEnumMap[PersonAnalysisTypeEnum.PROCESS],
+        type_request: eagleTechimzePersonAnalysisTypeEnumMap[PersonAnalysisTypeEnum.PROCESS],
       }
     default:
       logger.warn({

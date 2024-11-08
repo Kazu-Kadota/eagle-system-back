@@ -1,6 +1,6 @@
 import { AttributeValue, DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { FeatureFlagsEnum } from 'src/models/dynamo/feature-flag'
-import { is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, personAnalysisTypeFeatureFlagMap, PersonRegionTypeEnum } from 'src/models/dynamo/request-enum'
+import { is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, PersonRegionTypeEnum, person_analysis_type_feature_flag_map } from 'src/models/dynamo/request-enum'
 import { PersonAnalysisItems } from 'src/models/dynamo/request-person'
 import queryByCompanyId, { QueryByCompanyId } from 'src/services/aws/dynamo/user/feature-flag/query-by-company-id'
 import ErrorHandler from 'src/utils/error-handler'
@@ -58,7 +58,7 @@ const verifyAllowanceWithFeatureFlag = async ({
       }
       // Até aqui. É somente um "continue" dentro do if
     } else {
-      const mapped_person_analysis = personAnalysisTypeFeatureFlagMap[type]
+      const mapped_person_analysis = person_analysis_type_feature_flag_map[type]
       const feature_flag_find = company_feature_flags.find((feature_flag) => feature_flag === mapped_person_analysis)
 
       if (!feature_flag_find) {

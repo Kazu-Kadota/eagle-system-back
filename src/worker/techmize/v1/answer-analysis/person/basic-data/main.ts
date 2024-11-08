@@ -4,10 +4,10 @@ import { AnalysisResultEnum } from 'src/models/dynamo/answer'
 import { PersonAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { SQSController } from 'src/models/lambda'
 
-import { TechimzeSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
+import { TechimzePersonSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
 import { TechmizeV1ConsultarDadosBasicosPessoaFisicaRequestBody } from 'src/models/techmize/v1/consultar-dados-basicos-pessoa-fisica/request-body'
 import techmizeV1ConsultarDadosBasicosPessoaFisica from 'src/services/techmize/v1/consultar-dados-basicos-pessoa-fisica'
-import answerPersonAnalysis, { AnswerPersonAnalysis } from 'src/use-cases/answer-person-analysis'
+import useCaseAnswerPersonAnalysis, { UseCaseAnswerPersonAnalysisParams } from 'src/use-cases/answer-person-analysis'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
@@ -22,7 +22,7 @@ const dynamodbClient = new DynamoDBClient({
   maxAttempts: 5,
 })
 
-const techmizeV1AnswerAnalysisPersonBasicData: SQSController<TechimzeSQSReceivedMessageAttributes> = async (message) => {
+const techmizeV1AnswerAnalysisPersonBasicData: SQSController<TechimzePersonSQSReceivedMessageAttributes> = async (message) => {
   logger.debug({
     message: 'Start on answer analysis person basic data',
   })
@@ -53,7 +53,7 @@ const techmizeV1AnswerAnalysisPersonBasicData: SQSController<TechimzeSQSReceived
     cpf: body.cpf,
   })
 
-  const answer_person_analysis_params: AnswerPersonAnalysis = {
+  const answer_person_analysis_params: UseCaseAnswerPersonAnalysisParams = {
     analysis_result: AnalysisResultEnum.REJECTED,
     from_db: false,
     person_id,
@@ -61,7 +61,7 @@ const techmizeV1AnswerAnalysisPersonBasicData: SQSController<TechimzeSQSReceived
     analysis_info: JSON.stringify(person_basic_data_result.data.dados_cadastrais, null, 2),
   }
 
-  await answerPersonAnalysis(answer_person_analysis_params, dynamodbClient)
+  await useCaseAnswerPersonAnalysis(answer_person_analysis_params, dynamodbClient)
 
   logger.info({
     message: 'Finish on answer analysis person basic data',

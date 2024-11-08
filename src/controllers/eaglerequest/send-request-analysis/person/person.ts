@@ -1,6 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { SNSClient } from '@aws-sdk/client-sns'
-import { AnalysisTypeEnum, PersonAnalysisTypeEnum, PersonRegionTypeEnum, RequestStatusEnum, StateEnum } from 'src/models/dynamo/request-enum'
+import { AnalysisTypeEnum, is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, PersonRegionTypeEnum, RequestStatusEnum, StateEnum } from 'src/models/dynamo/request-enum'
 import { PersonRequestKey, PersonRequestForms, PersonRequestBody } from 'src/models/dynamo/request-person'
 import queryPersonByDocument from 'src/services/aws/dynamo/analysis/person/query-by-document'
 import putRequestPerson from 'src/services/aws/dynamo/request/analysis/person/put'
@@ -86,7 +86,7 @@ const personAnalysis = async (
     combo_number: combo_number || undefined,
     company_name: user_info.user_type === 'admin' ? person_data.company_name as string : user_info.company_name,
     user_id: user_info.user_id,
-    status: RequestStatusEnum.WAITING,
+    status: is_person_analysis_type_automatic_arr.includes(person_analysis_type) ? RequestStatusEnum.PROCESSING : RequestStatusEnum.WAITING,
   }
 
   const request_person_person_data = removeEmpty(data_request_person)

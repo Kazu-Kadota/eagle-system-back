@@ -3,16 +3,16 @@ import { SNSClient } from '@aws-sdk/client-sns'
 import { PersonAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { SNSMessageAttributes, SNSThirdPartyWorkersPersonMessage } from 'src/models/sns'
 
-import { TechimzeSQSSendMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
+import { TechimzePersonSQSSendMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
 import publishThirdPartySns, { PublishThirdPartySnsParams } from 'src/services/aws/sns/third_party/publish'
 import logger from 'src/utils/logger'
 import removeEmpty from 'src/utils/remove-empty'
 
 import personSnsMountMessage, { PersonSnsMountMessageParams } from './person-sns-mount-message'
 
-type UseCaseSNSMessageAttributes = SNSMessageAttributes & TechimzeSQSSendMessageAttributes
+type UseCaseSNSMessageAttributes = SNSMessageAttributes & TechimzePersonSQSSendMessageAttributes
 
-export type PublishSnsTopicPersonParams = {
+export type UseCasePublishSnsTopicPersonParams = {
   cpf: string
   person_analysis_type: PersonAnalysisTypeEnum
   person_id: string,
@@ -26,15 +26,17 @@ const useCasePublishSnsTopicPerson = async ({
   person_id,
   request_id,
   snsClient,
-}: PublishSnsTopicPersonParams): Promise<void | undefined> => {
-  const message: SNSThirdPartyWorkersPersonMessage = {}
+}: UseCasePublishSnsTopicPersonParams): Promise<void | undefined> => {
+  const message: SNSThirdPartyWorkersPersonMessage = {
+    person: {},
+  }
 
   const sns_mount_message_params: PersonSnsMountMessageParams = {
     person_analysis_type,
     cpf,
   }
 
-  message[person_analysis_type] = personSnsMountMessage(sns_mount_message_params)
+  message.person[person_analysis_type] = personSnsMountMessage(sns_mount_message_params)
 
   const sns_message = removeEmpty(message)
 

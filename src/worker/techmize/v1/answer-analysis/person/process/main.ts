@@ -4,17 +4,17 @@ import { AnalysisResultEnum } from 'src/models/dynamo/answer'
 import { PersonAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { SQSController } from 'src/models/lambda'
 
-import { TechimzeSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
-import { TechmizeV1ConsultarCNHV2RequestBody } from 'src/models/techmize/v1/consultar-cnh-v2/request-body'
-import techmizeV1ConsultarCNHV2 from 'src/services/techmize/v1/consultar-cnh-v2'
-import answerPersonAnalysis, { AnswerPersonAnalysis } from 'src/use-cases/answer-person-analysis'
+import { TechimzePersonSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
+import { TechmizeV1ConsultarProcessosRequestBody } from 'src/models/techmize/v1/consultar-processos/request-body'
+import techmizeV1ConsultarProcessos from 'src/services/techmize/v1/consultar-processos'
+import useCaseAnswerPersonAnalysis, { UseCaseAnswerPersonAnalysisParams } from 'src/use-cases/answer-person-analysis'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
 import validateBody from './validate-body'
 
-export type TechmizeV1AnswerAnalysisCNHV2Body = {
-  [PersonAnalysisTypeEnum.CNH_STATUS]: TechmizeV1ConsultarCNHV2RequestBody
+export type TechmizeV1AnswerAnalysisPersonProcessBody = {
+  [PersonAnalysisTypeEnum.PROCESS]: TechmizeV1ConsultarProcessosRequestBody
 }
 
 const dynamodbClient = new DynamoDBClient({
@@ -22,11 +22,11 @@ const dynamodbClient = new DynamoDBClient({
   maxAttempts: 5,
 })
 
-const techmizeV1AnswerAnalysisCNHV2: SQSController<TechimzeSQSReceivedMessageAttributes> = async (message) => {
+const techmizeV1AnswerAnalysisPersonProcess: SQSController<TechimzePersonSQSReceivedMessageAttributes> = async (message) => {
   logger.debug({
-    message: 'Start on answer analysis cnh-v2',
+    message: 'Start on answer analysis person process',
   })
-  const body = validateBody((message.body as TechmizeV1AnswerAnalysisCNHV2Body)[PersonAnalysisTypeEnum.CNH_STATUS])
+  const body = validateBody((message.body as TechmizeV1AnswerAnalysisPersonProcessBody)[PersonAnalysisTypeEnum.PROCESS])
 
   const request_id = message.message_attributes.request_id.stringValue
   const person_id = message.message_attributes.person_id.stringValue
@@ -49,22 +49,22 @@ const techmizeV1AnswerAnalysisCNHV2: SQSController<TechimzeSQSReceivedMessageAtt
     throw new ErrorHandler('Not informed person_id in message attributes', 500)
   }
 
-  const cnh_v2_result = await techmizeV1ConsultarCNHV2({
+  const process_result = await techmizeV1ConsultarProcessos({
     cpf: body.cpf,
   })
 
-  const answer_person_analysis_params: AnswerPersonAnalysis = {
+  const answer_person_analysis_params: UseCaseAnswerPersonAnalysisParams = {
     analysis_result: AnalysisResultEnum.REJECTED,
     from_db: false,
     person_id,
     request_id,
-    analysis_info: JSON.stringify(cnh_v2_result.data.cnh_v2, null, 2),
+    analysis_info: JSON.stringify(process_result.data.processos, null, 2),
   }
 
-  await answerPersonAnalysis(answer_person_analysis_params, dynamodbClient)
+  await useCaseAnswerPersonAnalysis(answer_person_analysis_params, dynamodbClient)
 
   logger.info({
-    message: 'Finish on answer analysis cnh-v2',
+    message: 'Finish on answer analysis person process',
     person_id,
   })
 
@@ -74,4 +74,4 @@ const techmizeV1AnswerAnalysisCNHV2: SQSController<TechimzeSQSReceivedMessageAtt
   }
 }
 
-export default techmizeV1AnswerAnalysisCNHV2
+export default techmizeV1AnswerAnalysisPersonProcess

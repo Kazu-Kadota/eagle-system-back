@@ -4,16 +4,16 @@ import { AnalysisResultEnum } from 'src/models/dynamo/answer'
 import { PersonAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { SQSController } from 'src/models/lambda'
 
-import { TechimzeSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
+import { TechimzePersonSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
 import { TechmizeV1ConsultarCNHRequestBody } from 'src/models/techmize/v1/consultar-cnh/request-body'
 import techmizeV1ConsultarCNH from 'src/services/techmize/v1/consultar-cnh'
-import answerPersonAnalysis, { AnswerPersonAnalysis } from 'src/use-cases/answer-person-analysis'
+import useCaseAnswerPersonAnalysis, { UseCaseAnswerPersonAnalysisParams } from 'src/use-cases/answer-person-analysis'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
 import validateBody from './validate-body'
 
-export type TechmizeV1AnswerAnalysisCNHBody = {
+export type TechmizeV1AnswerAnalysisPersonCNHBody = {
   [PersonAnalysisTypeEnum.CNH_BASIC]: TechmizeV1ConsultarCNHRequestBody
 }
 
@@ -22,11 +22,11 @@ const dynamodbClient = new DynamoDBClient({
   maxAttempts: 5,
 })
 
-const techmizeV1AnswerAnalysisCNH: SQSController<TechimzeSQSReceivedMessageAttributes> = async (message) => {
+const techmizeV1AnswerAnalysisPersonCNH: SQSController<TechimzePersonSQSReceivedMessageAttributes> = async (message) => {
   logger.debug({
-    message: 'Start on answer analysis cnh',
+    message: 'Start on answer analysis person cnh',
   })
-  const body = validateBody((message.body as TechmizeV1AnswerAnalysisCNHBody)[PersonAnalysisTypeEnum.CNH_BASIC])
+  const body = validateBody((message.body as TechmizeV1AnswerAnalysisPersonCNHBody)[PersonAnalysisTypeEnum.CNH_BASIC])
 
   const request_id = message.message_attributes.request_id.stringValue
   const person_id = message.message_attributes.person_id.stringValue
@@ -53,7 +53,7 @@ const techmizeV1AnswerAnalysisCNH: SQSController<TechimzeSQSReceivedMessageAttri
     cpf: body.cpf,
   })
 
-  const answer_person_analysis_params: AnswerPersonAnalysis = {
+  const answer_person_analysis_params: UseCaseAnswerPersonAnalysisParams = {
     analysis_result: AnalysisResultEnum.REJECTED,
     from_db: false,
     person_id,
@@ -61,10 +61,10 @@ const techmizeV1AnswerAnalysisCNH: SQSController<TechimzeSQSReceivedMessageAttri
     analysis_info: JSON.stringify(cnh_result.data.cnh, null, 2),
   }
 
-  await answerPersonAnalysis(answer_person_analysis_params, dynamodbClient)
+  await useCaseAnswerPersonAnalysis(answer_person_analysis_params, dynamodbClient)
 
   logger.info({
-    message: 'Finish on answer analysis cnh',
+    message: 'Finish on answer analysis person cnh',
     person_id,
   })
 
@@ -74,4 +74,4 @@ const techmizeV1AnswerAnalysisCNH: SQSController<TechimzeSQSReceivedMessageAttri
   }
 }
 
-export default techmizeV1AnswerAnalysisCNH
+export default techmizeV1AnswerAnalysisPersonCNH

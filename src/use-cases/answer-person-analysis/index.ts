@@ -16,7 +16,7 @@ import removeEmpty from 'src/utils/remove-empty'
 import personConstructor from './person-constructor'
 import updatePersonConstructor from './update-person-constructor'
 
-export type AnswerPersonAnalysis = {
+export type UseCaseAnswerPersonAnalysisParams = {
   request_id: string
   analysis_info?: string
   analysis_result: AnalysisResultEnum
@@ -24,8 +24,8 @@ export type AnswerPersonAnalysis = {
   person_id: string
 }
 
-const answerPersonAnalysis = async (
-  data: AnswerPersonAnalysis,
+const useCaseAnswerPersonAnalysis = async (
+  data: UseCaseAnswerPersonAnalysisParams,
   dynamodbClient: DynamoDBClient,
 ): Promise<void> => {
   const {
@@ -152,4 +152,4 @@ const answerPersonAnalysis = async (
   await deleteRequestPerson(person_request_key, dynamodbClient)
 }
 
-export default answerPersonAnalysis
+export default useCaseAnswerPersonAnalysis
