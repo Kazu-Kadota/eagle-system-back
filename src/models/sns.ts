@@ -7,10 +7,10 @@ export type SNSMessageAttributes = {
   requestId: MessageAttributeValue,
 }
 
-export type SNSThirdPartyWorkersPersonMessage<T = any> =
-  Partial<Record<PersonAnalysisTypeEnum, T>>
-  & {}
+export type SNSThirdPartyWorkersPersonMessage<T = any> = {
+  person: Partial<Record<PersonAnalysisTypeEnum, T>>
+}
 
-export type SNSThirdPartyWorkersVehicleMessage<T = any> =
-  Partial<Record<VehicleAnalysisTypeEnum, T>>
-  & {}
+export type SNSThirdPartyWorkersVehicleMessage<T = any> = {
+  vehicle: Partial<Record<VehicleAnalysisTypeEnum, T>>
+}
