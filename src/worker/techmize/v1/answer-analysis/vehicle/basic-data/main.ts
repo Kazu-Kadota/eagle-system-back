@@ -13,7 +13,9 @@ import logger from 'src/utils/logger'
 import validateBody from './validate-body'
 
 export type TechmizeV1AnswerAnalysisVehicleBasicDataBody = {
-  [VehicleAnalysisTypeEnum.BASIC_DATA]: TechmizeV1ConsultarDadosBasicosVeiculoRequestBody
+  vehicle: {
+    [VehicleAnalysisTypeEnum.BASIC_DATA]: TechmizeV1ConsultarDadosBasicosVeiculoRequestBody
+  }
 }
 
 const dynamodbClient = new DynamoDBClient({
@@ -25,7 +27,7 @@ const techmizeV1AnswerAnalysisVehicleBasicData: SQSController<TechimzeVehicleSQS
   logger.debug({
     message: 'Start on answer analysis vehicle basic data',
   })
-  const body = validateBody((message.body as TechmizeV1AnswerAnalysisVehicleBasicDataBody)[VehicleAnalysisTypeEnum.BASIC_DATA])
+  const body = validateBody((message.body as TechmizeV1AnswerAnalysisVehicleBasicDataBody).vehicle[VehicleAnalysisTypeEnum.BASIC_DATA])
 
   const request_id = message.message_attributes.request_id.stringValue
   const vehicle_id = message.message_attributes.vehicle_id.stringValue

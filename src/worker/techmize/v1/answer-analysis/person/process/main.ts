@@ -14,7 +14,9 @@ import logger from 'src/utils/logger'
 import validateBody from './validate-body'
 
 export type TechmizeV1AnswerAnalysisPersonProcessBody = {
-  [PersonAnalysisTypeEnum.PROCESS]: TechmizeV1ConsultarProcessosRequestBody
+  person: {
+    [PersonAnalysisTypeEnum.PROCESS]: TechmizeV1ConsultarProcessosRequestBody
+  }
 }
 
 const dynamodbClient = new DynamoDBClient({
@@ -26,7 +28,7 @@ const techmizeV1AnswerAnalysisPersonProcess: SQSController<TechimzePersonSQSRece
   logger.debug({
     message: 'Start on answer analysis person process',
   })
-  const body = validateBody((message.body as TechmizeV1AnswerAnalysisPersonProcessBody)[PersonAnalysisTypeEnum.PROCESS])
+  const body = validateBody((message.body as TechmizeV1AnswerAnalysisPersonProcessBody).person[PersonAnalysisTypeEnum.PROCESS])
 
   const request_id = message.message_attributes.request_id.stringValue
   const person_id = message.message_attributes.person_id.stringValue

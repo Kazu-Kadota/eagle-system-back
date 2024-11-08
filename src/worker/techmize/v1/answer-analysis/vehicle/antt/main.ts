@@ -14,7 +14,9 @@ import logger from 'src/utils/logger'
 import validateBody from './validate-body'
 
 export type TechmizeV1AnswerAnalysisVehicleANTTBody = {
-  [VehicleAnalysisTypeEnum.ANTT]: TechmizeV1ConsultarANTTRequestBody
+  vehicle: {
+    [VehicleAnalysisTypeEnum.ANTT]: TechmizeV1ConsultarANTTRequestBody
+  }
 }
 
 const dynamodbClient = new DynamoDBClient({
@@ -26,7 +28,7 @@ const techmizeV1AnswerAnalysisVehicleANTT: SQSController<TechimzeVehicleSQSRecei
   logger.debug({
     message: 'Start on answer analysis vehicle antt',
   })
-  const body = validateBody((message.body as TechmizeV1AnswerAnalysisVehicleANTTBody)[VehicleAnalysisTypeEnum.ANTT])
+  const body = validateBody((message.body as TechmizeV1AnswerAnalysisVehicleANTTBody).vehicle[VehicleAnalysisTypeEnum.ANTT])
 
   const request_id = message.message_attributes.request_id.stringValue
   const vehicle_id = message.message_attributes.vehicle_id.stringValue

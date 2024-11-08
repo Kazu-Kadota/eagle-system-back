@@ -14,7 +14,9 @@ import logger from 'src/utils/logger'
 import validateBody from './validate-body'
 
 export type TechmizeV1AnswerAnalysisPersonCNHV2Body = {
-  [PersonAnalysisTypeEnum.CNH_STATUS]: TechmizeV1ConsultarCNHV2RequestBody
+  person: {
+    [PersonAnalysisTypeEnum.CNH_STATUS]: TechmizeV1ConsultarCNHV2RequestBody
+  }
 }
 
 const dynamodbClient = new DynamoDBClient({
@@ -26,7 +28,7 @@ const techmizeV1AnswerAnalysisPersonCNHV2: SQSController<TechimzePersonSQSReceiv
   logger.debug({
     message: 'Start on answer analysis person cnh-v2',
   })
-  const body = validateBody((message.body as TechmizeV1AnswerAnalysisPersonCNHV2Body)[PersonAnalysisTypeEnum.CNH_STATUS])
+  const body = validateBody((message.body as TechmizeV1AnswerAnalysisPersonCNHV2Body).person[PersonAnalysisTypeEnum.CNH_STATUS])
 
   const request_id = message.message_attributes.request_id.stringValue
   const person_id = message.message_attributes.person_id.stringValue
