@@ -56,7 +56,7 @@ const techmizeV1AnswerAnalysisPersonProcess: SQSController<TechimzePersonSQSRece
     cpf: body.cpf,
   })
 
-  const process = process_result.data.processos
+  const process = process_result.data
 
   if (process === techmizeV1SuccessErrorResponse) {
     logger.warn({

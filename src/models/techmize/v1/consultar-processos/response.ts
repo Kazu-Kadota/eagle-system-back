@@ -99,12 +99,13 @@ export type TechmizeV1ConsultarProcessosResponseDataDetails = {
 
 export type TechmizeV1ConsultarProcessosResponseData = {
   processos: TechmizeV1ConsultarProcessosResponseDataDetails[] | TechmizeV1SuccessErrorResponse
+  processos_judiciais_administrativos: TechmizeV1ConsultarProcessosResponseDataDetails[] | TechmizeV1SuccessErrorResponse
 }
 
 export type TechmizeV1ConsultarProcessosResponseSuccess = {
   code: 1
   message: string
-  data: TechmizeV1ConsultarProcessosResponseData
+  data: TechmizeV1ConsultarProcessosResponseData | TechmizeV1SuccessErrorResponse
 }
 
 export type TechmizeV1ConsultarProcessosResponse = TechmizeV1GenericErrorResponse | TechmizeV1AuthenticationErrorResponse | TechmizeV1ConsultarProcessosResponseSuccess
