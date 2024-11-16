@@ -1,6 +1,8 @@
 import { is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, PersonRegionTypeEnum } from 'src/models/dynamo/request-enum'
 import { PersonAnalysisItems } from 'src/models/dynamo/request-person'
 
+import { eagleTechimzePersonAnalysisTypeEnumMap } from 'src/models/techmize/eagle-techimze-enum-map'
+import techmizeV2CustomRequestConsultar, { TechmizeV2ConsultarParams } from 'src/services/techmize/v2/custom-request'
 import useCasePublishSnsTopicPerson from 'src/use-cases/publish-techimze-sns-topic-person'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
@@ -31,9 +33,9 @@ const personAnalysisConstructor = async (
     throw new ErrorHandler('É necessário informar o nome da empresa para usuários admin', 400)
   }
 
-  const is_type_simple_or_history = PersonAnalysisTypeEnum.SIMPLE || PersonAnalysisTypeEnum.HISTORY
-
-  if (person_analysis_type === is_type_simple_or_history) {
+  if (person_analysis_type === PersonAnalysisTypeEnum.SIMPLE
+    || person_analysis_type === PersonAnalysisTypeEnum.HISTORY
+  ) {
     for (const region_type of person_analysis.region_types) {
       const person_analysis_constructor: PersonAnalysisRequest = {
         ...person_analysis_request,
@@ -66,12 +68,33 @@ const personAnalysisConstructor = async (
       person_analysis_type,
     }
 
+    const consultar_params: TechmizeV2ConsultarParams = {
+      cpf: person_analysis_constructor.person_data.document.replace('.', '').replace('-', ''),
+      type_request: eagleTechimzePersonAnalysisTypeEnumMap[person_analysis_type],
+    }
+
+    const techmize_response = await techmizeV2CustomRequestConsultar(consultar_params)
+
+    if (techmize_response.code === 0) {
+      logger.warn({
+        message: `TECHMIZE: Error on process consult ${consultar_params.type_request}`,
+        error: {
+          ...techmize_response,
+        },
+      })
+
+      throw new ErrorHandler(`TECHMIZE: Error on process consult ${consultar_params.type_request}`, 500)
+    }
+
+    person_analysis_constructor.third_party = techmize_response.data
+
     person_analyzes.push(await personAnalysis(person_analysis_constructor))
 
     await useCasePublishSnsTopicPerson({
       cpf: person_analysis_request.person_data.document,
       person_analysis_type,
       person_id: person_analyzes[0].person_id,
+      protocol: techmize_response.data.protocol,
       request_id: person_analyzes[0].request_id,
       snsClient: person_analysis_constructor.snsClient,
     })

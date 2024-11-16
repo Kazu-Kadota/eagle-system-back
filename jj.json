@@ -1,0 +1,83 @@
+[
+  {
+    "attributes": {
+      "ApproximateReceiveCount": "1",
+      "AWSTraceHeader": "Root=1-673ad1c0-55d637ee3104ee2624a1e7a8;Parent=76680577d0e8091a;Sampled=0;Lineage=1:e1ac2708:0",
+      "SentTimestamp": "1731908034777",
+      "SenderId": "AIDAIT2UOQQY3AUEKVGXU",
+      "ApproximateFirstReceiveTimestamp": "1731908034783"
+    },
+    "body": {
+      "vehicle": {
+        "antt": {
+          "cpf": "447.471.538-10",
+          "licenseplate": "QUO1C20",
+          "protocol": "510673AD1C28F034625026791",
+          "type_request": "antt"
+        }
+      }
+    },
+    "message_attributes": {
+      "requestId": {
+        "stringValue": "fb97ab3c-fa6a-48dc-a1d5-2e2f9d21b03e",
+        "stringListValues": [],
+        "binaryListValues": [],
+        "dataType": "String"
+      },
+      "origin": {
+        "stringValue": "eaglesystem",
+        "stringListValues": [],
+        "binaryListValues": [],
+        "dataType": "String"
+      },
+      "request_id": {
+        "stringValue": "5cbbbb6d-4411-4bd4-819d-c9dbcff1e64f",
+        "stringListValues": [],
+        "binaryListValues": [],
+        "dataType": "String"
+      },
+      "vehicle_id": {
+        "stringValue": "48ed7da2-77ae-47bc-9130-708d38b3740a",
+        "stringListValues": [],
+        "binaryListValues": [],
+        "dataType": "String"
+      }
+    },
+    "message_id": "3f6c8aa4-dc15-44ed-bba5-22e16edab77e",
+    "taskToken": "AQCYAAAAKgAAAAMAAAAAAAAAAYtm5H7UQXSBe9V0HLnXyea8hmFk1IdoBsaOnXbupXqELcv9eDllJH8dVC6+smkvCQR9A5diLkvZFx95AlmZsskUAfC/eyBE9Qa7aQbhLry71YgTC5UZfElBzFoShQ62gb8=Vm+A0O+li3sFr2goygdqugKQnrAQdGaeMUfLM9OMBu0jTUHmTQa5Ac5k3vl5TTQXZTrPgrIIDMXdL3RR2pSSTwVE+5M7d3F1zr7vmksjt0g4GMe1eMzc6G7SQFCVYDg1rAczWVRKHADFEsGUacZagRS4qwUOzFtVNT7ifjEbzZBM2oHC5kBP6tD2ScWw0FFWa+kiJkDEbwgO6XCkghRekyRjuDRy2NTP/FdoFmgAaIEvX450zEMnckJrDJceBjWJlHP7eTKyFlIGMA3IUEolWFI4YuoFWpKQPl6s2D52OMUO+jxKoHs7CNXOY/DFH0AptxIAJ+YJptarMD05PY1JnIf/9QIZo3dQM0eIzHHoy/Uh7jyK9IyxS+xplZ3v7e1QfFbTEFzoWNUdTyT4Q/DV18DmxRYrIdzr2Fv9vzw6X8Jtp5yq9kxyf9SOun0nB1rYZ84TQhGFDYi5HU9Rt6ZrYFd1Xp7ndnnakUx+GxJ4BgQpmR3Dk2Fx3POHCH12j068s8b2i1tdaivqW0bAPTop",
+    "sfnClient": {
+      "config": {
+        "apiVersion": "2016-11-23",
+        "disableHostPrefix": false,
+        "extensions": [],
+        "httpAuthSchemes": [
+          {
+            "schemeId": "aws.auth#sigv4",
+            "signer": {}
+          }
+        ],
+        "logger": {},
+        "serviceId": "SFN",
+        "runtime": "node",
+        "requestHandler": {
+          "socketWarningTimestamp": 0,
+          "metadata": {
+            "handlerProtocol": "http/1.1"
+          },
+          "configProvider": {}
+        },
+        "defaultSigningName": "states",
+        "tls": true,
+        "isCustomEndpoint": false,
+        "systemClockOffset": 0,
+        "signingEscapePath": true
+      },
+      "middlewareStack": {}
+    },
+    "code": 0,
+    "message": "A consulta está sendo processada. Tente novamente mais tarde!",
+    "data": {
+      "current_status": "AGUARDANDO"
+    }
+  }
+]

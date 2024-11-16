@@ -1,21 +1,24 @@
 import { VehicleAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { eagleTechimzeVehicleAnalysisTypeEnumMap } from 'src/models/techmize/eagle-techimze-enum-map'
-import { TechmizeV1ConsultarANTTRequestBody } from 'src/models/techmize/v1/consultar-antt/request-body'
-import { TechmizeV1ConsultarDadosBasicosVeiculoRequestBody } from 'src/models/techmize/v1/consultar-dados-basicos-veiculo/request-body'
+import { TechmizeV2ConsultarANTTRequestBody } from 'src/models/techmize/v2/consultar-antt/request-body'
+import { TechmizeV2ConsultarDadosBasicosVeiculoRequestBody } from 'src/models/techmize/v2/consultar-dados-basicos-veiculo/request-body'
+import { TechmizeV2GetResponseRequestBody } from 'src/models/techmize/v2/get-response-request-body'
 import logger from 'src/utils/logger'
 
-export type VehicleSnsMountMessageReturn = TechmizeV1ConsultarANTTRequestBody
-  | TechmizeV1ConsultarDadosBasicosVeiculoRequestBody
+export type VehicleSnsMountMessageReturn = (TechmizeV2ConsultarANTTRequestBody
+  | TechmizeV2ConsultarDadosBasicosVeiculoRequestBody) & TechmizeV2GetResponseRequestBody
 
 export type VehicleSnsMountMessageParams = {
   cpf: string,
   licenseplate: string
+  protocol: string
   vehicle_analysis_type: VehicleAnalysisTypeEnum,
 }
 
 const vehicleSnsMountMessage = ({
   cpf,
   licenseplate,
+  protocol,
   vehicle_analysis_type,
 }: VehicleSnsMountMessageParams): VehicleSnsMountMessageReturn | undefined => {
   switch (vehicle_analysis_type) {
@@ -23,6 +26,7 @@ const vehicleSnsMountMessage = ({
       return {
         cpf,
         licenseplate,
+        protocol,
         type_request: eagleTechimzeVehicleAnalysisTypeEnumMap[VehicleAnalysisTypeEnum.ANTT],
       }
     }
@@ -30,6 +34,7 @@ const vehicleSnsMountMessage = ({
       return {
         cpf,
         licenseplate,
+        protocol,
         type_request: eagleTechimzeVehicleAnalysisTypeEnumMap[VehicleAnalysisTypeEnum.BASIC_DATA],
       }
     }

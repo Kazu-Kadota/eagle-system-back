@@ -1,5 +1,8 @@
+import { SFNClient } from '@aws-sdk/client-sfn'
 import { APIGatewayProxyEvent, SQSMessageAttribute, SQSMessageAttributes, SQSRecordAttributes } from 'aws-lambda'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
+
+import { TechmizeV2GetRequestProcessingResponse } from './techmize/v2/get-response-error'
 
 export interface ReturnResponse<T> {
   body: T
@@ -49,3 +52,10 @@ export type SQSControllerResponse = {
 }
 
 export type SQSController<T = SQSMessageAttributes> = (message: SQSControllerMessage<T>) => Promise<SQSControllerResponse>
+
+export type SQSStepFunctionControllerParams<T> = SQSControllerMessage<T> & Partial<TechmizeV2GetRequestProcessingResponse> & {
+  taskToken: string
+  sfnClient: SFNClient
+}
+
+export type SQSStepFunctionController<T = SQSMessageAttributes, R = SQSControllerResponse> = (message: SQSStepFunctionControllerParams<T>) => Promise<R>

@@ -2,7 +2,6 @@ import { SNSClient } from '@aws-sdk/client-sns'
 
 import { PersonAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { SNSMessageAttributes, SNSThirdPartyWorkersPersonMessage } from 'src/models/sns'
-
 import { TechimzePersonSQSSendMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
 import publishThirdPartySns, { PublishThirdPartySnsParams } from 'src/services/aws/sns/third_party/publish'
 import logger from 'src/utils/logger'
@@ -16,6 +15,7 @@ export type UseCasePublishSnsTopicPersonParams = {
   cpf: string
   person_analysis_type: PersonAnalysisTypeEnum
   person_id: string,
+  protocol: string,
   request_id: string,
   snsClient: SNSClient,
 }
@@ -24,6 +24,7 @@ const useCasePublishSnsTopicPerson = async ({
   cpf,
   person_analysis_type,
   person_id,
+  protocol,
   request_id,
   snsClient,
 }: UseCasePublishSnsTopicPersonParams): Promise<void | undefined> => {
@@ -32,8 +33,9 @@ const useCasePublishSnsTopicPerson = async ({
   }
 
   const sns_mount_message_params: PersonSnsMountMessageParams = {
-    person_analysis_type,
     cpf,
+    person_analysis_type,
+    protocol,
   }
 
   message.person[person_analysis_type] = personSnsMountMessage(sns_mount_message_params)

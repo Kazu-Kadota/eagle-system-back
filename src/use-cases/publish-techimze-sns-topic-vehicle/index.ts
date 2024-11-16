@@ -15,6 +15,7 @@ type UseCaseSNSMessageAttributes = SNSMessageAttributes & TechimzeVehicleSQSSend
 export type UseCasePublishSnsTopicVehicleParams = {
   owner_document: string
   plate: string
+  protocol: string
   request_id: string,
   snsClient: SNSClient,
   vehicle_analysis_type: VehicleAnalysisTypeEnum
@@ -24,6 +25,7 @@ export type UseCasePublishSnsTopicVehicleParams = {
 const useCasePublishSnsTopicVehicle = async ({
   owner_document,
   plate,
+  protocol,
   vehicle_analysis_type,
   vehicle_id,
   request_id,
@@ -37,6 +39,7 @@ const useCasePublishSnsTopicVehicle = async ({
     cpf: owner_document,
     licenseplate: plate,
     vehicle_analysis_type,
+    protocol,
   }
 
   message.vehicle[vehicle_analysis_type] = vehicleSnsMountMessage(sns_mount_message_params)

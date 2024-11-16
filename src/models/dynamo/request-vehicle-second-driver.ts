@@ -16,9 +16,10 @@ export interface VehicleRequestSecondDriverForms {
 
 export interface VehicleRequestSecondDriverBody extends VehicleRequestSecondDriverForms {
   analysis_type: AnalysisTypeEnum
-  user_id: string
   company_name: string
   status: RequestStatusEnum
+  third_party?: any
+  user_id: string
   vehicle_analysis_type: VehicleAnalysisTypeEnum.VEHICLE_SECOND_DRIVER
 }
 

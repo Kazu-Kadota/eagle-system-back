@@ -13,6 +13,7 @@ export type VehicleAnalysisRequest = {
   analysis_type: AnalysisTypeEnum
   body: VehicleRequestAnalysisTypeForms
   dynamodbClient: DynamoDBClient
+  third_party?: any
   user_info: UserInfoFromJwt
 }
 
@@ -32,6 +33,7 @@ const vehicleANTTAnalysis = async (
     body,
     dynamodbClient,
     user_info,
+    third_party,
   } = data
 
   const request_id = uuid()
@@ -42,8 +44,9 @@ const vehicleANTTAnalysis = async (
     ...body,
     analysis_type,
     company_name: user_info.user_type === 'admin' ? body.company_name as string : user_info.company_name,
-    user_id: user_info.user_id,
     status: RequestStatusEnum.PROCESSING,
+    third_party,
+    user_id: user_info.user_id,
     vehicle_analysis_type: VehicleAnalysisTypeEnum.ANTT,
   }
 

@@ -10,6 +10,7 @@ import { v4 as uuid } from 'uuid'
 import getVehicleId from './get-vehicle-id'
 
 export type VehicleAnalysisRequest = {
+  third_party?: any
   analysis_type: AnalysisTypeEnum
   body: VehicleRequestAnalysisTypeForms
   dynamodbClient: DynamoDBClient
@@ -31,6 +32,7 @@ const vehicleBasicDataAnalysis = async (
     analysis_type,
     body,
     dynamodbClient,
+    third_party,
     user_info,
   } = data
 
@@ -42,8 +44,9 @@ const vehicleBasicDataAnalysis = async (
     ...body,
     analysis_type,
     company_name: user_info.user_type === 'admin' ? body.company_name as string : user_info.company_name,
-    user_id: user_info.user_id,
     status: RequestStatusEnum.PROCESSING,
+    third_party,
+    user_id: user_info.user_id,
     vehicle_analysis_type: VehicleAnalysisTypeEnum.BASIC_DATA,
   }
 
