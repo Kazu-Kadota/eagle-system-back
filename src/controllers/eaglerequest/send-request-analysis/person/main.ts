@@ -2,7 +2,9 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { SNSClient } from '@aws-sdk/client-sns'
 import { AnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { Controller } from 'src/models/lambda'
+import ErrorHandler from 'src/utils/error-handler'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
+import logger from 'src/utils/logger'
 import removeEmpty from 'src/utils/remove-empty'
 
 import getCompanyByNameAdapter from './get-company-adapter'
@@ -25,11 +27,18 @@ const requestAnalysisPerson: Controller = async (req) => {
 
   const person_analyzes = []
 
-  let company_name = user_info.company_name
+  if (user_info.user_type === 'admin' && !body.person.company_name) {
+    logger.warn({
+      message: 'Need to inform company name for admin user',
+      user_type: user_info.user_type,
+    })
 
-  if (user_info.user_type === 'admin') {
-    company_name = body.person.company_name as string
+    throw new ErrorHandler('É necessário informar o nome da empresa para usuários admin', 400)
   }
+
+  const company_name = user_info.user_type === 'admin'
+    ? body.person.company_name as string
+    : user_info.company_name
 
   const company = await getCompanyByNameAdapter(company_name, dynamodbClient)
 

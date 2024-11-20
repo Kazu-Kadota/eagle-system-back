@@ -56,7 +56,8 @@ export const vehicle_analysis_type_feature_flag_map: Partial<Record<VehicleAnaly
 export enum PersonRegionTypeEnum {
   STATES = 'states',
   NATIONAL = 'national',
-  NATIONAL_DB = 'national + db'
+  NATIONAL_DB = 'national + db',
+  NATIONAL_STATE = 'national + state',
 }
 
 export enum DriverCategoryEnum {

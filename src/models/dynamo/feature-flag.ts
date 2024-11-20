@@ -1,4 +1,5 @@
 export enum FeatureFlagsEnum {
+  ACCESS_PERSON_ANALYSIS_REGION_TYPE_NATIONAL_STATE = 'access_person_analysis_region_type_national_state',
   DATABASE_ACCESS_CONSULT = 'database_access_consult',
   INFORMATION_ACCESS_PERSON_CNH_BASIC = 'information_access_person_cnh_basic',
   INFORMATION_ACCESS_PERSON_CNH_STATUS = 'information_access_person_cnh_status',

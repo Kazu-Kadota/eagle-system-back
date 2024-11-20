@@ -22,7 +22,8 @@ provider:
     DYNAMO_TABLE_EAGLEREQUEST_FINISHED_ANALYSIS_PERSON: eaglerequest-finished-analysis-person-sdx
     DYNAMO_TABLE_EAGLEREQUEST_FINISHED_ANALYSIS_VEHICLE: eaglerequest-finished-analysis-vehicle-sdx
     TECHMIZE_API_V2_DATA_SOURCE_CUSTOM_REQUEST_ENDPOINT: ${ssm:/sdx/techmize/api/v2/data_source/custom_request/endpoint}
-    TECHMIZE_API_V2_DATA_SOURCE_CUSTOM_REQUEST_TOKEN: ${ssm:/sdx/techmize/api/v2/data_source/custom_request/token}
+    TECHMIZE_API_V2_DATA_SOURCE_GET_RESPONSE_ENDPOINT: ${ssm:/sdx/techmize/api/v2/data_source/get_response/endpoint}
+    TECHMIZE_API_V2_TOKEN: ${ssm:/sdx/techmize/api/v2/token}
     USER_RECOVERY_KEY_URL: https://user.api.sdx.systemeagle.com.br/reset-password
     SNS_EAGLEREQUEST_THIRD_PARTY_WORKERS_ARN: { "Fn::Join" : ["", ["arn:aws:sns:${region}:", { "Ref" : "AWS::AccountId" }, ":eaglerequest-third-party-workers" ] ]  }
     SYSTEMEAGLE_EMAIL: sdx.admin@systemeagle.com.br
@@ -369,23 +370,23 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
-  worker-techmize-V2-answer-analysis-person-basic-data:
-    handler: src/worker/techmize/V2/answer-analysis/person/basic-data/index.handler
+  worker-techmize-v2-answer-analysis-person-basic-data:
+    handler: src/worker/techmize/v2/answer-analysis/person/basic-data/index.handler
 
-  worker-techmize-V2-answer-analysis-person-cnh:
-    handler: src/worker/techmize/V2/answer-analysis/person/cnh/index.handler
+  worker-techmize-v2-answer-analysis-person-cnh:
+    handler: src/worker/techmize/v2/answer-analysis/person/cnh/index.handler
 
-  worker-techmize-V2-answer-analysis-person-cnh-v2:
-    handler: src/worker/techmize/V2/answer-analysis/person/cnh-v2/index.handler
+  worker-techmize-v2-answer-analysis-person-cnh-v2:
+    handler: src/worker/techmize/v2/answer-analysis/person/cnh-v2/index.handler
 
-  worker-techmize-V2-answer-analysis-person-process:
-    handler: src/worker/techmize/V2/answer-analysis/person/process/index.handler
+  worker-techmize-v2-answer-analysis-person-process:
+    handler: src/worker/techmize/v2/answer-analysis/person/process/index.handler
 
-  worker-techmize-V2-answer-analysis-vehicle-antt:
-    handler: src/worker/techmize/V2/answer-analysis/vehicle/antt/index.handler
+  worker-techmize-v2-answer-analysis-vehicle-antt:
+    handler: src/worker/techmize/v2/answer-analysis/vehicle/antt/index.handler
 
-  worker-techmize-V2-answer-analysis-vehicle-basic-data:
-    handler: src/worker/techmize/V2/answer-analysis/vehicle/basic-data/index.handler
+  worker-techmize-v2-answer-analysis-vehicle-basic-data:
+    handler: src/worker/techmize/v2/answer-analysis/vehicle/basic-data/index.handler
 
   eaglereport-analysis:
     handler: src/controllers/eaglereport/generate-analysis-request/index.handler

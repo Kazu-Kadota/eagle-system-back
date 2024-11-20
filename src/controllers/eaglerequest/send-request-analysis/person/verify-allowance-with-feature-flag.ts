@@ -41,22 +41,25 @@ const verifyAllowanceWithFeatureFlag = async ({
   }
   while (last_evaluated_key)
 
-  const invalid_person_analysis_set: Set<PersonAnalysisTypeEnum | PersonRegionTypeEnum.NATIONAL_DB> = new Set()
+  const invalid_person_analysis_set: Set<PersonAnalysisTypeEnum | PersonRegionTypeEnum.NATIONAL_DB | PersonRegionTypeEnum.NATIONAL_STATE> = new Set()
 
   for (const person_analysis_item of person_analysis) {
     const type = person_analysis_item.type
     if (!is_person_analysis_type_automatic_arr.includes(type)) {
-      // Essa parte do código irá sumir com a refatoração do "National + DB"
       for (const region_type of person_analysis_item.region_types) {
-        if (region_type === PersonRegionTypeEnum.NATIONAL_DB) {
-          const feature_flag_find = company_feature_flags.find((feature_flag) => feature_flag === FeatureFlagsEnum.DATABASE_ACCESS_CONSULT)
+        const feature_flag_region_type = region_type === PersonRegionTypeEnum.NATIONAL_DB
+          || region_type === PersonRegionTypeEnum.NATIONAL_STATE
+        if (feature_flag_region_type) {
+          const feature_flag_find = company_feature_flags.find((feature_flag) =>
+            feature_flag === FeatureFlagsEnum.DATABASE_ACCESS_CONSULT
+            || feature_flag === FeatureFlagsEnum.ACCESS_PERSON_ANALYSIS_REGION_TYPE_NATIONAL_STATE,
+          )
 
           if (!feature_flag_find) {
             invalid_person_analysis_set.add(region_type)
           }
         }
       }
-      // Até aqui. É somente um "continue" dentro do if
     } else {
       const mapped_person_analysis = person_analysis_type_feature_flag_map[type]
       const feature_flag_find = company_feature_flags.find((feature_flag) => feature_flag === mapped_person_analysis)

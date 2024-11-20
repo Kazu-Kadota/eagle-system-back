@@ -76,7 +76,7 @@ const vehicleAnalysis = async (
   return {
     request_id,
     vehicle_id,
-    company_name: user_info.company_name,
+    company_name: user_info.user_type === 'admin' ? body.company_name as string : user_info.company_name,
     user_id: user_info.user_id,
     owner_name: body.owner_name,
     plate: body.plate,

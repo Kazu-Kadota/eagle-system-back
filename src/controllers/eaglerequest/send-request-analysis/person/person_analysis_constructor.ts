@@ -43,13 +43,19 @@ const personAnalysisConstructor = async (
         region_type,
       }
 
-      if (region_type === PersonRegionTypeEnum.STATES) {
+      const is_states_search = region_type === PersonRegionTypeEnum.STATES
+        || region_type === PersonRegionTypeEnum.NATIONAL_STATE
+
+      const is_national_search = region_type === PersonRegionTypeEnum.NATIONAL
+        || region_type === PersonRegionTypeEnum.NATIONAL_DB
+
+      if (is_states_search) {
         for (const region of person_analysis.regions) {
           person_analysis_constructor.region = region
 
           person_analyzes.push(await personAnalysis(person_analysis_constructor))
         }
-      } else if (region_type === PersonRegionTypeEnum.NATIONAL || PersonRegionTypeEnum.NATIONAL_DB) {
+      } else if (is_national_search) {
         person_analyzes.push(await personAnalysis(person_analysis_constructor))
       } else {
         logger.warn({
