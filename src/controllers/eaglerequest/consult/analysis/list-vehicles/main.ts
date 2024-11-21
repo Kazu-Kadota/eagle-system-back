@@ -1,5 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { VehicleRequest } from 'src/models/dynamo/request-vehicle'
+import { UserGroupEnum } from 'src/models/dynamo/user'
 import { ReturnResponse } from 'src/models/lambda'
 import queryVehicleByStatusProcessingWaiting, { QueryVehicleByStatusResponse, ScanVehicleRequest } from 'src/services/aws/dynamo/request/analysis/vehicle/scan'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
@@ -46,7 +47,13 @@ const requestVehicles = async (user_info: UserInfoFromJwt): Promise<ReturnRespon
         last_evaluated_key = undefined
       } else {
         for (const item of query_result.result) {
-          vehicles.push(item)
+          if (user_info.user_type !== UserGroupEnum.ADMIN) {
+            const { third_party, ...vehicle_item } = item
+
+            vehicles.push(vehicle_item)
+          } else {
+            vehicles.push(item)
+          }
         }
       }
     }

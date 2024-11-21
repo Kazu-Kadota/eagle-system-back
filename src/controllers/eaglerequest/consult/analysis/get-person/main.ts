@@ -1,6 +1,7 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 import { PersonRequestKey } from 'src/models/dynamo/request-person'
+import { UserGroupEnum } from 'src/models/dynamo/user'
 import { ReturnResponse } from 'src/models/lambda'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import logger from 'src/utils/logger'
@@ -24,6 +25,10 @@ const getPersonByRequestIdController = async (
   }
 
   const request_person = await getRequestPersonAdapter(request_person_key, user_info, dynamodbClient)
+
+  if (user_info.user_type !== UserGroupEnum.ADMIN) {
+    delete request_person.third_party
+  }
 
   logger.info({
     message: 'Finish on get person request info',
