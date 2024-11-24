@@ -1,0 +1,53 @@
+import { TechmizeV2ConsultarDadosBasicosVeiculoResponseSuccess } from 'src/models/techmize/v2/consultar-dados-basicos-veiculo/response'
+
+export const mockTechmizeV2AnswerAnalysisVehicleBasicDataGetResponse: TechmizeV2ConsultarDadosBasicosVeiculoResponseSuccess = {
+  code: 1,
+  message: 'Consulta realizada com sucesso!',
+  data: {
+    dados_basicos: [
+      {
+        dados_basicos: {
+          placa: 'XYZ2A34',
+          ano_fabricacao: 2020,
+          ano_licenciamento: 2024,
+          ano_modelo: 2021,
+          capacidade: 4,
+          categoria: 'PARTICULAR',
+          chassi: '1HGCM82633A123456',
+          combustivel: 'GASOLINA',
+          cor: 'PRETO',
+          debit_type_guid: '123abc45-678d-90ef-ghij-klmnopqrstuv',
+          documento_faturado: null,
+          documento_instituicao_alienacao: null,
+          documento_proprietario: '12345678900',
+          especie: 'PASSAGEIRO',
+          flag_ativo: null,
+          grupo_veiculo: null,
+          modelo: 'I/HONDA CIVIC EXL',
+          municipio: 'RIO DE JANEIRO',
+          nome_instituicao_alienacao: null,
+          nome_proprietario: 'JOÃO CARLOS DOS SANTOS',
+          numero_motor: 'HCM123456789',
+          placa_pre_mercosul: null,
+          quantidade_restricoes_admnistrativas: null,
+          quantidade_roubo_furto: null,
+          renavam: '98765432101',
+          restricoes: [{
+            restricao_renainf: null,
+            restricao_renajud: null,
+            restricao_rfb: null,
+            roubo_e_furto: false,
+            ocorrencia: null,
+          }],
+          situacao: 'EM CIRCULAÇÃO',
+          tipo_documento_faturado: null,
+          tipo_documento_proprietario: 'CPF',
+          tipo_veiculo: 'AUTOMOVEL',
+          uf: 'RJ',
+          uf_faturado: null,
+        },
+      },
+    ],
+  },
+  status_request: 'PROCESSADO',
+}

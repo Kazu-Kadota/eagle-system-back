@@ -1,0 +1,96 @@
+import { TechmizeV2ConsultarCNHV2ResponseSuccess } from 'src/models/techmize/v2/consultar-cnh-v2/response'
+
+export const mockTechmizeV2AnswerAnalysisPersonCNHV2GetResponse: TechmizeV2ConsultarCNHV2ResponseSuccess = {
+  code: 1,
+  message: 'Consulta realizada com sucesso!',
+  data: {
+    cnh_v2: [
+      {
+        cnh_v2: {
+          numero_registro: '08192340512',
+          numero: '3276549081',
+          url_foto: 'https://dd-prd-images.s3.amazonaws.com/mock-photo-20241124.png',
+          categoria: 'AB',
+          data_expiracao: '2034-07-15T03:00:00.000Z',
+          renach: 'MG023478912',
+          primeira_cnh: '2020-05-18T03:00:00.000Z',
+          data_emissao: '2024-07-15T03:00:00.000Z',
+          guid: 'e27494c1-8d92-4e8a-9071-abc123456def',
+          nome: 'ANDRÉ FERNANDES PEREIRA',
+          nome_mae: 'MARTA FERNANDES PEREIRA',
+          nome_pai: 'LUIZ ALBERTO PEREIRA',
+          email: 'andre.fernandes@example.com',
+          telefone: '+5511998765432',
+          numero_documento: '32490876512',
+          data_nascimento: '1995-03-12T03:00:00.000Z',
+          contagem_debitos: 2,
+          tipos_debito: [
+            'MULTA POR VELOCIDADE',
+            'MULTA POR ESTACIONAMENTO IRREGULAR',
+          ],
+          bloqueios: [
+            {
+              motivo: 'MULTA NÃO PAGA',
+              data: '2024-01-12T03:00:00.000Z',
+            },
+          ],
+          exames: [
+            {
+              nome: 'APTIDÃO FÍSICA E MENTAL',
+              data: '2024-07-15T03:00:00.000Z',
+              local: 'CLÍNICA SÃO LUCAS',
+              resultado: 'APTO',
+              validade: '2034-07-15T03:00:00.000Z',
+              categoria_solicitada: 'AC',
+              categoria_permitida: 'AC',
+              cidade: 'BELO HORIZONTE',
+              uf: 'MG',
+            },
+            {
+              nome: 'AVALIAÇÃO PSICOLÓGICA',
+              data: '2020-05-10T03:00:00.000Z',
+              local: 'CENTRO PSICOLÓGICO BH',
+              resultado: 'APTO',
+              validade: '2030-05-10T03:00:00.000Z',
+              categoria_solicitada: 'AB',
+              categoria_permitida: 'AB',
+              cidade: 'BELO HORIZONTE',
+              uf: 'MG',
+            },
+          ],
+          cursos: [
+            {
+              nome: 'AULAS TEÓRICAS - LEGISLAÇÃO',
+              data_inicio: '2020-03-01T03:00:00.000Z',
+              data_fim: '2020-03-15T03:00:00.000Z',
+              carga_horaria: '45',
+              categoria: '',
+              modalidade: 'PRESENCIAL (Integral)',
+              data_vencimento: null,
+              cidade: 'BELO HORIZONTE',
+              uf: 'MG',
+            },
+            {
+              nome: 'AULAS PRÁTICAS 04 RODAS',
+              data_inicio: '2020-03-20T03:00:00.000Z',
+              data_fim: '2020-04-10T03:00:00.000Z',
+              carga_horaria: '20',
+              categoria: 'B',
+              modalidade: 'PRESENCIAL',
+              data_vencimento: null,
+              cidade: 'BELO HORIZONTE',
+              uf: 'MG',
+            },
+          ],
+          toxicologico: {
+            data_coleta: '2024-06-01T03:00:00.000Z',
+            data_uso: '2024-06-15T03:00:00.000Z',
+            situacao: 'APROVADO',
+            vencimento: '2026-06-15T03:00:00.000Z',
+          },
+        },
+      },
+    ],
+  },
+  status_request: 'PROCESSADO',
+}

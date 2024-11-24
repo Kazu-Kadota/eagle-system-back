@@ -1,20 +1,24 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 
+import { mockTechmizeV2AnswerAnalysisPersonCNHV2GetResponse } from 'src/mock/techmize/v2/answer-analysis/person/cnh-v2/get-response'
 import { AnalysisResultEnum } from 'src/models/dynamo/answer'
 import { PersonAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { SQSStepFunctionController } from 'src/models/lambda'
 import { TechimzePersonSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
 import { TechmizeV2ConsultarCNHV2RequestBody } from 'src/models/techmize/v2/consultar-cnh-v2/request-body'
 import { TechmizeV2ConsultarCNHV2ResponseSuccess } from 'src/models/techmize/v2/consultar-cnh-v2/response'
-import { techmizeV2GetRequestProcessingResponseMessage } from 'src/models/techmize/v2/get-response-error'
+import { TechmizeV2GetRequestErrorResponse, techmizeV2GetRequestProcessingResponseMessage } from 'src/models/techmize/v2/get-response-error'
 import { TechmizeV2GetResponseRequestBody } from 'src/models/techmize/v2/get-response-request-body'
 import sendTaskSuccess from 'src/services/aws/step-functions/send-task-success'
-import techmizeV2GetResponse from 'src/services/techmize/v2/get-response'
+import techmizeV2GetResponse, { TechmizeV2GetResponseResponse } from 'src/services/techmize/v2/get-response'
 import useCaseAnswerPersonAnalysis, { UseCaseAnswerPersonAnalysisParams } from 'src/use-cases/answer-person-analysis'
 import ErrorHandler from 'src/utils/error-handler'
+import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
 
 import validateBody from './validate-body'
+
+const STAGE = getStringEnv('STAGE')
 
 export type TechmizeV2AnswerAnalysisCNHV2BodyValue = TechmizeV2ConsultarCNHV2RequestBody & TechmizeV2GetResponseRequestBody & {
   retry?: boolean
@@ -58,9 +62,11 @@ const techmizeV2AnswerAnalysisCNHV2: SQSStepFunctionController<TechimzePersonSQS
     throw new ErrorHandler('Not informed person_id in message attributes', 500)
   }
 
-  const cnh_v2_result = await techmizeV2GetResponse({
-    protocol: body.protocol,
-  })
+  const cnh_v2_result: TechmizeV2GetResponseResponse | TechmizeV2GetRequestErrorResponse = STAGE === 'prd'
+    ? await techmizeV2GetResponse({
+      protocol: body.protocol,
+    })
+    : mockTechmizeV2AnswerAnalysisPersonCNHV2GetResponse
 
   if (cnh_v2_result.code === 0) {
     if (cnh_v2_result.message === techmizeV2GetRequestProcessingResponseMessage) {

@@ -1,17 +1,19 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 
+import { mockTechmizeV2AnswerAnalysisPersonBasicDataGetResponse } from 'src/mock/techmize/v2/answer-analysis/person/basic-data/get-response'
 import { AnalysisResultEnum } from 'src/models/dynamo/answer'
 import { PersonAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { SQSStepFunctionController } from 'src/models/lambda'
 import { TechimzePersonSQSReceivedMessageAttributes } from 'src/models/techmize/sqs-message-attributes'
 import { TechmizeV2ConsultarDadosBasicosPessoaFisicaRequestBody } from 'src/models/techmize/v2/consultar-dados-basicos-pessoa-fisica/request-body'
 import { TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseSuccess } from 'src/models/techmize/v2/consultar-dados-basicos-pessoa-fisica/response'
-import { techmizeV2GetRequestProcessingResponseMessage } from 'src/models/techmize/v2/get-response-error'
+import { TechmizeV2GetRequestErrorResponse, techmizeV2GetRequestProcessingResponseMessage } from 'src/models/techmize/v2/get-response-error'
 import { TechmizeV2GetResponseRequestBody } from 'src/models/techmize/v2/get-response-request-body'
 import sendTaskSuccess from 'src/services/aws/step-functions/send-task-success'
-import techmizeV2GetResponse from 'src/services/techmize/v2/get-response'
+import techmizeV2GetResponse, { TechmizeV2GetResponseResponse } from 'src/services/techmize/v2/get-response'
 import useCaseAnswerPersonAnalysis, { UseCaseAnswerPersonAnalysisParams } from 'src/use-cases/answer-person-analysis'
 import ErrorHandler from 'src/utils/error-handler'
+import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
 
 import validateBody from './validate-body'
@@ -30,6 +32,8 @@ const dynamodbClient = new DynamoDBClient({
   region: 'us-east-1',
   maxAttempts: 5,
 })
+
+const STAGE = getStringEnv('STAGE')
 
 const techmizeV2AnswerAnalysisPersonBasicData: SQSStepFunctionController<TechimzePersonSQSReceivedMessageAttributes> = async (message) => {
   logger.debug({
@@ -58,9 +62,11 @@ const techmizeV2AnswerAnalysisPersonBasicData: SQSStepFunctionController<Techimz
     throw new ErrorHandler('Not informed person_id in message attributes', 500)
   }
 
-  const person_basic_data_result = await techmizeV2GetResponse({
-    protocol: body.protocol,
-  })
+  const person_basic_data_result: TechmizeV2GetResponseResponse | TechmizeV2GetRequestErrorResponse = STAGE === 'prd'
+    ? await techmizeV2GetResponse({
+      protocol: body.protocol,
+    })
+    : mockTechmizeV2AnswerAnalysisPersonBasicDataGetResponse
 
   if (person_basic_data_result.code === 0) {
     if (person_basic_data_result.message === techmizeV2GetRequestProcessingResponseMessage) {

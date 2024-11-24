@@ -50,15 +50,16 @@ export type TechmizeV2ConsultarCNHV2ResponseDataCNHDetails = {
 }
 
 export type TechmizeV2ConsultarCNHV2ResponseDataCNH = {
-  cnh_v2: TechmizeV2ConsultarCNHV2ResponseDataCNHDetails
+  cnh_v2: any
 }
 
 export type TechmizeV2ConsultarCNHV2ResponseData = {
-  cnh_v2: TechmizeV2ConsultarCNHV2ResponseDataCNH
+  cnh_v2: TechmizeV2ConsultarCNHV2ResponseDataCNH[]
 }
 
 export type TechmizeV2ConsultarCNHV2ResponseSuccess = {
   code: 1
   message: string
   data: TechmizeV2ConsultarCNHV2ResponseData
+  status_request: string
 }

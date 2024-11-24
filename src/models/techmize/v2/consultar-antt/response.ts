@@ -21,11 +21,12 @@ export type TechmizeV2ConsultarANTTResponseDataANTT = {
 }
 
 export type TechmizeV2ConsultarANTTResponseData = {
-  antt: TechmizeV2ConsultarANTTResponseDataANTT
+  antt: TechmizeV2ConsultarANTTResponseDataANTT[]
 }
 
 export type TechmizeV2ConsultarANTTResponseSuccess = {
   code: 1
   message: string
   data: TechmizeV2ConsultarANTTResponseData
+  status_request: string
 }

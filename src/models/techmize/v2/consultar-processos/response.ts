@@ -28,7 +28,7 @@ export type TechmizeV2ConsultarProcessosResponseParty = {
   Name: string
   Polarity: string
   Type: string
-  IsInference: boolean
+  IsInference?: boolean
   PartyDetails: PartyDetails
   LastCaptureDate: string
 }
@@ -47,7 +47,7 @@ export type TechmizeV2ConsultarProcessosResponseLawsuit = {
   LawsuitHostService: string
   InferredCNJSubjectName: string
   InferredCNJSubjectNumber: number
-  InferredCNJProcedureTypeName: string
+  InferredCNJProcedureTypeName?: string
   InferredCNJProcedureTypeNumber: number
   InferredBroadCNJSubjectName: string
   InferredBroadCNJSubjectNumber: number
@@ -96,12 +96,13 @@ export type TechmizeV2ConsultarProcessosResponseDataDetails = {
 }
 
 export type TechmizeV2ConsultarProcessosResponseData = {
-  processos: TechmizeV2ConsultarProcessosResponseDataDetails[]
-  processos_judiciais_administrativos: TechmizeV2ConsultarProcessosResponseDataDetails[]
+  processos?: TechmizeV2ConsultarProcessosResponseDataDetails[]
+  processos_judiciais_administrativos: TechmizeV2ConsultarProcessosResponseDataDetails[][]
 }
 
 export type TechmizeV2ConsultarProcessosResponseSuccess = {
   code: 1
   message: string
   data: TechmizeV2ConsultarProcessosResponseData
+  status_request: string
 }

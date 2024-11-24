@@ -40,9 +40,14 @@ export type TechmizeV2ConsultarDadosBasicosPessoaFisicaResponsePersonalContact<C
       ? TechmizeV2ConsultarDadosBasicosPessoaFisicaResponsePhoneContactDetails
       : never
 
-export type TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseEmailsContact<C extends string> = {
+export type TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseEmailsAndPhoneContact<C extends string> = {
   Primary: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponsePersonalContact<C>[]
   Secondary: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponsePersonalContact<C>[]
+}
+
+export type TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseAddressesContact<C extends string> = {
+  Primary: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponsePersonalContact<C>
+  Secondary: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponsePersonalContact<C>
 }
 
 export type TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseBasicData = {
@@ -58,9 +63,9 @@ export type TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseBasicData = {
 
 export type TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseRegistrationData = {
   BasicData: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseBasicData
-  Emails: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseEmailsContact<'email'>
-  Addresses: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseEmailsContact<'address'>
-  Phones: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseEmailsContact<'phone'>
+  Emails: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseEmailsAndPhoneContact<'email'>
+  Addresses: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseAddressesContact<'address'>
+  Phones: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseEmailsAndPhoneContact<'phone'>
 }
 
 export type TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseDadosBasicosPessoaFisicaResult = {
@@ -76,4 +81,5 @@ export type TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseSuccess = {
   code: 1
   message: string
   data: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseData
+  status_request: string
 }

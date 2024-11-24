@@ -1,0 +1,121 @@
+import { TechmizeV2ConsultarProcessosResponseSuccess } from 'src/models/techmize/v2/consultar-processos/response'
+
+export const mockTechmizeV2AnswerAnalysisPersonProcessGetResponse: TechmizeV2ConsultarProcessosResponseSuccess = {
+  code: 1,
+  message: 'Consulta realizada com sucesso!',
+  data: {
+    processos_judiciais_administrativos: [
+      [
+        {
+          MatchKeys: 'doc{12345678901}',
+          Processes: {
+            Lawsuits: [
+              {
+                Number: '98765432109876543210',
+                Type: 'RITO ORDINÁRIO',
+                MainSubject: 'DISPENSA SEM JUSTA CAUSA',
+                CourtName: 'TRT7',
+                CourtLevel: '2',
+                CourtType: 'CIVIL',
+                CourtDistrict: 'FORTALEZA',
+                JudgingBody: 'TRIBUNAL REGIONAL DO TRABALHO',
+                State: 'CE',
+                Status: 'EM ANDAMENTO',
+                LawsuitHostService: 'EPROC',
+                InferredCNJSubjectName: 'DISPENSA IMOTIVADA',
+                InferredCNJSubjectNumber: 12345,
+                InferredCNJProcedureTypeNumber: 101,
+                InferredBroadCNJSubjectName: 'DIREITO CIVIL',
+                InferredBroadCNJSubjectNumber: 789,
+                OtherSubjects: [
+                  'DISPENSA SEM JUSTA CAUSA',
+                  'RESCISÃO CONTRATUAL',
+                  'DANOS MORAIS',
+                ],
+                NumberOfVolumes: 2,
+                NumberOfPages: 152,
+                Value: 45000,
+                ResJudicataDate: '2023-05-01T00:00:00',
+                CloseDate: '2023-11-15T15:30:00',
+                RedistributionDate: '2023-04-25T00:00:00',
+                PublicationDate: '2023-11-15T00:00:00',
+                NoticeDate: '2023-09-01T08:45:00',
+                LastMovementDate: '2023-11-15T15:45:00',
+                CaptureDate: '2023-12-01T12:00:00',
+                LastUpdate: '2023-12-01T12:00:00',
+                NumberOfParties: 2,
+                NumberOfUpdates: 2,
+                LawSuitAge: 90,
+                AverageNumberOfUpdatesPerMonth: 4,
+                ReasonForConcealedData: 1,
+                Parties: [
+                  {
+                    Doc: '12345678901',
+                    IsPartyActive: true,
+                    Name: 'MARIA SILVA PEREIRA',
+                    Polarity: 'ACTIVE',
+                    Type: 'AUTHOR',
+                    IsInference: true,
+                    PartyDetails: {
+                      SpecificType: 'REQUERENTE',
+                    },
+                    LastCaptureDate: '2023-12-01T12:00:00',
+                  },
+                  {
+                    Doc: '09876543210',
+                    IsPartyActive: false,
+                    Name: 'JOÃO PAULO FERREIRA',
+                    Polarity: 'PASSIVE',
+                    Type: 'DEFENDANT',
+                    PartyDetails: {
+                      SpecificType: 'RÉU',
+                    },
+                    LastCaptureDate: '2023-11-15T15:30:00',
+                  },
+                ],
+                Updates: [
+                  {
+                    Content: 'AUDIÊNCIA DESIGNADA PARA 20/12/2023',
+                    PublishDate: '2023-11-15T15:45:00',
+                    CaptureDate: '2023-12-01T12:00:00',
+                  },
+                  {
+                    Content: 'NOTIFICAÇÃO EXPEDIDA AO RÉU',
+                    PublishDate: '2023-11-01T10:00:00',
+                    CaptureDate: '2023-12-01T12:00:00',
+                  },
+                ],
+                Petitions: [],
+                Decisions: [
+                  {
+                    DecisionContent: 'DEFIRO O PEDIDO DE TUTELA ANTECIPADA.',
+                    DecisionDate: '2023-08-01T10:30:00',
+                  },
+                  {
+                    DecisionContent: 'INDEFIRO A PRODUÇÃO DE PROVA TESTEMUNHAL.',
+                    DecisionDate: '2023-09-15T14:45:00',
+                  },
+                ],
+                dispositivo_legal: 'ART. 7º, CLT',
+                artigo: '123',
+                glossario: 'DISPENSA SEM JUSTA CAUSA',
+                cod_assunto_cnj: 12345,
+              },
+            ],
+          },
+          TotalLawsuits: 1,
+          TotalLawsuitsAsAuthor: 1,
+          TotalLawsuitsAsDefendant: 0,
+          TotalLawsuitsAsOther: 0,
+          FirstLawsuitDate: '2021-01-29T16:31:41',
+          LastLawsuitDate: '2024-08-28T10:01:52',
+          Last30DaysLawsuits: 0,
+          Last90DaysLawsuits: 1,
+          Last180DaysLawsuits: 0,
+          Last365DaysLawsuits: 0,
+        },
+      ],
+    ],
+  },
+  status_request: 'PROCESSADO',
+}
