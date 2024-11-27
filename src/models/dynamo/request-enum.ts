@@ -49,7 +49,7 @@ export const is_vehicle_analysis_type_automatic_arr: Array<Omit<VehicleAnalysisT
 ]
 
 export const vehicle_analysis_type_feature_flag_map: Partial<Record<VehicleAnalysisTypeEnum, FeatureFlagsEnum>> = {
-  [VehicleAnalysisTypeEnum.ANTT]: FeatureFlagsEnum.DATABASE_ACCESS_CONSULT,
+  [VehicleAnalysisTypeEnum.ANTT]: FeatureFlagsEnum.INFORMATION_ACCESS_VEHICLE_ANTT,
   [VehicleAnalysisTypeEnum.BASIC_DATA]: FeatureFlagsEnum.INFORMATION_ACCESS_VEHICLE_BASIC_DATA,
 }
 
@@ -58,6 +58,11 @@ export enum PersonRegionTypeEnum {
   NATIONAL = 'national',
   NATIONAL_DB = 'national + db',
   NATIONAL_STATE = 'national + state',
+}
+
+export const person_region_type_feature_flag_map: Partial<Record<PersonRegionTypeEnum, FeatureFlagsEnum>> = {
+  [PersonRegionTypeEnum.NATIONAL_DB]: FeatureFlagsEnum.DATABASE_ACCESS_CONSULT,
+  [PersonRegionTypeEnum.NATIONAL_STATE]: FeatureFlagsEnum.ACCESS_PERSON_ANALYSIS_REGION_TYPE_NATIONAL_STATE,
 }
 
 export enum DriverCategoryEnum {
