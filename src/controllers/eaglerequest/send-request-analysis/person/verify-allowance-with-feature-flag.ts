@@ -1,6 +1,6 @@
 import { AttributeValue, DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { FeatureFlagsEnum } from 'src/models/dynamo/feature-flag'
-import { is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, PersonRegionTypeEnum, person_analysis_type_feature_flag_map } from 'src/models/dynamo/request-enum'
+import { is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, PersonRegionTypeEnum, person_analysis_type_feature_flag_map, person_region_type_feature_flag_map } from 'src/models/dynamo/request-enum'
 import { PersonAnalysisItems } from 'src/models/dynamo/request-person'
 import queryByCompanyId, { QueryByCompanyId } from 'src/services/aws/dynamo/user/feature-flag/query-by-company-id'
 import ErrorHandler from 'src/utils/error-handler'
@@ -51,8 +51,7 @@ const verifyAllowanceWithFeatureFlag = async ({
           || region_type === PersonRegionTypeEnum.NATIONAL_STATE
         if (feature_flag_region_type) {
           const feature_flag_find = company_feature_flags.find((feature_flag) =>
-            feature_flag === FeatureFlagsEnum.DATABASE_ACCESS_CONSULT
-            || feature_flag === FeatureFlagsEnum.ACCESS_PERSON_ANALYSIS_REGION_TYPE_NATIONAL_STATE,
+            feature_flag === person_region_type_feature_flag_map[region_type],
           )
 
           if (!feature_flag_find) {

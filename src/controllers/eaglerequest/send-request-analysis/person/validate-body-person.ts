@@ -29,6 +29,7 @@ const schema = Joi.object<PersonRequestAnalysis, true>({
           Joi.string().valid(...Object.values(PersonRegionTypeEnum)),
         )
         .max(2)
+        .min(1)
         .when('type', {
           is: is_person_analysis_type_automatic_arr_joi,
           then: Joi.forbidden(),
@@ -37,13 +38,15 @@ const schema = Joi.object<PersonRequestAnalysis, true>({
       regions: Joi
         .array()
         .items(
-          Joi.string().valid(...Object.values(StateEnum)))
+          Joi.string().valid(...Object.values(StateEnum)),
+        )
+        .min(1)
         .when('type', {
           is: is_person_analysis_type_automatic_arr_joi,
           then: Joi.forbidden(),
           otherwise: Joi.when('region_types', {
             is: Joi.array().items().has(PersonRegionTypeEnum.NATIONAL_STATE),
-            then: Joi.array().max(1),
+            then: Joi.array().max(1).required(),
             otherwise: Joi.when('region_types', {
               is: Joi.array().items().has(PersonRegionTypeEnum.STATES),
               then: Joi.array().max(27).required(),
