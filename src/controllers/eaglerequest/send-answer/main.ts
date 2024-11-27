@@ -3,12 +3,14 @@ import { APIGatewayProxyEvent } from 'aws-lambda'
 import { ReturnResponse } from 'src/models/lambda'
 import logger from 'src/utils/logger'
 
-import sendPersonAnswer, { SendPersonAnswer } from './person/send-person-answer'
-import validateQueryPerson from './person/validate-query-person'
+import useCaseAnswerPersonAnalysis, { UseCaseAnswerPersonAnalysisParams } from '../../../use-cases/answer-person-analysis'
+
+import useCaseAnswerVehicleAnalysis from '../../../use-cases/answer-vehicle-analysis'
+
 import validateBody from './validate-body'
 import validatePath from './validate-path'
-import sendVehicleAnswer from './vehicle/send-vehicle-answer'
-import validateQueryVehicle from './vehicle/validate-query-vehicle'
+import validateQueryPerson from './validate-query-person'
+import validateQueryVehicle from './validate-query-vehicle'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 
@@ -21,7 +23,7 @@ const sendAnswerController = async (
   if (analysis_type === 'person') {
     const { person_id } = validateQueryPerson({ ...event.queryStringParameters })
 
-    const data: SendPersonAnswer = {
+    const data: UseCaseAnswerPersonAnalysisParams = {
       request_id: id,
       analysis_result,
       analysis_info,
@@ -29,7 +31,7 @@ const sendAnswerController = async (
       person_id,
     }
 
-    await sendPersonAnswer(data, dynamodbClient)
+    await useCaseAnswerPersonAnalysis(data, dynamodbClient)
 
     logger.info({
       message: 'Answer registered successfully',
@@ -53,7 +55,7 @@ const sendAnswerController = async (
     vehicle_id,
   }
 
-  await sendVehicleAnswer(data, dynamodbClient)
+  await useCaseAnswerVehicleAnalysis(data, dynamodbClient)
 
   logger.info({
     message: 'Answer registered successfully',

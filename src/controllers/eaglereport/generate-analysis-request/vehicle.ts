@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { RequestStatusEnum, VehicleType } from 'src/models/dynamo/request-enum'
+import { RequestStatusEnum, VehicleAnalysisTypeEnum, VehicleType } from 'src/models/dynamo/request-enum'
 import queryRequestVehicleByCompany, { QueryRequestVehicleByCompany, QueryRequestVehicleByCompanyResponse } from 'src/services/aws/dynamo/request/analysis/vehicle/query-by-company'
 import queryFinishedRequestVehicleByCompany, { QueryFinishedRequestVehicleByCompanyResponse } from 'src/services/aws/dynamo/request/finished/vehicle/query-by-company'
 
@@ -15,6 +15,7 @@ export interface ResultVehicleReport {
   plate: string
   request_id: string
   status: RequestStatusEnum
+  vehicle_analysis_type: VehicleAnalysisTypeEnum
   vehicle_id: string
   vehicle_type: VehicleType
 }

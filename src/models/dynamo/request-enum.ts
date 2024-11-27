@@ -1,3 +1,5 @@
+import { FeatureFlagsEnum } from './feature-flag'
+
 export enum RequestStatusEnum {
   WAITING = 'WAITING',
   PROCESSING = 'PROCESSING',
@@ -8,20 +10,54 @@ export enum AnalysisTypeEnum {
   COMBO = 'combo',
   PERSON = 'person',
   VEHICLE = 'vehicle',
+}
+
+export enum PersonAnalysisTypeEnum {
+  BASIC_DATA = 'basic-data',
+  CNH_BASIC = 'cnh-basic',
+  CNH_STATUS = 'cnh-status',
+  HISTORY = 'history',
+  PROCESS = 'process',
+  SIMPLE = 'simple',
+}
+
+export const is_person_analysis_type_automatic_arr: Array<Omit<PersonAnalysisTypeEnum, PersonAnalysisTypeEnum.SIMPLE | PersonAnalysisTypeEnum.HISTORY>> = [
+  PersonAnalysisTypeEnum.BASIC_DATA,
+  PersonAnalysisTypeEnum.CNH_BASIC,
+  PersonAnalysisTypeEnum.CNH_STATUS,
+  PersonAnalysisTypeEnum.PROCESS,
+]
+
+export const person_analysis_type_feature_flag_map: Partial<Record<PersonAnalysisTypeEnum, FeatureFlagsEnum>> = {
+  [PersonAnalysisTypeEnum.BASIC_DATA]: FeatureFlagsEnum.INFORMATION_ACCESS_PERSON_BASIC_DATA,
+  [PersonAnalysisTypeEnum.CNH_BASIC]: FeatureFlagsEnum.INFORMATION_ACCESS_PERSON_CNH_BASIC,
+  [PersonAnalysisTypeEnum.CNH_STATUS]: FeatureFlagsEnum.INFORMATION_ACCESS_PERSON_CNH_STATUS,
+  [PersonAnalysisTypeEnum.PROCESS]: FeatureFlagsEnum.INFORMATION_ACCESS_PERSON_PROCESS,
+}
+
+export enum VehicleAnalysisTypeEnum {
+  SIMPLE = 'simple',
+  BASIC_DATA = 'basic-data',
+  ANTT = 'antt',
   VEHICLE_PLATE_HISTORY = 'vehicle-plate-history',
   VEHICLE_SECOND_DRIVER = 'vehicle-second-driver'
 }
 
-export enum PersonAnalysisTypeEnum {
-  SIMPLE = 'simple',
-  HISTORY = 'history',
-  CNH_STATUS = 'cnh-status'
+export const is_vehicle_analysis_type_automatic_arr: Array<Omit<VehicleAnalysisTypeEnum, VehicleAnalysisTypeEnum.SIMPLE | VehicleAnalysisTypeEnum.VEHICLE_PLATE_HISTORY | VehicleAnalysisTypeEnum.VEHICLE_SECOND_DRIVER>> = [
+  VehicleAnalysisTypeEnum.ANTT,
+  VehicleAnalysisTypeEnum.BASIC_DATA,
+]
+
+export const vehicle_analysis_type_feature_flag_map: Partial<Record<VehicleAnalysisTypeEnum, FeatureFlagsEnum>> = {
+  [VehicleAnalysisTypeEnum.ANTT]: FeatureFlagsEnum.DATABASE_ACCESS_CONSULT,
+  [VehicleAnalysisTypeEnum.BASIC_DATA]: FeatureFlagsEnum.INFORMATION_ACCESS_VEHICLE_BASIC_DATA,
 }
 
 export enum PersonRegionTypeEnum {
   STATES = 'states',
   NATIONAL = 'national',
-  NATIONAL_DB = 'national + db'
+  NATIONAL_DB = 'national + db',
+  NATIONAL_STATE = 'national + state',
 }
 
 export enum DriverCategoryEnum {

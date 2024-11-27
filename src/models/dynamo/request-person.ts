@@ -48,6 +48,7 @@ export interface PersonRequestBody extends PersonRequestForms {
   region_type?: PersonRegionTypeEnum
   region?: StateEnum
   status: RequestStatusEnum
+  third_party?: string
   user_id: string
 }
 

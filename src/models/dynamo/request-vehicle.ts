@@ -2,6 +2,7 @@ import {
   AnalysisTypeEnum,
   PlateStateEnum,
   RequestStatusEnum,
+  VehicleAnalysisTypeEnum,
   VehicleType,
 } from './request-enum'
 
@@ -27,9 +28,11 @@ export interface VehicleRequestBody extends VehicleRequestForms {
   analysis_type: AnalysisTypeEnum
   combo_id?: string
   combo_number?: number
-  user_id: string
   company_name: string
   status: RequestStatusEnum
+  third_party?: any
+  user_id: string
+  vehicle_analysis_type: VehicleAnalysisTypeEnum
 }
 
 export interface VehicleRequest extends VehicleRequestKey, VehicleRequestBody {

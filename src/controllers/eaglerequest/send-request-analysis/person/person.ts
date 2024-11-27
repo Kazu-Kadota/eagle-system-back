@@ -1,5 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { AnalysisTypeEnum, PersonAnalysisTypeEnum, PersonRegionTypeEnum, RequestStatusEnum, StateEnum } from 'src/models/dynamo/request-enum'
+import { SNSClient } from '@aws-sdk/client-sns'
+import { AnalysisTypeEnum, is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, PersonRegionTypeEnum, RequestStatusEnum, StateEnum } from 'src/models/dynamo/request-enum'
 import { PersonRequestKey, PersonRequestForms, PersonRequestBody } from 'src/models/dynamo/request-person'
 import queryPersonByDocument from 'src/services/aws/dynamo/analysis/person/query-by-document'
 import putRequestPerson from 'src/services/aws/dynamo/request/analysis/person/put'
@@ -12,11 +13,12 @@ import { v4 as uuid } from 'uuid'
 export interface PersonAnalysisResponse {
   analysis_type: AnalysisTypeEnum
   name: string
-  person_id: string
   person_analysis_type: PersonAnalysisTypeEnum
+  person_id: string
   region_type?: PersonRegionTypeEnum,
   region?: StateEnum,
   request_id: string
+  third_party?: any
 }
 
 export interface PersonAnalysisRequest {
@@ -28,6 +30,8 @@ export interface PersonAnalysisRequest {
   person_data: PersonRequestForms
   region_type?: PersonRegionTypeEnum,
   region?: StateEnum,
+  snsClient: SNSClient
+  third_party?: any
   user_info: UserInfoFromJwt
 }
 
@@ -41,6 +45,7 @@ const personAnalysis = async (
     person_data,
     region_type,
     region,
+    third_party,
     user_info,
   }: PersonAnalysisRequest,
 ): Promise<PersonAnalysisResponse> => {
@@ -76,15 +81,16 @@ const personAnalysis = async (
 
   const data_request_person: PersonRequestBody = {
     ...person_data,
-    region,
-    region_type,
     analysis_type,
-    person_analysis_type,
     combo_id,
     combo_number: combo_number || undefined,
     company_name: user_info.user_type === 'admin' ? person_data.company_name as string : user_info.company_name,
+    person_analysis_type,
+    region_type,
+    region,
+    status: is_person_analysis_type_automatic_arr.includes(person_analysis_type) ? RequestStatusEnum.PROCESSING : RequestStatusEnum.WAITING,
+    third_party,
     user_id: user_info.user_id,
-    status: RequestStatusEnum.WAITING,
   }
 
   const request_person_person_data = removeEmpty(data_request_person)

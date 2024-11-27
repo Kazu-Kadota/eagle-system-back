@@ -1,12 +1,13 @@
-import { PersonAnalysisTypeEnum, PersonRegionTypeEnum } from 'src/models/dynamo/request-enum'
+import { is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, PersonRegionTypeEnum } from 'src/models/dynamo/request-enum'
 import { PersonAnalysisItems } from 'src/models/dynamo/request-person'
 
+import { eagleTechimzePersonAnalysisTypeEnumMap } from 'src/models/techmize/eagle-techimze-enum-map'
+import techmizeV2CustomRequestConsultar, { TechmizeV2ConsultarParams } from 'src/services/techmize/v2/custom-request'
+import useCasePublishSnsTopicPerson from 'src/use-cases/publish-techimze-sns-topic-person'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
-import getCompanyByNameAdapter from './get-company-adapter'
 import personAnalysis, { PersonAnalysisRequest, PersonAnalysisResponse } from './person'
-import verifyAllowanceToNationalDB from './verify-allowance-to-national-db'
 
 export interface PersonAnalysisConstructor extends Omit<
   PersonAnalysisRequest,
@@ -32,7 +33,9 @@ const personAnalysisConstructor = async (
     throw new ErrorHandler('É necessário informar o nome da empresa para usuários admin', 400)
   }
 
-  if (person_analysis.type !== PersonAnalysisTypeEnum.CNH_STATUS) {
+  if (person_analysis_type === PersonAnalysisTypeEnum.SIMPLE
+    || person_analysis_type === PersonAnalysisTypeEnum.HISTORY
+  ) {
     for (const region_type of person_analysis.region_types) {
       const person_analysis_constructor: PersonAnalysisRequest = {
         ...person_analysis_request,
@@ -40,37 +43,19 @@ const personAnalysisConstructor = async (
         region_type,
       }
 
-      if (region_type === PersonRegionTypeEnum.STATES) {
+      const is_states_search = region_type === PersonRegionTypeEnum.STATES
+        || region_type === PersonRegionTypeEnum.NATIONAL_STATE
+
+      const is_national_search = region_type === PersonRegionTypeEnum.NATIONAL
+        || region_type === PersonRegionTypeEnum.NATIONAL_DB
+
+      if (is_states_search) {
         for (const region of person_analysis.regions) {
           person_analysis_constructor.region = region
 
           person_analyzes.push(await personAnalysis(person_analysis_constructor))
         }
-      } else if (region_type === PersonRegionTypeEnum.NATIONAL_DB) {
-        let company_name = person_analysis_request.user_info.company_name
-
-        if (person_analysis_request.user_info.user_type === 'admin') {
-          company_name = person_analysis_request.person_data.company_name as string
-        }
-
-        const company = await getCompanyByNameAdapter(company_name, person_analysis_request.dynamodbClient)
-
-        const is_allowed = await verifyAllowanceToNationalDB(company.company_id, person_analysis_request.dynamodbClient)
-
-        if (is_allowed) {
-          person_analyzes.push(await personAnalysis(person_analysis_constructor))
-        } else {
-          logger.warn({
-            message: 'Company not allowed to request this type of analysis',
-            region_type,
-            company_id: company.company_id,
-            company_name: company.name,
-          })
-
-          // Optei por deixar para poder questionar a empresa que tentou solicitar este tipo de análise
-          throw new ErrorHandler('Empresa não autorizada em solicitar este tipo de análise', 403)
-        }
-      } else if (region_type === PersonRegionTypeEnum.NATIONAL) {
+      } else if (is_national_search) {
         person_analyzes.push(await personAnalysis(person_analysis_constructor))
       } else {
         logger.warn({
@@ -83,14 +68,50 @@ const personAnalysisConstructor = async (
     }
 
     return person_analyzes
-  }
+  } else if (is_person_analysis_type_automatic_arr.includes(person_analysis_type)) {
+    const person_analysis_constructor: PersonAnalysisRequest = {
+      ...person_analysis_request,
+      person_analysis_type,
+    }
 
-  const person_analysis_constructor: PersonAnalysisRequest = {
-    ...person_analysis_request,
-    person_analysis_type,
-  }
+    const consultar_params: TechmizeV2ConsultarParams = {
+      cpf: person_analysis_constructor.person_data.document.replace('.', '').replace('-', ''),
+      type_request: eagleTechimzePersonAnalysisTypeEnumMap[person_analysis_type],
+    }
 
-  person_analyzes.push(await personAnalysis(person_analysis_constructor))
+    const techmize_response = await techmizeV2CustomRequestConsultar(consultar_params)
+
+    if (techmize_response.code === 0) {
+      logger.warn({
+        message: `TECHMIZE: Error on process consult ${consultar_params.type_request}`,
+        error: {
+          ...techmize_response,
+        },
+      })
+
+      throw new ErrorHandler(`TECHMIZE: Error on process consult ${consultar_params.type_request}`, 500)
+    }
+
+    person_analysis_constructor.third_party = techmize_response.data
+
+    person_analyzes.push(await personAnalysis(person_analysis_constructor))
+
+    await useCasePublishSnsTopicPerson({
+      cpf: person_analysis_request.person_data.document,
+      person_analysis_type,
+      person_id: person_analyzes[0].person_id,
+      protocol: techmize_response.data.protocol,
+      request_id: person_analyzes[0].request_id,
+      snsClient: person_analysis_constructor.snsClient,
+    })
+  } else {
+    logger.warn({
+      message: 'There is no person analysis type that match condition',
+      person_analysis_type,
+    })
+
+    throw new ErrorHandler('Não existe o tipo de anáise de pessoa especificada', 500)
+  }
 
   return person_analyzes
 }

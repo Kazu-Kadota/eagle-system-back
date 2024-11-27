@@ -1,4 +1,9 @@
+import { SFNClient } from '@aws-sdk/client-sfn'
 import { defaultHeaders } from 'src/constants/headers'
+
+import sendTaskFailure from 'src/services/aws/step-functions/send-task-failure'
+
+import ErrorHandler from './error-handler'
 
 const catchError = (err: any) => {
   if (err.isTreated) {
@@ -8,8 +13,6 @@ const catchError = (err: any) => {
       body: JSON.stringify(err.toObject()),
     }
   }
-
-  console.log(err)
 
   if (err.$metadata) {
     return {
@@ -28,6 +31,49 @@ const catchError = (err: any) => {
       message: 'Internal Server Error',
     }),
   }
+}
+
+export type CatchErrorSQSStepFunction = {
+  task_token: string
+  err: any,
+  sfnClient: SFNClient
+}
+
+export const catchErrorSQSStepFunction = async ({
+  err,
+  sfnClient,
+  task_token,
+}: CatchErrorSQSStepFunction) => {
+  if (err.isTreated) {
+    await sendTaskFailure({
+      cause: err.message,
+      code: err.code,
+      sfnClient,
+      task_token,
+    })
+
+    throw new ErrorHandler(err.message, err.code, err.details)
+  }
+
+  if (err.$metadata) {
+    await sendTaskFailure({
+      cause: err.name,
+      code: err.$metadata.httpStatusCode,
+      sfnClient,
+      task_token,
+    })
+
+    throw new ErrorHandler('AWS error: ' + err.name, err.$metadata.httpStatusCode)
+  }
+
+  await sendTaskFailure({
+    cause: 'Internal Server Error',
+    code: 500,
+    sfnClient,
+    task_token,
+  })
+
+  throw new ErrorHandler('Internal Server Error', 500, err)
 }
 
 export default catchError

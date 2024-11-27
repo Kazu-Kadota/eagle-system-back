@@ -27,7 +27,7 @@ const requestAnalysisVehiclePlateHistory: Controller = async (req) => {
   }
 
   const vehicle_analysis_constructor: VehicleAnalysisRequest = {
-    analysis_type: AnalysisTypeEnum.VEHICLE_PLATE_HISTORY,
+    analysis_type: AnalysisTypeEnum.VEHICLE,
     body,
     dynamodbClient,
     user_info,

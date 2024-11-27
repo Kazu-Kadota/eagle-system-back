@@ -1,5 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { PersonRequest } from 'src/models/dynamo/request-person'
+import { UserGroupEnum } from 'src/models/dynamo/user'
 import { ReturnResponse } from 'src/models/lambda'
 import scanPeople, { ScanPeopleRequest, ScanPeopleResponse } from 'src/services/aws/dynamo/request/analysis/person/scan'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
@@ -59,7 +60,13 @@ const listPeopleController = async (user_info: UserInfoFromJwt): Promise<ReturnR
         last_evaluated_key = undefined
       } else {
         for (const item of query_result.result) {
-          people.push(item)
+          if (user_info.user_type !== UserGroupEnum.ADMIN) {
+            const { third_party, ...person_item } = item
+
+            people.push(person_item)
+          } else {
+            people.push(item)
+          }
         }
       }
     }

@@ -174,6 +174,7 @@ const reportAnalysis = async (
     combo_number: 'Número do combo',
     plate: 'Placa',
     vehicle_type: 'Tipo do veículo',
+    vehicle_analysis_type: 'Tipo de análise do veículo',
     owner_name: 'Nome do dono',
     owner_document: 'Documento do dono',
     status: 'Status da análise',

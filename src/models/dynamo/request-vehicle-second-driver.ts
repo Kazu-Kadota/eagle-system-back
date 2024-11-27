@@ -2,6 +2,7 @@ import {
   AnalysisTypeEnum,
   PlateStateEnum,
   RequestStatusEnum,
+  VehicleAnalysisTypeEnum,
 } from './request-enum'
 import { VehicleRequestKey } from './request-vehicle'
 
@@ -15,9 +16,11 @@ export interface VehicleRequestSecondDriverForms {
 
 export interface VehicleRequestSecondDriverBody extends VehicleRequestSecondDriverForms {
   analysis_type: AnalysisTypeEnum
-  user_id: string
   company_name: string
   status: RequestStatusEnum
+  third_party?: any
+  user_id: string
+  vehicle_analysis_type: VehicleAnalysisTypeEnum.VEHICLE_SECOND_DRIVER
 }
 
 export interface VehicleSecondDriverRequest extends VehicleRequestKey, VehicleRequestSecondDriverBody {

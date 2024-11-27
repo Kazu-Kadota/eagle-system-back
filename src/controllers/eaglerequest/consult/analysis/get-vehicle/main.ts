@@ -1,6 +1,7 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 import { VehicleRequestKey } from 'src/models/dynamo/request-vehicle'
+import { UserGroupEnum } from 'src/models/dynamo/user'
 import { ReturnResponse } from 'src/models/lambda'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 
@@ -23,6 +24,10 @@ const getVehicleByRequestIdController = async (
   }
 
   const request_vehicle = await getVehicleAdapter(request_vehicle_key, user_info, dynamodbClient)
+
+  if (user_info.user_type !== UserGroupEnum.ADMIN) {
+    delete request_vehicle.third_party
+  }
 
   return {
     body: {
