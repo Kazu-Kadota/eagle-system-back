@@ -28,8 +28,14 @@ const personConstructor = ({
 }: PersonConstructor): Person => {
   let person_constructor: Person
 
+  const is_national_region_type = region_type === PersonRegionTypeEnum.NATIONAL
+    || region_type === PersonRegionTypeEnum.NATIONAL_DB
+
+  const is_state_region_type = region_type === PersonRegionTypeEnum.STATES
+    || region_type === PersonRegionTypeEnum.NATIONAL_STATE
+
   if (region_type) {
-    if (region_type === PersonRegionTypeEnum.STATES) {
+    if (is_state_region_type) {
       person_constructor = removeEmpty({
         birth_date: request_person.birth_date,
         document: request_person.document,
@@ -75,8 +81,7 @@ const personConstructor = ({
       })
 
       return person_constructor
-    } else if (region_type === PersonRegionTypeEnum.NATIONAL
-      || region_type === PersonRegionTypeEnum.NATIONAL_DB) {
+    } else if (is_national_region_type) {
       person_constructor = removeEmpty({
         birth_date: request_person.birth_date,
         document: request_person.document,
