@@ -4,6 +4,7 @@ import { defaultHeaders } from 'src/constants/headers'
 import sendTaskFailure from 'src/services/aws/step-functions/send-task-failure'
 
 import ErrorHandler from './error-handler'
+import logger from './logger'
 
 const catchError = (err: any) => {
   if (err.isTreated) {
@@ -15,11 +16,16 @@ const catchError = (err: any) => {
   }
 
   if (err.$metadata) {
+    logger.error({
+      message: 'AWS error',
+      err,
+    })
+
     return {
       headers: defaultHeaders,
       statusCode: err.$metadata.httpStatusCode,
       body: JSON.stringify({
-        message: 'AWS error: ' + err.name,
+        message: 'Erro no servidor. Contatar o time técnico.' + err.name,
       }),
     }
   }
@@ -28,7 +34,7 @@ const catchError = (err: any) => {
     headers: defaultHeaders,
     statusCode: 500,
     body: JSON.stringify({
-      message: 'Internal Server Error',
+      message: 'Erro no servidor. Contatar o time técnico.' + err.name,
     }),
   }
 }
@@ -48,6 +54,7 @@ export const catchErrorSQSStepFunction = async ({
     await sendTaskFailure({
       cause: err.message,
       code: err.code,
+      err,
       sfnClient,
       task_token,
     })
@@ -59,6 +66,7 @@ export const catchErrorSQSStepFunction = async ({
     await sendTaskFailure({
       cause: err.name,
       code: err.$metadata.httpStatusCode,
+      err,
       sfnClient,
       task_token,
     })
@@ -69,6 +77,7 @@ export const catchErrorSQSStepFunction = async ({
   await sendTaskFailure({
     cause: 'Internal Server Error',
     code: 500,
+    err,
     sfnClient,
     task_token,
   })

@@ -74,7 +74,7 @@ const requestAnalysisCombo: Controller = async (req) => {
     vehicle.driver_name = body.person.name
 
     const vehicle_analysis_constructor: VehicleAnalysisRequest = {
-      analysis_type: AnalysisTypeEnum.VEHICLE,
+      analysis_type: AnalysisTypeEnum.COMBO,
       body: vehicle,
       combo_id,
       combo_number: body.combo_number,

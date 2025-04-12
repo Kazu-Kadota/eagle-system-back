@@ -17,7 +17,7 @@
     "strict": true,
     "target": "es2020",
   },
-  "include": ["src", "test.ts"],
+  "include": ["src", "test.ts", "marreta"],
   "exclude": [
     "node_modules",
     "node_modules/**/*",

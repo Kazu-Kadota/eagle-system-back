@@ -10,6 +10,7 @@ export enum AnalysisTypeEnum {
   COMBO = 'combo',
   PERSON = 'person',
   VEHICLE = 'vehicle',
+  SYNTHESIS = 'synthesis',
 }
 
 export enum PersonAnalysisTypeEnum {
@@ -38,6 +39,7 @@ export const person_analysis_type_feature_flag_map: Partial<Record<PersonAnalysi
 export enum VehicleAnalysisTypeEnum {
   SIMPLE = 'simple',
   BASIC_DATA = 'basic-data',
+  BASIC_DATA_V2 = 'basic-data-v2',
   ANTT = 'antt',
   VEHICLE_PLATE_HISTORY = 'vehicle-plate-history',
   VEHICLE_SECOND_DRIVER = 'vehicle-second-driver'
@@ -63,6 +65,28 @@ export enum PersonRegionTypeEnum {
 export const person_region_type_feature_flag_map: Partial<Record<PersonRegionTypeEnum, FeatureFlagsEnum>> = {
   [PersonRegionTypeEnum.NATIONAL_DB]: FeatureFlagsEnum.DATABASE_ACCESS_CONSULT,
   [PersonRegionTypeEnum.NATIONAL_STATE]: FeatureFlagsEnum.ACCESS_PERSON_ANALYSIS_REGION_TYPE_NATIONAL_STATE,
+}
+
+export enum PersonThirdPartyEnum {
+  TECHMIZE = 'techmize',
+}
+
+export enum VehicleThirdPartyEnum {
+  TECHMIZE = 'techmize',
+}
+
+export enum SynthesisThirdPartyEnum {
+  TRANSSAT = 'transsat'
+}
+
+export enum PersonIntegrationPostbackEnum {
+  SCOREPLUS = 'scoreplus',
+  M2 = 'm2_system',
+}
+
+export enum VehicleIntegrationPostbackEnum {
+  SCOREPLUS = 'scoreplus',
+  M2 = 'm2',
 }
 
 export enum DriverCategoryEnum {

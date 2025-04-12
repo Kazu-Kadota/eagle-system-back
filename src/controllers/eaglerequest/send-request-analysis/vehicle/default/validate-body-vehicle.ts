@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { PlateStateEnum, VehicleType } from 'src/models/dynamo/request-enum'
+import { PlateStateEnum, VehicleIntegrationPostbackEnum, VehicleType } from 'src/models/dynamo/request-enum'
 import { VehicleRequestForms } from 'src/models/dynamo/request-vehicle'
 
 import ErrorHandler from 'src/utils/error-handler'
@@ -8,7 +8,7 @@ import logger from 'src/utils/logger'
 const plateRegex = /^([A-Za-z0-9]{7})$/
 const documentRegex = /^([0-9]{3}\.[0-9]{3}\.[0-9]{3}\-[0-9]{2}|[0-9]{2}\.[0-9]{3}\.[0-9]{3}\/[0-9]{4}\-[0-9]{2})$/
 
-const schema = Joi.object({
+const schema = Joi.object<VehicleRequestForms, true>({
   chassis: Joi
     .string()
     .max(255)
@@ -20,6 +20,9 @@ const schema = Joi.object({
   driver_name: Joi
     .string()
     .max(255)
+    .optional(),
+  metadata: Joi
+    .object()
     .optional(),
   owner_document: Joi
     .string()
@@ -37,6 +40,11 @@ const schema = Joi.object({
     .string()
     .regex(plateRegex)
     .required(),
+  postback: Joi
+    .string()
+    .max(255)
+    .valid(...Object.values(VehicleIntegrationPostbackEnum))
+    .optional(),
   renavam: Joi
     .string()
     .max(255)

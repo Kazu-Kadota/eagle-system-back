@@ -1,16 +1,10 @@
 import { PersonAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { eagleTechimzePersonAnalysisTypeEnumMap } from 'src/models/techmize/eagle-techimze-enum-map'
-import { TechmizeV2ConsultarCNHRequestBody } from 'src/models/techmize/v2/consultar-cnh/request-body'
-import { TechmizeV2ConsultarCNHV2RequestBody } from 'src/models/techmize/v2/consultar-cnh-v2/request-body'
-import { TechmizeV2ConsultarDadosBasicosPessoaFisicaRequestBody } from 'src/models/techmize/v2/consultar-dados-basicos-pessoa-fisica/request-body'
-import { TechmizeV2ConsultarProcessosRequestBody } from 'src/models/techmize/v2/consultar-processos/request-body'
-import { TechmizeV2GetResponseRequestBody } from 'src/models/techmize/v2/get-response-request-body'
+import { TechmizeNewV1GetResponseRequestBody } from 'src/models/techmize/new-v1/get-response-request-body'
+import { TechmizeNewV1StoreRequestPersonParams } from 'src/services/techmize/new-v1/store-request'
 import logger from 'src/utils/logger'
 
-export type PersonSnsMountMessageReturn = (TechmizeV2ConsultarCNHRequestBody
-  | TechmizeV2ConsultarDadosBasicosPessoaFisicaRequestBody
-  | TechmizeV2ConsultarCNHV2RequestBody
-  | TechmizeV2ConsultarProcessosRequestBody) & TechmizeV2GetResponseRequestBody
+export type PersonSnsMountMessageReturn = TechmizeNewV1StoreRequestPersonParams & TechmizeNewV1GetResponseRequestBody
 
 export type PersonSnsMountMessageParams = {
   cpf: string,

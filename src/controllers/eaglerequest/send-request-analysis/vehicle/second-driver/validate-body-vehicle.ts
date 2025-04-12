@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { PlateStateEnum } from 'src/models/dynamo/request-enum'
+import { PlateStateEnum, VehicleIntegrationPostbackEnum } from 'src/models/dynamo/request-enum'
 import { VehicleRequestSecondDriverForms } from 'src/models/dynamo/request-vehicle-second-driver'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
@@ -7,10 +7,13 @@ import logger from 'src/utils/logger'
 const plateRegex = /^([A-Za-z0-9]{7})$/
 const documentRegex = /^([0-9]{3}\.[0-9]{3}\.[0-9]{3}\-[0-9]{2}|[0-9]{2}\.[0-9]{3}\.[0-9]{3}\/[0-9]{4}\-[0-9]{2})$/
 
-const schema = Joi.object<VehicleRequestSecondDriverForms>({
+const schema = Joi.object<VehicleRequestSecondDriverForms, true>({
   company_name: Joi
     .string()
     .max(255)
+    .optional(),
+  metadata: Joi
+    .object()
     .optional(),
   owner_document: Joi
     .string()
@@ -28,6 +31,11 @@ const schema = Joi.object<VehicleRequestSecondDriverForms>({
     .string()
     .valid(...Object.values(PlateStateEnum))
     .required(),
+  postback: Joi
+    .string()
+    .max(255)
+    .valid(...Object.values(VehicleIntegrationPostbackEnum))
+    .optional(),
 }).required()
 
 const validateBodyVehicleSecondDriver = (

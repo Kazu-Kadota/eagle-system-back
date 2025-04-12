@@ -2,7 +2,7 @@ import { is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, PersonRe
 import { PersonAnalysisItems } from 'src/models/dynamo/request-person'
 
 import { eagleTechimzePersonAnalysisTypeEnumMap } from 'src/models/techmize/eagle-techimze-enum-map'
-import techmizeV2CustomRequestConsultar, { TechmizeV2ConsultarParams } from 'src/services/techmize/v2/custom-request'
+import techmizeNewV1StoreRequest, { TechmizeNewV1StoreRequestPersonParams } from 'src/services/techmize/new-v1/store-request'
 import useCasePublishSnsTopicPerson from 'src/use-cases/publish-techimze-sns-topic-person'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
@@ -74,12 +74,12 @@ const personAnalysisConstructor = async (
       person_analysis_type,
     }
 
-    const consultar_params: TechmizeV2ConsultarParams = {
+    const consultar_params: TechmizeNewV1StoreRequestPersonParams = {
       cpf: person_analysis_constructor.person_data.document.replace('.', '').replace('-', ''),
       type_request: eagleTechimzePersonAnalysisTypeEnumMap[person_analysis_type],
     }
 
-    const techmize_response = await techmizeV2CustomRequestConsultar(consultar_params)
+    const techmize_response = await techmizeNewV1StoreRequest(consultar_params)
 
     if (techmize_response.code === 0) {
       logger.warn({
@@ -100,7 +100,7 @@ const personAnalysisConstructor = async (
       cpf: person_analysis_request.person_data.document,
       person_analysis_type,
       person_id: person_analyzes[0].person_id,
-      protocol: techmize_response.data.protocol,
+      protocol: techmize_response.data,
       request_id: person_analyzes[0].request_id,
       snsClient: person_analysis_constructor.snsClient,
     })

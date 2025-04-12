@@ -74,7 +74,7 @@ export type TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseDadosBasicosPesso
 }
 
 export type TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseData = {
-  dados_cadastrais: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseDadosBasicosPessoaFisicaResult[]
+  dados_cadastrais: TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseDadosBasicosPessoaFisicaResult[][]
 }
 
 export type TechmizeV2ConsultarDadosBasicosPessoaFisicaResponseSuccess = {
