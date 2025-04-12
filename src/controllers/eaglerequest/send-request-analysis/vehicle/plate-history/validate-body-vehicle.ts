@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { PlateStateEnum } from 'src/models/dynamo/request-enum'
+import { PlateStateEnum, VehicleIntegrationPostbackEnum } from 'src/models/dynamo/request-enum'
 import { VehicleRequestPlateHistoryForms } from 'src/models/dynamo/request-vehicle-plate-history'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
@@ -7,10 +7,13 @@ import logger from 'src/utils/logger'
 const plateRegex = /^([A-Za-z0-9]{7})$/
 const documentRegex = /^([0-9]{3}\.[0-9]{3}\.[0-9]{3}\-[0-9]{2}|[0-9]{2}\.[0-9]{3}\.[0-9]{3}\/[0-9]{4}\-[0-9]{2})$/
 
-const schema = Joi.object<VehicleRequestPlateHistoryForms>({
+const schema = Joi.object<VehicleRequestPlateHistoryForms, true>({
   company_name: Joi
     .string()
     .max(255)
+    .optional(),
+  metadata: Joi
+    .object()
     .optional(),
   owner_document: Joi
     .string()
@@ -25,6 +28,15 @@ const schema = Joi.object<VehicleRequestPlateHistoryForms>({
     .regex(plateRegex)
     .required(),
   plate_state: Joi
+    .string()
+    .valid(...Object.values(PlateStateEnum))
+    .required(),
+  postback: Joi
+    .string()
+    .max(255)
+    .valid(...Object.values(VehicleIntegrationPostbackEnum))
+    .optional(),
+  region: Joi
     .string()
     .valid(...Object.values(PlateStateEnum))
     .required(),

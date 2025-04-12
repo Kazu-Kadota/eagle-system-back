@@ -2,12 +2,14 @@ import Joi from 'joi'
 import {
   DriverCategoryEnum,
   PersonAnalysisTypeEnum,
+  PersonIntegrationPostbackEnum,
   PersonRegionTypeEnum,
   PlateStateEnum,
   StateEnum,
+  VehicleIntegrationPostbackEnum,
   VehicleType,
 } from 'src/models/dynamo/request-enum'
-import { PersonRequestAnalysis } from 'src/models/dynamo/request-person'
+import { PersonAnalysisItems, PersonRequestAnalysis, PersonRequestForms } from 'src/models/dynamo/request-person'
 import { VehicleRequestForms } from 'src/models/dynamo/request-vehicle'
 
 import ErrorHandler from 'src/utils/error-handler'
@@ -25,11 +27,11 @@ const plateRegex = /^([A-Za-z0-9]{7})$/
 const valid_person_analysis_type = [PersonAnalysisTypeEnum.HISTORY, PersonAnalysisTypeEnum.SIMPLE]
 const valid_person_analysis_region_type = [PersonRegionTypeEnum.STATES, PersonRegionTypeEnum.NATIONAL]
 
-const schema = Joi.object({
+const schema = Joi.object<ValidateRequestCombo, true>({
   combo_number: Joi
     .number()
     .required(),
-  person_analysis: Joi.array().items(
+  person_analysis: Joi.array<PersonAnalysisItems[]>().items(
     Joi.object({
       type: Joi
         .string()
@@ -55,7 +57,7 @@ const schema = Joi.object({
         }),
     }).required(),
   ).required(),
-  person: Joi.object({
+  person: Joi.object<PersonRequestForms, true>({
     birth_date: Joi
       .string()
       .isoDate()
@@ -84,6 +86,9 @@ const schema = Joi.object({
       .string()
       .max(255)
       .optional(),
+    metadata: Joi
+      .object()
+      .optional(),
     mother_name: Joi
       .string()
       .max(255)
@@ -94,6 +99,11 @@ const schema = Joi.object({
       .required(),
     naturalness: Joi
       .string()
+      .optional(),
+    postback: Joi
+      .string()
+      .max(255)
+      .valid(...Object.values(PersonIntegrationPostbackEnum))
       .optional(),
     rg: Joi
       .string()
@@ -106,8 +116,8 @@ const schema = Joi.object({
       .valid(...Object.values(StateEnum))
       .required(),
   }).required(),
-  vehicles: Joi.array().items(
-    Joi.object({
+  vehicles: Joi.array<VehicleRequestForms[]>().items(
+    Joi.object<VehicleRequestForms, true>({
       chassis: Joi
         .string()
         .max(255)
@@ -119,6 +129,9 @@ const schema = Joi.object({
       driver_name: Joi
         .string()
         .max(255)
+        .optional(),
+      metadata: Joi
+        .object()
         .optional(),
       owner_document: Joi
         .string()
@@ -136,6 +149,11 @@ const schema = Joi.object({
         .string()
         .regex(plateRegex)
         .required(),
+      postback: Joi
+        .string()
+        .max(255)
+        .valid(...Object.values(VehicleIntegrationPostbackEnum))
+        .optional(),
       renavam: Joi
         .string()
         .max(255)

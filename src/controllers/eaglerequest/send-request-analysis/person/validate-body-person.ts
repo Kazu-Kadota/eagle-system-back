@@ -3,6 +3,7 @@ import {
   DriverCategoryEnum,
   is_person_analysis_type_automatic_arr,
   PersonAnalysisTypeEnum,
+  PersonIntegrationPostbackEnum,
   PersonRegionTypeEnum,
   StateEnum,
 } from 'src/models/dynamo/request-enum'
@@ -85,6 +86,9 @@ const schema = Joi.object<PersonRequestAnalysis, true>({
       .string()
       .max(255)
       .optional(),
+    metadata: Joi
+      .object()
+      .optional(),
     mother_name: Joi
       .string()
       .max(255)
@@ -95,6 +99,11 @@ const schema = Joi.object<PersonRequestAnalysis, true>({
       .required(),
     naturalness: Joi
       .string()
+      .optional(),
+    postback: Joi
+      .string()
+      .max(255)
+      .valid(...Object.values(PersonIntegrationPostbackEnum))
       .optional(),
     rg: Joi
       .string()

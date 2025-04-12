@@ -1,9 +1,9 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { SNSClient } from '@aws-sdk/client-sns'
-import { AnalysisTypeEnum, VehicleAnalysisTypeEnum } from 'src/models/dynamo/request-enum'
+import { AnalysisTypeEnum } from 'src/models/dynamo/request-enum'
 import { Controller } from 'src/models/lambda'
-import { eagleTechimzeVehicleAnalysisTypeEnumMap } from 'src/models/techmize/eagle-techimze-enum-map'
-import techmizeV2CustomRequestConsultar, { TechmizeV2ConsultarParams } from 'src/services/techmize/v2/custom-request'
+import { TechmizeNewV1ANTTRequestBody, techmizeNewV1ANTTTypeRequest } from 'src/models/techmize/new-v1/antt/request-body'
+import techmizeNewV1StoreRequest from 'src/services/techmize/new-v1/store-request'
 import useCasePublishSnsTopicVehicle from 'src/use-cases/publish-techimze-sns-topic-vehicle'
 import ErrorHandler from 'src/utils/error-handler'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
@@ -52,13 +52,13 @@ const requestAnalysisVehicleANTT: Controller = async (req) => {
     user_info,
   }
 
-  const consultar_params: TechmizeV2ConsultarParams = {
-    cpf: vehicle_analysis_constructor.body.owner_document,
-    type_request: eagleTechimzeVehicleAnalysisTypeEnumMap[VehicleAnalysisTypeEnum.ANTT],
-    licenseplate: vehicle_analysis_constructor.body.plate,
+  const consultar_params: TechmizeNewV1ANTTRequestBody = {
+    cpf_cnpj: vehicle_analysis_constructor.body.owner_document,
+    plate: vehicle_analysis_constructor.body.plate,
+    type_request: techmizeNewV1ANTTTypeRequest,
   }
 
-  const techmize_response = await techmizeV2CustomRequestConsultar(consultar_params)
+  const techmize_response = await techmizeNewV1StoreRequest(consultar_params)
 
   if (techmize_response.code === 0) {
     logger.warn({
@@ -78,7 +78,7 @@ const requestAnalysisVehicleANTT: Controller = async (req) => {
   await useCasePublishSnsTopicVehicle({
     owner_document: body.owner_document,
     plate: vehicle_analysis.plate,
-    protocol: techmize_response.data.protocol,
+    protocol: techmize_response.data,
     request_id: vehicle_analysis.request_id,
     snsClient,
     vehicle_analysis_type: vehicle_analysis.vehicle_analysis_type,

@@ -36,8 +36,8 @@ const useCasePublishSnsTopicVehicle = async ({
   }
 
   const sns_mount_message_params: VehicleSnsMountMessageParams = {
-    cpf: owner_document,
-    licenseplate: plate,
+    owner_document,
+    plate,
     vehicle_analysis_type,
     protocol,
   }

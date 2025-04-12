@@ -2,7 +2,9 @@ import {
   AnalysisTypeEnum,
   DriverCategoryEnum,
   PersonAnalysisTypeEnum,
+  PersonIntegrationPostbackEnum,
   PersonRegionTypeEnum,
+  PersonThirdPartyEnum,
   RequestStatusEnum,
   StateEnum,
 } from './request-enum'
@@ -15,12 +17,14 @@ export interface PersonRequestForms {
   document: string
   expire_at_cnh?: string
   father_name?: string
+  metadata?: Record<any, any>
   mother_name: string
   name: string
   naturalness?: string
   rg: string
   security_number_cnh?: string
   state_rg: StateEnum
+  postback?: PersonIntegrationPostbackEnum
 }
 
 export interface PersonAnalysisItems {
@@ -48,7 +52,7 @@ export interface PersonRequestBody extends PersonRequestForms {
   region_type?: PersonRegionTypeEnum
   region?: StateEnum
   status: RequestStatusEnum
-  third_party?: string
+  third_party?: PersonThirdPartyEnum
   user_id: string
 }
 
@@ -58,5 +62,7 @@ export interface PersonRequest extends PersonRequestKey, PersonRequestBody {
   finished_at?: string
   analysis_info?: string
   analysis_result?: string
+  synthesis_id?: string
+  synthesis_request_id?: string
   from_db?: boolean
 }

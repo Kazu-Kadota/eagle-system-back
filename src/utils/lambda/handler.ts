@@ -89,10 +89,6 @@ namespace LambdaHandlerNameSpace {
 
     async handler (event: SQSEvent & { taskToken: string }): Promise<void> {
       try {
-        logger.debug({
-          event,
-        })
-
         this.task_token = event.taskToken
 
         for (const record of event.Records) {
@@ -115,10 +111,6 @@ namespace LambdaHandlerNameSpace {
           }
 
           logger.setRequestId(message_attributes.requestId.stringValue)
-
-          logger.debug({
-            message: 'SFN FROM SQS: Handling message',
-          })
 
           await this.controller({
             attributes: record.attributes,
@@ -177,6 +169,51 @@ namespace LambdaHandlerNameSpace {
           message_attributes,
           message_id: record.messageId,
         })
+      }
+    }
+  }
+
+  export class LambdaApiKeyHandlerFunction {
+    controller: Controller
+
+    constructor (controller: Controller) {
+      this.controller = controller
+    }
+
+    async handler (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
+      try {
+        logger.setRequestId(event.requestContext.requestId)
+
+        const request: Request = {
+          ...event,
+        }
+
+        const api_key = event.headers['X-Api-Key']
+
+        if (!api_key) {
+          logger.error({
+            mensage: 'There is no Api Key set',
+          })
+
+          throw new ErrorHandler('Forbidden', 403)
+        }
+
+        logger.setUser(api_key)
+
+        const result = await this.controller(request)
+
+        return {
+          headers: {
+            ...defaultHeaders,
+            ...result.headers,
+          },
+          multiValueHeaders: result.multiValueHeaders,
+          statusCode: result.statusCode ?? 200,
+          body: result.notJsonBody === true ? result.body : JSON.stringify(result.body),
+          isBase64Encoded: result.isBase64Encoded,
+        }
+      } catch (err: any) {
+        return catchError(err)
       }
     }
   }

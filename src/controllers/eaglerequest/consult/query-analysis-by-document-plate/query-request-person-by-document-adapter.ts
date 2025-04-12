@@ -41,6 +41,7 @@ const queryRequestPersonByDocumentAdapter = async (
 
   for (const item of pending_analysis as PersonRequest[]) {
     if (user_info.user_type === 'client' && item.company_name === user_info.company_name) {
+      delete item.third_party
       data.push(item)
     } else if (user_info.user_type !== 'client') {
       data.push(item)
