@@ -34,15 +34,20 @@ const getVehicleByRequestIdController = async (
   const request_vehicle = await getVehicleAdapter(request_vehicle_key, user_info, dynamodbClient)
 
   if (request_vehicle.finished_at) {
-    const get_s3_analysis_info_params: GetS3AnalysisInfoAdapterParams = {
-      analysis_info: request_vehicle.analysis_info as string,
-      s3_client: s3Client,
-      third_party: !!request_vehicle.third_party,
+    // Is temporary
+    const is_s3_path = request_vehicle.analysis_info?.split('.')[1] === 'json'
+
+    if (is_s3_path) {
+      const get_s3_analysis_info_params: GetS3AnalysisInfoAdapterParams = {
+        analysis_info: request_vehicle.analysis_info as string,
+        s3_client: s3Client,
+        third_party: !!request_vehicle.third_party,
+      }
+
+      const analysis_info = await getS3AnalysisInfoAdapter(get_s3_analysis_info_params)
+
+      request_vehicle.analysis_info = analysis_info
     }
-
-    const analysis_info = await getS3AnalysisInfoAdapter(get_s3_analysis_info_params)
-
-    request_vehicle.analysis_info = analysis_info
   }
 
   if (user_info.user_type === UserGroupEnum.CLIENT) {
