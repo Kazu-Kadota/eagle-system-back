@@ -35,15 +35,20 @@ const getPersonByRequestIdController = async (
   const request_person = await getRequestPersonAdapter(request_person_key, user_info, dynamodbClient)
 
   if (request_person.finished_at) {
-    const get_s3_analysis_info_params: GetS3AnalysisInfoAdapterParams = {
-      analysis_info: request_person.analysis_info as string,
-      s3_client: s3Client,
-      third_party: !!request_person.third_party,
+    // Is temporary
+    const is_s3_path = request_person.analysis_info?.split('.')[1] === 'json'
+
+    if (is_s3_path) {
+      const get_s3_analysis_info_params: GetS3AnalysisInfoAdapterParams = {
+        analysis_info: request_person.analysis_info as string,
+        s3_client: s3Client,
+        third_party: !!request_person.third_party,
+      }
+
+      const analysis_info = await getS3AnalysisInfoAdapter(get_s3_analysis_info_params)
+
+      request_person.analysis_info = analysis_info
     }
-
-    const analysis_info = await getS3AnalysisInfoAdapter(get_s3_analysis_info_params)
-
-    request_person.analysis_info = analysis_info
   }
 
   if (user_info.user_type === UserGroupEnum.CLIENT) {
