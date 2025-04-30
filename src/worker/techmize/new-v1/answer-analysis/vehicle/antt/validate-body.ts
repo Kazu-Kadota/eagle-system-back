@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { techmizeV2ConsultarANTTTypeRequest } from 'src/models/techmize/v2/consultar-antt/request-body'
+import { techmizeNewV1ANTTTypeRequest } from 'src/models/techmize/new-v1/antt/request-body'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
@@ -19,7 +19,7 @@ const schema = Joi.object<TechmizeNewV1AnswerAnalysisVehicleANTTBodyValue, true>
     .required(),
   type_request: Joi
     .string()
-    .valid(techmizeV2ConsultarANTTTypeRequest)
+    .valid(techmizeNewV1ANTTTypeRequest)
     .required(),
   protocol: Joi
     .string()

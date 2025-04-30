@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { techmizeV2ConsultarDadosBasicosVeiculoTypeRequest } from 'src/models/techmize/v2/consultar-dados-basicos-veiculo/request-body'
+import { techmizeNewV1DadosBasicosVeiculoTypeRequest } from 'src/models/techmize/new-v1/dados-basicos-veiculo/request-body'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
@@ -14,7 +14,7 @@ const schema = Joi.object<TechmizeNewV1AnswerAnalysisVehicleBasicDataBodyValue, 
     .required(),
   type_request: Joi
     .string()
-    .valid(techmizeV2ConsultarDadosBasicosVeiculoTypeRequest)
+    .valid(techmizeNewV1DadosBasicosVeiculoTypeRequest)
     .required(),
   protocol: Joi
     .string()
