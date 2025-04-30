@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { techmizeV2ConsultarDadosBasicosPessoaFisicaTypeRequest } from 'src/models/techmize/v2/consultar-dados-basicos-pessoa-fisica/request-body'
+import { techmizeNewV1DadosBasicosPessoaFisicaTypeRequest } from 'src/models/techmize/new-v1/dados-basicos-pessoa-fisica/request-body'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
@@ -14,7 +14,7 @@ const schema = Joi.object<TechmizeNewV1AnswerAnalysisPersonBasicDataBodyValue, t
     .required(),
   type_request: Joi
     .string()
-    .valid(techmizeV2ConsultarDadosBasicosPessoaFisicaTypeRequest)
+    .valid(techmizeNewV1DadosBasicosPessoaFisicaTypeRequest)
     .required(),
   protocol: Joi
     .string()

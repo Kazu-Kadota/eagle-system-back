@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { techmizeV2ConsultarCNHTypeRequest } from 'src/models/techmize/v2/consultar-cnh/request-body'
+import { techmizeNewV1CNHTypeRequest } from 'src/models/techmize/new-v1/cnh/request-body'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
@@ -14,7 +14,7 @@ const schema = Joi.object<TechmizeNewV1AnswerAnalysisCNHBodyValue, true>({
     .required(),
   type_request: Joi
     .string()
-    .valid(techmizeV2ConsultarCNHTypeRequest)
+    .valid(techmizeNewV1CNHTypeRequest)
     .required(),
   protocol: Joi
     .string()

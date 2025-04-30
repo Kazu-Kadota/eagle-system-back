@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { techmizeV2ConsultarProcessosTypeRequest } from 'src/models/techmize/v2/consultar-processos/request-body'
+import { techmizeNewV1ProcessosTypeRequest } from 'src/models/techmize/new-v1/processos/request-body'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
@@ -14,7 +14,7 @@ const schema = Joi.object<TechmizeNewV1AnswerAnalysisProcessBodyValue, true>({
     .required(),
   type_request: Joi
     .string()
-    .valid(techmizeV2ConsultarProcessosTypeRequest)
+    .valid(techmizeNewV1ProcessosTypeRequest)
     .required(),
   protocol: Joi
     .string()
