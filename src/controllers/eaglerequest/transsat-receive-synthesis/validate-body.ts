@@ -1,8 +1,11 @@
 import Joi from 'joi'
-import { SyntheisRequestReceiveMetadata, SyntheisRequestReceiveParams } from 'src/models/dynamo/request-synthesis'
+import { SyntheisRequestReceiveMetadata } from 'src/models/dynamo/request-synthesis'
+import { TranssatPostbackSynthesisBody, TranssatPostbackSynthesisOcorrencia } from 'src/models/dynamo/transsat/postback-synthesis/body'
 
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
+
+const date_regex = /^\d{2}\/\d{2}\/\d{4}$/
 
 const schema_metadata = Joi.object<SyntheisRequestReceiveMetadata, true>({
   request_id: Joi
@@ -31,17 +34,108 @@ const schema_metadata = Joi.object<SyntheisRequestReceiveMetadata, true>({
     .optional(),
 }).required()
 
-const schema = Joi.object<SyntheisRequestReceiveParams, true>({
-  metadata: schema_metadata,
-  texto: Joi
+const schema_ocorrencias = Joi.array<TranssatPostbackSynthesisOcorrencia>().items(
+  Joi.object<TranssatPostbackSynthesisOcorrencia, true>({
+    autor: Joi
+      .string()
+      .trim()
+      .min(1)
+      .required(),
+    condutor_do_veiculo: Joi
+      .string()
+      .trim()
+      .min(1)
+      .required(),
+    data: Joi.string()
+      .trim()
+      .pattern(date_regex)
+      .required()
+      .messages({
+        'string.pattern.base': '"data" deve estar no formato dd/mm/yyyy',
+      }),
+    laudo: Joi
+      .boolean()
+      .required(),
+    municipio: Joi
+      .string()
+      .trim()
+      .min(1)
+      .required(),
+    natureza_ocorrencia: Joi
+      .string()
+      .trim()
+      .min(1)
+      .required(),
+    numero_nacional_procedimento: Joi
+      .string()
+      .trim()
+      .min(1)
+      .required(),
+    relato: Joi
+      .string()
+      .trim()
+      .min(1)
+      .required(),
+    situacao_procedimento: Joi
+      .string()
+      .trim()
+      .min(1)
+      .required(),
+    testemunha: Joi
+      .string()
+      .trim()
+      .min(1)
+      .required(),
+    unidade_policial_registro: Joi
+      .string()
+      .trim()
+      .min(1)
+      .required(),
+    vitima: Joi
+      .string()
+      .trim()
+      .min(1)
+      .required(),
+  }),
+).required()
+
+const schema = Joi.object<TranssatPostbackSynthesisBody>({
+  cpf: Joi
     .string()
-    .base64()
+    .min(11)
+    .max(11)
+    .required(),
+  data_nascimento: Joi.string()
+    .trim()
+    .pattern(date_regex)
+    .required()
+    .messages({
+      'string.pattern.base': '"data" deve estar no formato dd/mm/yyyy',
+    }),
+  metadata: schema_metadata,
+  nome: Joi
+    .string()
+    .trim()
+    .min(1)
+    .required(),
+  nome_da_mae: Joi
+    .string()
+    .trim()
+    .min(1)
+    .required(),
+  ocorrencias: schema_ocorrencias,
+  quantidade: Joi
+    .number()
+    .required(),
+  referencia: Joi
+    .string()
+    .uuid()
     .required(),
 }).required()
 
 const validateBodyReceiveSynthesis = (
-  data: Partial<SyntheisRequestReceiveParams>,
-): SyntheisRequestReceiveParams => {
+  data: Partial<TranssatPostbackSynthesisBody>,
+): TranssatPostbackSynthesisBody => {
   const { value, error } = schema.validate(data, {
     abortEarly: true,
   })

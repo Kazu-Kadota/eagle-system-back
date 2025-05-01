@@ -19,11 +19,6 @@ export type SyntheisRequestReceiveMetadata = {
   vehicle_request_id?: string
 }
 
-export type SyntheisRequestReceiveParams = {
-  metadata: SyntheisRequestReceiveMetadata
-  texto: string // gzip base64
-}
-
 export type SynthesisRequestThirdParty = {
   company: SynthesisThirdPartyEnum
   data: any
@@ -37,6 +32,7 @@ export type SynthesisRequestKey = {
 export type SynthesisRequestBody = {
   analysis_type: AnalysisTypeEnum.SYNTHESIS
   company_name: string
+  finished_at?: string
   person_id?: string
   person_request_id?: string
   status: RequestStatusEnum

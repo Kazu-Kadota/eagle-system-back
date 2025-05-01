@@ -1,5 +1,7 @@
 eagleauth-auth
 eaglereport-analysis
+eaglereport-synthesis
+eaglerequest-analysis-synthesis
 eaglerequest-analysis-combo
 eaglerequest-analysis-person
 eaglerequest-analysis-vehicle-antt
@@ -8,11 +10,13 @@ eaglerequest-analysis-vehicle-default
 eaglerequest-analysis-vehicle-plate-history
 eaglerequest-analysis-vehicle-second-driver
 eaglerequest-answer-analysis
+eaglerequest-get-synthesis
 eaglerequest-get-person
 eaglerequest-get-vehicle
 eaglerequest-list-people
 eaglerequest-list-vehicles
 eaglerequest-query-analysis-by-document-plate
+eaglerequest-transsat-receive-synthesis
 eaglerequest-worker-answer-analysis-person-cnh
 eaglerequest-worker-answer-analysis-person-cnh-v2
 eaglerequest-worker-answer-analysis-person-basic-data

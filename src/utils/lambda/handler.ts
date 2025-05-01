@@ -188,17 +188,17 @@ namespace LambdaHandlerNameSpace {
           ...event,
         }
 
-        const api_key = event.headers['X-Api-Key']
-
-        if (!api_key) {
-          logger.error({
-            mensage: 'There is no Api Key set',
-          })
-
-          throw new ErrorHandler('Forbidden', 403)
-        }
-
-        logger.setUser(api_key)
+        // const api_key = event.headers['X-Api-Key']
+        //
+        // if (!api_key) {
+        //  logger.error({
+        //    mensage: 'There is no Api Key set',
+        //  })
+        //
+        //  throw new ErrorHandler('Forbidden', 403)
+        // }
+        //
+        // logger.setUser(api_key)
 
         const result = await this.controller(request)
 

@@ -51,7 +51,7 @@ const getSynthesisController: Controller = async (event) => {
     }
   }
 
-  const s3_key = `${synthesis_id}/${request_id}/${synthesis.third_party}/text_output.json`
+  const s3_key = `${synthesis_id}/${request_id}/${synthesis.third_party?.company}/text_output.json`
 
   const text_output = await s3SynthesisInformationThirdPartyGet({
     key: s3_key,

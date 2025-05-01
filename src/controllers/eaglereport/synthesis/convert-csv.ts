@@ -45,6 +45,7 @@ const convertCsv = ({
   const columns: Record<keyof SynthesisReport, string> = {
     company_name: 'Nome da empresa',
     created_at: 'Data de criação da síntese',
+    finished_at: 'Data de finalização da síntese',
     updated_at: 'Data da última atualização da síntese',
     request_id: 'ID da requisição',
     synthesis_id: 'ID da síntese',
