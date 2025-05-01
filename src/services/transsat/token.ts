@@ -5,6 +5,8 @@ import ErrorHandler from 'src/utils/error-handler'
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
 
+import url from 'url'
+
 import { transsatGetTokenHeaders } from './headers'
 
 const cache_options = {
@@ -15,6 +17,11 @@ const cache_options = {
 const token_cache = new LRUCache(cache_options)
 
 const TRANSSAT_API_TOKEN_ENDPOINT = getStringEnv('TRANSSAT_API_TOKEN_ENDPOINT')
+const TRANSSAT_API_GET_TOKEN_CLIENT_ID = getStringEnv('TRANSSAT_API_GET_TOKEN_CLIENT_ID')
+const TRANSSAT_API_GET_TOKEN_CLIENT_SECRET = getStringEnv('TRANSSAT_API_GET_TOKEN_CLIENT_SECRET')
+const TRANSSAT_API_GET_TOKEN_GRANT_TYPE = getStringEnv('TRANSSAT_API_GET_TOKEN_GRANT_TYPE')
+const TRANSSAT_API_GET_TOKEN_USERNAME = getStringEnv('TRANSSAT_API_GET_TOKEN_USERNAME')
+const TRANSSAT_API_GET_TOKEN_PASSWORD = getStringEnv('TRANSSAT_API_GET_TOKEN_PASSWORD')
 
 const transsatToken = async () => {
   const now = new Date()
@@ -25,10 +32,19 @@ const transsatToken = async () => {
       service: 'transsat',
     })
 
+    const params = new url.URLSearchParams({
+      client_id: TRANSSAT_API_GET_TOKEN_CLIENT_ID,
+      client_secret: TRANSSAT_API_GET_TOKEN_CLIENT_SECRET,
+      grant_type: TRANSSAT_API_GET_TOKEN_GRANT_TYPE,
+      username: TRANSSAT_API_GET_TOKEN_USERNAME,
+      password: TRANSSAT_API_GET_TOKEN_PASSWORD,
+    })
+
     const options: AxiosRequestConfig = {
       method: 'post',
       baseURL: TRANSSAT_API_TOKEN_ENDPOINT,
       headers: transsatGetTokenHeaders(),
+      data: params.toString(),
     }
 
     const result = await axios
