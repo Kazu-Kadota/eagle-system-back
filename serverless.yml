@@ -15,6 +15,7 @@ provider:
     DYNAMO_TABLE_EAGLEUSER_USER: eagleuser-users-sdx
     DYNAMO_TABLE_EAGLEUSER_RECOVERY_PASSWORD: eagleuser-recovery-password-sdx
     DYNAMO_TABLE_EAGLEUSER_PASSWORD_HISTORY: eagleuser-password-history-sdx
+    DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS: eaglerequest-synthesis-sdx
     DYNAMO_TABLE_EAGLEREQUEST_ANALYSIS_PERSON: eaglerequest-analysis-person-sdx
     DYNAMO_TABLE_EAGLEREQUEST_ANALYSIS_VEHICLE: eaglerequest-analysis-vehicle-sdx
     DYNAMO_TABLE_EAGLEANALYSIS_PEOPLE: eagleanalysis-people-sdx
@@ -23,11 +24,20 @@ provider:
     DYNAMO_TABLE_EAGLEREQUEST_FINISHED_ANALYSIS_VEHICLE: eaglerequest-finished-analysis-vehicle-sdx
     EVENTBRIDGE_ANALYSIS_ANSWER_PRODUCER_PUT_EVENT: eaglerequest-third-party-analysis-answer-producer-sdx
     S3_PERSON_ANALYSIS_ANSWER: eaglerequest-s3-person-analysis-answer-sdx
+    S3_SYNTHESIS_INFORMATION: eaglerequest-synthesis-information-sdx
     SNS_EAGLEREQUEST_THIRD_PARTY_WORKERS_ARN: { "Fn::Join" : ["", ["arn:aws:sns:${region}:", { "Ref" : "AWS::AccountId" }, ":eaglerequest-third-party-workers" ] ]  }
     SYSTEMEAGLE_EMAIL: sdx.admin@systemeagle.com.br
     TECHMIZE_API_V2_DATA_SOURCE_CUSTOM_REQUEST_ENDPOINT: ${ssm:/sdx/techmize/api/v2/data_source/custom_request/endpoint}
     TECHMIZE_API_V2_DATA_SOURCE_GET_RESPONSE_ENDPOINT: ${ssm:/sdx/techmize/api/v2/data_source/get_response/endpoint}
     TECHMIZE_API_V2_TOKEN: ${ssm:/sdx/techmize/api/v2/token}
+    TRANSSAT_API_SYNTHESIS_ENDPOINT: ${ssm:/sdx/transsat/api/synthesis_endpoint}
+    TRANSSAT_API_POSTBACK_URL: ${ssm:/sdx/transsat/api/postback_url}
+    TRANSSAT_API_TOKEN_ENDPOINT: ${ssm:/sdx/transsat/api/token_endpoint}
+    TRANSSAT_API_GET_TOKEN_CLIENT_ID: ${ssm:/sdx/transsat/api/token_client_id}
+    TRANSSAT_API_GET_TOKEN_CLIENT_SECRET: ${ssm:/sdx/transsat/api/token_client_secret}
+    TRANSSAT_API_GET_TOKEN_GRANT_TYPE: ${ssm:/sdx/transsat/api/token_grant_type}
+    TRANSSAT_API_GET_TOKEN_USERNAME: ${ssm:/sdx/transsat/api/token_username}
+    TRANSSAT_API_GET_TOKEN_PASSWORD: ${ssm:/sdx/transsat/api/token_password}
     USER_RECOVERY_KEY_URL: https://user.api.sdx.systemeagle.com.br/reset-password
 
 package:
@@ -371,6 +381,42 @@ functions:
           localAuthorizer:
             name: "mylocalAuthProxyFn"
             type: "request"
+
+  eaglerequest-analysis-synthesis:
+    handler: src/controllers/eaglerequest/send-request-analysis/synthesis/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /synthesis
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-get-synthesis:
+    handler: src/controllers/eaglerequest/consult/synthesis/get/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /synthesis
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-transsat-receive-synthesis:
+    handler: src/controllers/eaglerequest/transsat-receive-synthesis/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /synthesis/receive
 
   worker-techmize-v2-answer-analysis-person-basic-data:
     handler: src/worker/techmize/v2/answer-analysis/person/basic-data/index.handler
