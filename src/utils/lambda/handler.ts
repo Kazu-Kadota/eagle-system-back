@@ -41,7 +41,8 @@ namespace LambdaHandlerNameSpace {
             throw new ErrorHandler('Usuário não autenticado', 403)
           }
 
-          logger.setUser(user_info?.user_id)
+          logger.setUser(user_info.user_id)
+          logger.setCompany(user_info.company_id)
 
           if (!this.authentication[user_info.user_type]) {
             logger.error({
@@ -49,7 +50,7 @@ namespace LambdaHandlerNameSpace {
               user_type: user_info.user_type,
             })
 
-            throw new ErrorHandler('Usuário não autorizado para executar este fluxo', 401)
+            throw new ErrorHandler('Forbidden', 401)
           }
 
           request.user_info = user_info

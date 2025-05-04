@@ -10,6 +10,10 @@ eaglerequest-analysis-vehicle-default
 eaglerequest-analysis-vehicle-plate-history
 eaglerequest-analysis-vehicle-second-driver
 eaglerequest-answer-analysis
+eaglerequest-change-analysis-answer-person
+eaglerequest-change-analysis-answer-vehicle
+eaglerequest-delete-waiting-analysis-person
+eaglerequest-delete-waiting-analysis-vehicle
 eaglerequest-get-synthesis
 eaglerequest-get-person
 eaglerequest-get-vehicle
