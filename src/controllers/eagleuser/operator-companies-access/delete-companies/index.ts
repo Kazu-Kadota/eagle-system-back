@@ -3,21 +3,21 @@ import { Response } from 'src/models/lambda'
 import LambdaHandlerNameSpace from 'src/utils/lambda/handler'
 import logger from 'src/utils/logger'
 
-import queryAnalysisByDocumentPlate from './main'
+import operatorCompaniesAccessDeleteCompaniesController from './main'
 
 export const handler = async (
   event: APIGatewayProxyEvent,
 ): Promise<Response<any>> => {
-  logger.setService('eaglerequest')
+  logger.setService('eagleuser')
 
   const allowed_users: LambdaHandlerNameSpace.UserAuthentication = {
     admin: true,
-    client: true,
-    operator: true,
+    client: false,
+    operator: false,
   }
 
   const controller = new LambdaHandlerNameSpace
-    .LambdaHandlerFunction(queryAnalysisByDocumentPlate, allowed_users)
+    .LambdaHandlerFunction(operatorCompaniesAccessDeleteCompaniesController, allowed_users)
 
   return controller.handler(event)
 }

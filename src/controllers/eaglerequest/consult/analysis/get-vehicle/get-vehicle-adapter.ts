@@ -14,10 +14,9 @@ const getVehicleAdapter = async (
   const request_vehicle = await getRequestVehicle(key, dynamodbClient)
 
   if (request_vehicle) {
-    if (
-      user_info.user_type === 'client'
-      && user_info.company_name !== request_vehicle.company_name
-    ) {
+    const do_not_return = user_info.user_type === 'client' && user_info.company_name !== request_vehicle.company_name
+
+    if (do_not_return) {
       logger.warn({
         message: 'Vehicle not requested to analyze from company',
         company_name: user_info,
@@ -40,10 +39,9 @@ const getVehicleAdapter = async (
   const finished_vehicle = await getFinishedRequestVehicle(key, dynamodbClient)
 
   if (finished_vehicle) {
-    if (
-      user_info.user_type === 'client'
-      && user_info.company_name !== finished_vehicle.company_name
-    ) {
+    const do_not_return = user_info.user_type === 'client' && user_info.company_name !== finished_vehicle.company_name
+
+    if (do_not_return) {
       logger.warn({
         message: 'Vehicle not requested to analyze from company',
         company_name: user_info,
