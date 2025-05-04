@@ -27,8 +27,12 @@ eagleuser-change-password
 eagleuser-feature-flag-modify-allowance
 eagleuser-feature-flag-set
 eagleuser-list-companies
+eagleuser-list-users
 eagleuser-login
 eagleuser-my-company
+eagleuser-operator-companies-access-users-delete
+eagleuser-operator-delete-companies-access
+eagleuser-operator-register-companies-access
 eagleuser-recovery-password
 eagleuser-register-company
 eagleuser-register-user
