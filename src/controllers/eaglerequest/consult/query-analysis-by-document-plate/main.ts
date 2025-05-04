@@ -1,7 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { S3Client } from '@aws-sdk/client-s3'
-import { APIGatewayProxyEvent } from 'aws-lambda'
-import { ReturnResponse } from 'src/models/lambda'
+import { Controller } from 'src/models/lambda'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import logger from 'src/utils/logger'
 
@@ -21,14 +20,13 @@ const s3Client = new S3Client({
   region: 'us-east-1',
 })
 
-const queryAnalysisByDocumentPlate = async (
-  event: APIGatewayProxyEvent,
-  user_info: UserInfoFromJwt,
-): Promise<ReturnResponse<any>> => {
-  const { path_type } = validatePath({ ...event.pathParameters })
+const queryAnalysisByDocumentPlate: Controller = async (req) => {
+  const user_info = req.user_info as UserInfoFromJwt
+
+  const { path_type } = validatePath({ ...req.pathParameters })
 
   if (path_type === 'person') {
-    const query_person = validateQueryPerson({ ...event.queryStringParameters })
+    const query_person = validateQueryPerson({ ...req.queryStringParameters })
 
     const data = await queryRequestPersonByDocumentAdapter(query_person, dynamodbClient, user_info)
 
@@ -63,7 +61,7 @@ const queryAnalysisByDocumentPlate = async (
     }
   }
 
-  const query_vehicle = validateQueryVehicle({ ...event.queryStringParameters })
+  const query_vehicle = validateQueryVehicle({ ...req.queryStringParameters })
 
   const data = await queryRequestVehicleByPlateAdapter(query_vehicle, dynamodbClient, user_info)
 

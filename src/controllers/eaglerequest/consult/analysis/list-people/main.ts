@@ -1,21 +1,35 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { PersonRequest } from 'src/models/dynamo/request-person'
 import { UserGroupEnum } from 'src/models/dynamo/user'
-import { ReturnResponse } from 'src/models/lambda'
+import { OperatorCompaniesAccess, OperatorCompaniesAccessKey } from 'src/models/dynamo/users/operator-companies-access'
+import { Controller } from 'src/models/lambda'
 import scanPeople, { ScanPeopleRequest, ScanPeopleResponse } from 'src/services/aws/dynamo/request/analysis/person/scan'
+import getOperatorCompaniesAccess from 'src/services/aws/dynamo/user/operator-companies-access/get'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import logger from 'src/utils/logger'
 import memorySizeOf from 'src/utils/memory-size-of'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 
-const listPeopleController = async (user_info: UserInfoFromJwt): Promise<ReturnResponse<any>> => {
+const listPeopleController: Controller = async (req) => {
+  const user_info = req.user_info as UserInfoFromJwt
+
   let last_evaluated_key
   const scan: ScanPeopleRequest = {}
   const people: PersonRequest[] = []
 
   if (user_info.user_type === 'client') {
     scan.company_name = user_info.company_name
+  }
+
+  let operator_companies_access: OperatorCompaniesAccess | undefined
+
+  if (user_info.user_type === UserGroupEnum.OPERATOR) {
+    const operator_companies_access_key: OperatorCompaniesAccessKey = {
+      user_id: user_info.user_id,
+    }
+
+    operator_companies_access = await getOperatorCompaniesAccess(operator_companies_access_key, dynamodbClient)
   }
 
   do {
@@ -61,6 +75,13 @@ const listPeopleController = async (user_info: UserInfoFromJwt): Promise<ReturnR
       } else {
         for (const item of query_result.result) {
           if (user_info.user_type !== UserGroupEnum.ADMIN) {
+            if (user_info.user_type === UserGroupEnum.OPERATOR) {
+              const to_be_shown_operator = !operator_companies_access || (operator_companies_access && operator_companies_access.companies.includes(item.company_name))
+
+              if (!to_be_shown_operator) {
+                continue
+              }
+            }
             const { third_party, ...person_item } = item
 
             people.push(person_item)
