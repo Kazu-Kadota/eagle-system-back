@@ -1,3 +1,5 @@
+import { Timestamp } from './timestamp'
+
 export enum FeatureFlagsEnum {
   ACCESS_PERSON_ANALYSIS_REGION_TYPE_NATIONAL_STATE = 'access_person_analysis_region_type_national_state',
   SYNTHESIS_INFORMATION_ACCESS = 'synthesis_information_access',
@@ -19,7 +21,4 @@ export type FeatureFlagBody = {
   enabled: boolean
 }
 
-export type FeatureFlag = FeatureFlagKey & FeatureFlagBody & {
-  created_at: string
-  updated_at: string
-}
+export type FeatureFlag = FeatureFlagKey & FeatureFlagBody & Timestamp & {}

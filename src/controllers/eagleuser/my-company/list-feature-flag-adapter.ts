@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import queryByCompanyId, { QueryByCompanyId } from 'src/services/aws/dynamo/user/feature-flag/query-by-company-id'
+import queryFeatureFlag, { QueryByCompanyId } from 'src/services/aws/dynamo/user/feature-flag/query-by-company-id'
 
 export type ListFeatureFlagAdapterResponse = Array<string>
 
@@ -20,7 +20,7 @@ const listFeatureFlagAdapter = async ({
   }
 
   do {
-    const list_feature_flag = await queryByCompanyId(
+    const list_feature_flag = await queryFeatureFlag(
       query_by_company_id_params,
       dynamodbClient,
       last_evaluated_key,

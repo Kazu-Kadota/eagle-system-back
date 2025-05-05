@@ -218,6 +218,20 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
+  eagleuser-feature-flag-get-all-by-company:
+    handler: src/controllers/eagleuser/feature-flag/get-all-by-company/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /feature-flag/company
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
   eagleuser-operator-companies-access-register-companies:
     handler: src/controllers/eagleuser/operator-companies-access/register-companies/index.handler
     timeout: 600

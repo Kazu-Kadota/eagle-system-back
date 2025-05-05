@@ -34,25 +34,42 @@ export const transactWriteItems = ({
       }
     }
     case 'put': {
+      const now = new Date().toISOString()
+
+      const item = {
+        ...key,
+        ...body,
+        created_at: now,
+        updated_at: now,
+      }
+
       return {
         Put: {
           TableName: table,
-          Item: key,
+          Item: item,
+          ConditionExpression: createConditionExpression(key, false),
           ExpressionAttributeNames: createExpressionAttributeNames(key),
           ExpressionAttributeValues: createExpressionAttributeValues(key),
-          ConditionExpression: createConditionExpression(key, false),
         },
       }
     }
     case 'update': {
+      const now = new Date().toISOString()
+
+      const item = {
+        ...key,
+        ...body,
+        updated_at: now,
+      }
+
       return {
         Update: {
           TableName: table,
           Key: key,
-          UpdateExpression: createUpdateExpression(body, Object.keys(key)),
-          ExpressionAttributeNames: createExpressionAttributeNames(body),
-          ExpressionAttributeValues: createExpressionAttributeValues(body, true),
           ConditionExpression: createConditionExpression(key, true),
+          ExpressionAttributeNames: createExpressionAttributeNames(item),
+          ExpressionAttributeValues: createExpressionAttributeValues(item, true),
+          UpdateExpression: createUpdateExpression(item, Object.keys(key)),
         },
       }
     }
