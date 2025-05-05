@@ -3,7 +3,6 @@ import { User, UserGroupEnum } from 'src/models/dynamo/user'
 import { Controller } from 'src/models/lambda'
 import scanUser, { ScanUserResponse } from 'src/services/aws/dynamo/user/user/scan'
 import logger from 'src/utils/logger'
-import removeEmpty from 'src/utils/remove-empty'
 import { Exact } from 'src/utils/types/exact'
 
 import validateBodyListUsers from './validate-body'
@@ -13,13 +12,20 @@ const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 export type UserSanitized = Omit<User, 'password'>
 
 export type ListUsersParam = {
-  user_type_filter?: Array<UserGroupEnum>
+  user_type_filter: string
 }
 
 const listUsers: Controller = async (req) => {
-  const event_body = removeEmpty(JSON.parse(req.body as string))
+  const query = req.queryStringParameters
+  let user_type_filter: UserGroupEnum[] | undefined
 
-  const { user_type_filter } = validateBodyListUsers(event_body)
+  if (query) {
+    const params = query as ListUsersParam
+
+    const user_type_filter_params = params.user_type_filter.split('-') as Array<UserGroupEnum>
+
+    user_type_filter = validateBodyListUsers(user_type_filter_params)
+  }
 
   let last_evaluated_key
   const result: UserSanitized[] = []

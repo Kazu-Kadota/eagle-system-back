@@ -1,5 +1,3 @@
-import { marshall } from '@aws-sdk/util-dynamodb'
-
 import ErrorHandler from '../error-handler'
 import logger from '../logger'
 
@@ -31,10 +29,7 @@ export const transactWriteItems = ({
       return {
         Delete: {
           TableName: table,
-          Key: marshall(key),
-          ExpressionAttributeNames: createExpressionAttributeNames(key),
-          ExpressionAttributeValues: createExpressionAttributeValues(key),
-          ConditionExpression: createConditionExpression(key, true),
+          Key: key,
         },
       }
     }
@@ -42,7 +37,7 @@ export const transactWriteItems = ({
       return {
         Put: {
           TableName: table,
-          Item: marshall(key),
+          Item: key,
           ExpressionAttributeNames: createExpressionAttributeNames(key),
           ExpressionAttributeValues: createExpressionAttributeValues(key),
           ConditionExpression: createConditionExpression(key, false),
