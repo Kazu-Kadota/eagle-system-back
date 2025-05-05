@@ -24,13 +24,16 @@ provider:
     DYNAMO_TABLE_EAGLEREQUEST_FINISHED_ANALYSIS_PERSON: eaglerequest-finished-analysis-person-sdx
     DYNAMO_TABLE_EAGLEREQUEST_FINISHED_ANALYSIS_VEHICLE: eaglerequest-finished-analysis-vehicle-sdx
     EVENTBRIDGE_ANALYSIS_ANSWER_PRODUCER_PUT_EVENT: eaglerequest-third-party-analysis-answer-producer-sdx
-    S3_PERSON_ANALYSIS_ANSWER: eaglerequest-s3-person-analysis-answer-sdx
+    S3_PERSON_ANALYSIS_ANSWER: eaglerequest-person-analysis-answer-sdx
     S3_SYNTHESIS_INFORMATION: eaglerequest-synthesis-information-sdx
     SNS_EAGLEREQUEST_THIRD_PARTY_WORKERS_ARN: { "Fn::Join" : ["", ["arn:aws:sns:${region}:", { "Ref" : "AWS::AccountId" }, ":eaglerequest-third-party-workers" ] ]  }
     SYSTEMEAGLE_EMAIL: sdx.admin@systemeagle.com.br
     TECHMIZE_API_V2_DATA_SOURCE_CUSTOM_REQUEST_ENDPOINT: ${ssm:/sdx/techmize/api/v2/data_source/custom_request/endpoint}
     TECHMIZE_API_V2_DATA_SOURCE_GET_RESPONSE_ENDPOINT: ${ssm:/sdx/techmize/api/v2/data_source/get_response/endpoint}
     TECHMIZE_API_V2_TOKEN: ${ssm:/sdx/techmize/api/v2/token}
+    TECHMIZE_API_NEW_V1_REQUEST_GET_RESPONSE_ENDPOINT: ${ssm:/sdx/techmize/api/new/v1/request/get_response/endpoint}
+    TECHMIZE_API_NEW_V1_REQUEST_STORE_REQUEST_ENDPOINT: ${ssm:/sdx/techmize/api/new/v1/request/store_request/endpoint}
+    TECHMIZE_API_NEW_V1_TOKEN: ${ssm:/sdx/techmize/api/new/v1/token}
     TRANSSAT_API_SYNTHESIS_ENDPOINT: ${ssm:/sdx/transsat/api/synthesis_endpoint}
     TRANSSAT_API_POSTBACK_URL: ${ssm:/sdx/transsat/api/postback_url}
     TRANSSAT_API_TOKEN_ENDPOINT: ${ssm:/sdx/transsat/api/token_endpoint}
@@ -432,6 +435,62 @@ functions:
       - http:
           method: post
           path: /analysis/{analysis_type}/{id}/answer
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-change-analysis-answer-person:
+    handler: src/controllers/eaglerequest/change-analysis-answer/person/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/person/change-answer
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-change-analysis-answer-vehicle:
+    handler: src/controllers/eaglerequest/change-analysis-answer/vehicle/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/vehicle/change-answer
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-delete-waiting-analysis-person:
+    handler: src/controllers/eaglerequest/delete-waiting-analysis/person/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/person/delete-waiting
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-delete-waiting-analysis-vehicle:
+    handler: src/controllers/eaglerequest/delete-waiting-analysis/vehicle/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/vehicle/delete-waiting
           authorizer:
             type: CUSTOM
             authorizerId: abcjfk
