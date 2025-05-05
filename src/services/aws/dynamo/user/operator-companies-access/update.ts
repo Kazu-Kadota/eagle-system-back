@@ -19,7 +19,7 @@ import {
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
 
-const DYNAMO_TABLE_EAGLEUSER_USER = getStringEnv('DYNAMO_TABLE_EAGLEUSER_USER')
+const DYNAMO_TABLE_EAGLEUSER_OPERATOR_COMPANIES_ACCESS = getStringEnv('DYNAMO_TABLE_EAGLEUSER_OPERATOR_COMPANIES_ACCESS')
 
 const updateOperatorCompaniesAccess = async (
   key: OperatorCompaniesAccessKey,
@@ -41,7 +41,7 @@ const updateOperatorCompaniesAccess = async (
   }
 
   const command = new UpdateCommand({
-    TableName: DYNAMO_TABLE_EAGLEUSER_USER,
+    TableName: DYNAMO_TABLE_EAGLEUSER_OPERATOR_COMPANIES_ACCESS,
     Key: key,
     ConditionExpression: createConditionExpression(key, true),
     ExpressionAttributeNames: createExpressionAttributeNames(update),

@@ -12,6 +12,7 @@ provider:
     DYNAMO_TABLE_EAGLEUSER_ACCESS_TOKEN: eagleuser-access-token-sdx
     DYNAMO_TABLE_EAGLEUSER_COMPANY: eagleuser-company-sdx
     DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG: eagleuser-feature-flag-sdx
+    DYNAMO_TABLE_EAGLEUSER_OPERATOR_COMPANIES_ACCESS: eagleuser-operator-companies-access-sdx
     DYNAMO_TABLE_EAGLEUSER_USER: eagleuser-users-sdx
     DYNAMO_TABLE_EAGLEUSER_RECOVERY_PASSWORD: eagleuser-recovery-password-sdx
     DYNAMO_TABLE_EAGLEUSER_PASSWORD_HISTORY: eagleuser-password-history-sdx
@@ -158,6 +159,20 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
+  eagleuser-list-users:
+    handler: src/controllers/eagleuser/list-users/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /users
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
   eagleuser-my-company:
     handler: src/controllers/eagleuser/my-company/index.handler
     timeout: 600
@@ -193,6 +208,48 @@ functions:
       - http:
           method: put
           path: /feature-flag/set
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-operator-companies-access-register-companies:
+    handler: src/controllers/eagleuser/operator-companies-access/register-companies/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /operator-companies-access/register-companies
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-operator-companies-access-delete-companies:
+    handler: src/controllers/eagleuser/operator-companies-access/delete-companies/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /operator-companies-access/delete-companies
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-operator-companies-access-delete-users:
+    handler: src/controllers/eagleuser/operator-companies-access/delete-users/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /operator-companies-access/delete-users
           authorizer:
             type: CUSTOM
             authorizerId: abcjfk
