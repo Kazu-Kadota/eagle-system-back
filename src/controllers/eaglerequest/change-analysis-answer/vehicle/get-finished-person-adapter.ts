@@ -17,7 +17,7 @@ const getFinishedPersonAdapter = async (
       person_id: key.person_id,
     })
 
-    throw new ErrorHandler('Pessoa não existe', 500)
+    throw new ErrorHandler('Pessoa não existe', 404)
   }
 
   return finished_person

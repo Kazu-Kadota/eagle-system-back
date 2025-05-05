@@ -8,11 +8,11 @@ const schema = Joi.object<VehicleRequestKey, true>({
   vehicle_id: Joi
     .string()
     .uuid()
-    .optional(),
+    .required(),
   request_id: Joi
     .string()
     .uuid()
-    .optional(),
+    .required(),
 }).required()
 
 const validateBodyDeleteWaitingAnalysisVehicle = (

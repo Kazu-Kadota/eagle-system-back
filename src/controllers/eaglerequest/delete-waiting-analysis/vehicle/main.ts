@@ -31,7 +31,7 @@ const deleteWaitingAnalysisVehicleController: Controller = async (req) => {
   await deleteRequestVehicle(vehicle_request_key, dynamodbClient)
 
   logger.info({
-    message: 'Successfully requested synthesis',
+    message: 'Successfully deleted waiting vehicle analysis',
     ...vehicle_request_key,
     company_name: user_info.company_name,
     user_id: user_info.user_id,
@@ -39,7 +39,7 @@ const deleteWaitingAnalysisVehicleController: Controller = async (req) => {
 
   return {
     body: {
-      message: 'Successfully requested synthesis',
+      message: 'Successfully deleted waiting vehicle analysis',
       ...vehicle_request_key,
     },
   }

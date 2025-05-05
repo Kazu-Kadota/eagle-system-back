@@ -1,9 +1,11 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { S3Client } from '@aws-sdk/client-s3'
+import { PersonThirdPartyEnum } from 'src/models/dynamo/request-enum'
 import { PersonRequestKey } from 'src/models/dynamo/request-person'
 import { Controller } from 'src/models/lambda'
 import updateFinishedRequestPerson from 'src/services/aws/dynamo/request/finished/person/update'
 import s3PersonAnalysisAnswerPut from 'src/services/aws/s3/person-analysis/answer/put'
+import s3PersonAnalysisAnswerThirdPartyPut from 'src/services/aws/s3/person-analysis/answer/third-party/put'
 import logger from 'src/utils/logger'
 import removeEmpty from 'src/utils/remove-empty'
 
@@ -29,17 +31,39 @@ const changeAnalysisAnswerPersonController: Controller = async (req) => {
 
   const finished_person = await getFinishedPersonAdapter(person_key, dynamodbClient)
 
-  await s3PersonAnalysisAnswerPut({
-    analysis_type: finished_person.analysis_type,
-    body: JSON.stringify(body.analysis_info),
-    person_analysis_type: finished_person.person_analysis_type,
-    person_id: finished_person.person_id,
-    region: finished_person.region,
-    request_id: finished_person.request_id,
-    s3_client: s3Client,
-  })
+  if (finished_person.third_party) {
+    await s3PersonAnalysisAnswerThirdPartyPut({
+      // Do the next change in the future. Vehicle too
+      // third_party: Object.keys(finished_person.third_party)[0] as PersonThirdPartyEnum,
+      third_party: PersonThirdPartyEnum.TECHMIZE,
+      analysis_type: finished_person.analysis_type,
+      body: JSON.stringify(body.analysis_info),
+      person_analysis_type: finished_person.person_analysis_type,
+      person_id: finished_person.person_id,
+      region: finished_person.region,
+      request_id: finished_person.request_id,
+      s3_client: s3Client,
+    })
+  } else {
+    await s3PersonAnalysisAnswerPut({
+      analysis_type: finished_person.analysis_type,
+      body: JSON.stringify(body.analysis_info),
+      person_analysis_type: finished_person.person_analysis_type,
+      person_id: finished_person.person_id,
+      region: finished_person.region,
+      request_id: finished_person.request_id,
+      s3_client: s3Client,
+    })
+  }
 
-  await updateFinishedRequestPerson(person_key, {}, dynamodbClient)
+  await updateFinishedRequestPerson(
+    person_key,
+    {
+      analysis_result: body.analysis_result,
+      from_db: body.from_db,
+    },
+    dynamodbClient,
+  )
 
   logger.info({
     message: 'Successfully changed person`s analysis answer',

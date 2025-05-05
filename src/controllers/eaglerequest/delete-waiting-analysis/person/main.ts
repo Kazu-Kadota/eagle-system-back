@@ -31,7 +31,7 @@ const deleteWaitingAnalysisPersonController: Controller = async (req) => {
   await deleteRequestPerson(person_request_key, dynamodbClient)
 
   logger.info({
-    message: 'Successfully requested synthesis',
+    message: 'Successfully deleted waiting person analysis',
     ...person_request_key,
     company_name: user_info.company_name,
     user_id: user_info.user_id,
@@ -39,7 +39,7 @@ const deleteWaitingAnalysisPersonController: Controller = async (req) => {
 
   return {
     body: {
-      message: 'Successfully requested synthesis',
+      message: 'Successfully deleted waiting person analysis',
       ...person_request_key,
     },
   }
