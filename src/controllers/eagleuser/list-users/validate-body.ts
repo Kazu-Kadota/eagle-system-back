@@ -4,20 +4,16 @@ import { UserGroupEnum } from 'src/models/dynamo/user'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
-import { ListUsersParam } from './main'
-
-const schema = Joi.object<ListUsersParam, true>({
-  user_type_filter: Joi.array<Array<UserGroupEnum>>().items(
-    Joi
-      .string()
-      .valid(...Object.values(UserGroupEnum))
-      .required(),
-  ).optional(),
-}).required()
+const schema = Joi.array<Array<UserGroupEnum>>().items(
+  Joi
+    .string()
+    .valid(...Object.values(UserGroupEnum))
+    .required(),
+).optional()
 
 const validateBodyListUsers = (
-  data: Partial<ListUsersParam>,
-): ListUsersParam => {
+  data: Partial<Array<UserGroupEnum>>,
+): Array<UserGroupEnum> => {
   const { value, error } = schema.validate(data, {
     abortEarly: true,
   })

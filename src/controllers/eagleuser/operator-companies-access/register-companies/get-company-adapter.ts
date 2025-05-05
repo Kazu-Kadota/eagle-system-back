@@ -16,7 +16,7 @@ const getCompanyByNameAdapter = async (
       company_name,
     })
 
-    throw new ErrorHandler('Company not exist', 404)
+    throw new ErrorHandler('Empresa não existe', 404)
   }
 
   return company[0]

@@ -32,14 +32,10 @@ const transactWriteOperatorCompaniesAccess = async ({
     const items = []
 
     for (const operator of operators_25) {
-      const { user_id, companies } = operator
-
       const item = transactWriteItems({
-        body: {
-          companies,
-        },
+        body: {},
         key: {
-          user_id,
+          user_id: operator.user_id,
         },
         operation,
         table: DYNAMO_TABLE_EAGLEUSER_OPERATOR_COMPANIES_ACCESS,
@@ -51,6 +47,8 @@ const transactWriteOperatorCompaniesAccess = async ({
     const command = new TransactWriteCommand({
       TransactItems: items,
     })
+
+    logger.debug({ message: items })
 
     await dynamodbClient.send(command)
 
