@@ -24,7 +24,7 @@ export type QueryByCompanyId = {
   company_id: string
 }
 
-const queryByCompanyId = async (
+const queryFeatureFlag = async (
   query: QueryByCompanyId,
   dynamodbClient: DynamoDBClient,
   last_evaluated_key?: Record<string, AttributeValue>,
@@ -60,4 +60,4 @@ const queryByCompanyId = async (
   }
 }
 
-export default queryByCompanyId
+export default queryFeatureFlag

@@ -1,28 +1,36 @@
 import Joi from 'joi'
-import { FeatureFlagBody, FeatureFlagKey, FeatureFlagsEnum } from 'src/models/dynamo/feature-flag'
+import { FeatureFlagsEnum } from 'src/models/dynamo/feature-flag'
 
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
-export type FeatureFlagValidate = FeatureFlagKey & FeatureFlagBody
+export type FeatureFlagSetValidate = {
+  company_id: string
+  feature_flags: Array<{
+    feature_flag: FeatureFlagsEnum
+    enabled: boolean
+  }>
+}
 
-const schema = Joi.object<FeatureFlagValidate>({
+const schema = Joi.object<FeatureFlagSetValidate, true>({
   company_id: Joi
     .string()
     .uuid()
     .required(),
-  feature_flag: Joi
-    .string()
-    .valid(...Object.values(FeatureFlagsEnum))
-    .required(),
-  enabled: Joi
-    .boolean()
-    .required(),
+  feature_flags: Joi.array().items({
+    feature_flag: Joi
+      .string()
+      .valid(...Object.values(FeatureFlagsEnum))
+      .required(),
+    enabled: Joi
+      .boolean()
+      .required(),
+  }).required(),
 }).required()
 
 const validateBody = (
-  data: Partial<FeatureFlagValidate>,
-): FeatureFlagValidate => {
+  data: Partial<FeatureFlagSetValidate>,
+): FeatureFlagSetValidate => {
   const { value, error } = schema.validate(data, {
     abortEarly: true,
   })
