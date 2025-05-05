@@ -1,9 +1,11 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { S3Client } from '@aws-sdk/client-s3'
+import { VehicleThirdPartyEnum } from 'src/models/dynamo/request-enum'
 import { VehicleRequestKey } from 'src/models/dynamo/request-vehicle'
 import { Controller } from 'src/models/lambda'
 import updateFinishedRequestVehicle from 'src/services/aws/dynamo/request/finished/vehicle/update'
 import s3VehicleAnalysisAnswerPut from 'src/services/aws/s3/vehicle-analysis/answer/put'
+import s3VehicleAnalysisAnswerThirdPartyPut from 'src/services/aws/s3/vehicle-analysis/answer/third-party/put'
 import logger from 'src/utils/logger'
 import removeEmpty from 'src/utils/remove-empty'
 import getFinishedVehicleAdapter from 'src/worker/techmize/new-v1/answer-analysis/vehicle/antt/get-finished-vehicle-adapter'
@@ -29,16 +31,35 @@ const changeAnalysisAnswerVehicleController: Controller = async (req) => {
 
   const finished_vehicle = await getFinishedVehicleAdapter(vehicle_key, dynamodbClient)
 
-  await s3VehicleAnalysisAnswerPut({
-    analysis_type: finished_vehicle.analysis_type,
-    body: JSON.stringify(body.analysis_info),
-    vehicle_analysis_type: finished_vehicle.vehicle_analysis_type,
-    vehicle_id: finished_vehicle.vehicle_id,
-    request_id: finished_vehicle.request_id,
-    s3_client: s3Client,
-  })
+  if (finished_vehicle.third_party) {
+    await s3VehicleAnalysisAnswerThirdPartyPut({
+      third_party: VehicleThirdPartyEnum.TECHMIZE,
+      analysis_type: finished_vehicle.analysis_type,
+      body: JSON.stringify(body.analysis_info),
+      vehicle_analysis_type: finished_vehicle.vehicle_analysis_type,
+      vehicle_id: finished_vehicle.vehicle_id,
+      request_id: finished_vehicle.request_id,
+      s3_client: s3Client,
+    })
+  } else {
+    await s3VehicleAnalysisAnswerPut({
+      analysis_type: finished_vehicle.analysis_type,
+      body: JSON.stringify(body.analysis_info),
+      vehicle_analysis_type: finished_vehicle.vehicle_analysis_type,
+      vehicle_id: finished_vehicle.vehicle_id,
+      request_id: finished_vehicle.request_id,
+      s3_client: s3Client,
+    })
+  }
 
-  await updateFinishedRequestVehicle(vehicle_key, {}, dynamodbClient)
+  await updateFinishedRequestVehicle(
+    vehicle_key,
+    {
+      analysis_result: body.analysis_result,
+      from_db: body.from_db,
+    },
+    dynamodbClient,
+  )
 
   logger.info({
     message: 'Successfully changed vehicle`s analysis answer',
