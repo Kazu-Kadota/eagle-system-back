@@ -1,6 +1,6 @@
 import { AttributeValue, DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { FeatureFlagsEnum } from 'src/models/dynamo/feature-flag'
-import queryByCompanyId, { QueryByCompanyId } from 'src/services/aws/dynamo/user/feature-flag/query-by-company-id'
+import queryFeatureFlag, { QueryByCompanyId } from 'src/services/aws/dynamo/user/feature-flag/query-by-company-id'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
@@ -21,7 +21,7 @@ const verifyAllowanceToSynthesisWithFeatureFlag = async ({
   }
 
   do {
-    const list_feature_flag = await queryByCompanyId(query_by_company_id_params, dynamodbClient, last_evaluated_key)
+    const list_feature_flag = await queryFeatureFlag(query_by_company_id_params, dynamodbClient, last_evaluated_key)
 
     if (!list_feature_flag) {
       break

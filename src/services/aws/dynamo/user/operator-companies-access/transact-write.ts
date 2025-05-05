@@ -48,8 +48,6 @@ const transactWriteOperatorCompaniesAccess = async ({
       TransactItems: items,
     })
 
-    logger.debug({ message: items })
-
     await dynamodbClient.send(command)
 
     await sleep(200)

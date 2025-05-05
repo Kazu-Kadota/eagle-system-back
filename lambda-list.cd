@@ -30,6 +30,7 @@ eaglerequest-worker-answer-analysis-vehicle-basic-data
 eagleuser-change-password
 eagleuser-feature-flag-modify-allowance
 eagleuser-feature-flag-set
+eagleuser-feature-flag-get-all-by-company
 eagleuser-list-companies
 eagleuser-list-users
 eagleuser-login
