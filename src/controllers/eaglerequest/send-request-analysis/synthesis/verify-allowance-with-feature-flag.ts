@@ -1,6 +1,6 @@
 import { AttributeValue, DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { FeatureFlagsEnum } from 'src/models/dynamo/feature-flag'
-import queryFeatureFlag, { QueryByCompanyId } from 'src/services/aws/dynamo/user/feature-flag/query-by-company-id'
+import { FeatureFlagsEnum } from 'src/models/dynamo/feature-flags/feature-flag'
+import queryFeatureFlag, { QueryByCompanyId } from 'src/services/aws/dynamo/user/feature-flag/query'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 

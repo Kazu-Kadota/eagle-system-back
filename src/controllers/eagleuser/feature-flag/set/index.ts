@@ -8,7 +8,7 @@ import setFeatureFlagController from './main'
 export const handler = async (
   event: APIGatewayProxyEvent,
 ): Promise<Response<any>> => {
-  logger.setService('eaglerequest')
+  logger.setService('eagleuser')
 
   const allowed_users: LambdaHandlerNameSpace.UserAuthentication = {
     admin: true,

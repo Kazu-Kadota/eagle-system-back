@@ -12,7 +12,7 @@ export const handler = async (
 
   const allowed_users: LambdaHandlerNameSpace.UserAuthentication = {
     admin: true,
-    client: true,
+    client: false,
     operator: true,
   }
 

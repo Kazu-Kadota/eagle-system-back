@@ -12,6 +12,7 @@ provider:
     DYNAMO_TABLE_EAGLEUSER_ACCESS_TOKEN: eagleuser-access-token-sdx
     DYNAMO_TABLE_EAGLEUSER_COMPANY: eagleuser-company-sdx
     DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG: eagleuser-feature-flag-sdx
+    DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG_BFF: eagleuser-feature-flag-bff-sdx
     DYNAMO_TABLE_EAGLEUSER_OPERATOR_COMPANIES_ACCESS: eagleuser-operator-companies-access-sdx
     DYNAMO_TABLE_EAGLEUSER_USER: eagleuser-users-sdx
     DYNAMO_TABLE_EAGLEUSER_RECOVERY_PASSWORD: eagleuser-recovery-password-sdx
@@ -190,13 +191,13 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
-  eagleuser-feature-flag-modify-allowance:
-    handler: src/controllers/eagleuser/feature-flag/modify-allowance/index.handler
+  eagleuser-feature-flag-update:
+    handler: src/controllers/eagleuser/feature-flag/update/index.handler
     timeout: 600
     events:
       - http:
           method: post
-          path: /feature-flag/modify-allowance
+          path: /feature-flag/company
           authorizer:
             type: CUSTOM
             authorizerId: abcjfk
@@ -210,7 +211,7 @@ functions:
     events:
       - http:
           method: put
-          path: /feature-flag/set
+          path: /feature-flag/company
           authorizer:
             type: CUSTOM
             authorizerId: abcjfk
@@ -218,13 +219,83 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
-  eagleuser-feature-flag-get-all-by-company:
-    handler: src/controllers/eagleuser/feature-flag/get-all-by-company/index.handler
+  eagleuser-feature-flag-list:
+    handler: src/controllers/eagleuser/feature-flag/list/index.handler
     timeout: 600
     events:
       - http:
           method: get
           path: /feature-flag/company
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-delete:
+    handler: src/controllers/eagleuser/feature-flag/delete/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /feature-flag/company/delete
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-bff-update:
+    handler: src/controllers/eagleuser/feature-flag/bff/update/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /feature-flag/bff
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-bff-set:
+    handler: src/controllers/eagleuser/feature-flag/bff/set/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: put
+          path: /feature-flag/bff
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-bff-list:
+    handler: src/controllers/eagleuser/feature-flag/bff/list/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /feature-flag/bff
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-bff-delete:
+    handler: src/controllers/eagleuser/feature-flag/bff/delete/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /feature-flag/bff/delete
           authorizer:
             type: CUSTOM
             authorizerId: abcjfk
@@ -526,6 +597,20 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
+  eaglerequest-delete-synthesis:
+    handler: src/controllers/eaglerequest/delete-synthesis/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /synthesis/delete
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
   eaglerequest-get-synthesis:
     handler: src/controllers/eaglerequest/consult/synthesis/get/index.handler
     timeout: 600
@@ -533,6 +618,20 @@ functions:
       - http:
           method: get
           path: /synthesis
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-list-synthesis:
+    handler: src/controllers/eaglerequest/consult/synthesis/query-by-company/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /synthesis/list
           authorizer:
             type: CUSTOM
             authorizerId: abcjfk
