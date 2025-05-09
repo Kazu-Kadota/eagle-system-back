@@ -1,6 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { SNSClient } from '@aws-sdk/client-sns'
-import { AnalysisTypeEnum } from 'src/models/dynamo/request-enum'
+import { AnalysisTypeEnum, VehicleThirdPartyEnum } from 'src/models/dynamo/request-enum'
 import { Controller } from 'src/models/lambda'
 import { TechmizeNewV1ANTTRequestBody, techmizeNewV1ANTTTypeRequest } from 'src/models/techmize/new-v1/antt/request-body'
 import techmizeNewV1StoreRequest from 'src/services/techmize/new-v1/store-request'
@@ -71,7 +71,9 @@ const requestAnalysisVehicleANTT: Controller = async (req) => {
     throw new ErrorHandler(`TECHMIZE: Error on process consult ${consultar_params.type_request}`, 500)
   }
 
-  vehicle_analysis_constructor.third_party = techmize_response.data
+  vehicle_analysis_constructor.third_party = {
+    [VehicleThirdPartyEnum.TECHMIZE]: techmize_response.data,
+  }
 
   const vehicle_analysis = await vehicleANTTAnalysis(vehicle_analysis_constructor)
 

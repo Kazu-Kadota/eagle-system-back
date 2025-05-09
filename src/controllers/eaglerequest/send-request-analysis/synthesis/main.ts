@@ -34,6 +34,38 @@ const requestSynthesisController: Controller = async (req) => {
     throw new ErrorHandler('É necessário informar o nome da empresa para usuários admin', 400)
   }
 
+  const exist_only_one_person_id = (!body.person_id && body.person_request_id)
+    || (body.person_id && !body.person_request_id)
+
+  if (exist_only_one_person_id) {
+    logger.warn({
+      message: 'It is necessary inform person_id and person_request_id instead of one of them',
+      person_id: body.person_id,
+      person_request_id: body.person_request_id,
+    })
+
+    throw new ErrorHandler('Foi informado somente person_id ou person_request_id', 400, [{
+      person_id: body.person_id,
+      person_request_id: body.person_request_id,
+    }])
+  }
+
+  const exist_only_one_vehicle_id = (!body.vehicle_id && body.vehicle_request_id)
+    || (body.vehicle_id && !body.vehicle_request_id)
+
+  if (exist_only_one_vehicle_id) {
+    logger.warn({
+      message: 'It is necessary inform vehicle_id and vehicle_request_id instead of one of them',
+      vehicle_id: body.vehicle_id,
+      vehicle_request_id: body.vehicle_request_id,
+    })
+
+    throw new ErrorHandler('Foi informado somente vehicle_id ou vehicle_request_id', 400, [{
+      vehicle_id: body.vehicle_id,
+      vehicle_request_id: body.vehicle_request_id,
+    }])
+  }
+
   const company_name = user_info.user_type === 'admin'
     ? body.company_name as string
     : user_info.company_name
@@ -50,6 +82,7 @@ const requestSynthesisController: Controller = async (req) => {
   const synthesis_request: SynthesisAnalysisRequest = {
     analysis_type: AnalysisTypeEnum.SYNTHESIS,
     company_name,
+    document: body.document,
     dynamodbClient,
     person_id: body.person_id,
     person_request_id: body.person_request_id,
