@@ -303,13 +303,27 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
-  eagleuser-operator-companies-access-register-companies:
-    handler: src/controllers/eagleuser/operator-companies-access/register-companies/index.handler
+  eagleuser-operator-companies-access-get:
+    handler: src/controllers/eagleuser/operator-companies-access/get/index.handler
     timeout: 600
     events:
       - http:
-          method: post
-          path: /operator-companies-access/register-companies
+          method: get
+          path: /operator-companies-access
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-operator-companies-access-list:
+    handler: src/controllers/eagleuser/operator-companies-access/list/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /operator-companies-access/list
           authorizer:
             type: CUSTOM
             authorizerId: abcjfk
