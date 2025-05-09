@@ -8,8 +8,8 @@ import s3VehicleAnalysisAnswerPut from 'src/services/aws/s3/vehicle-analysis/ans
 import s3VehicleAnalysisAnswerThirdPartyPut from 'src/services/aws/s3/vehicle-analysis/answer/third-party/put'
 import logger from 'src/utils/logger'
 import removeEmpty from 'src/utils/remove-empty'
-import getFinishedVehicleAdapter from 'src/worker/techmize/new-v1/answer-analysis/vehicle/antt/get-finished-vehicle-adapter'
 
+import getFinishedVehicleAdapter from './get-finished-vehicle-adapter'
 import validateBodyChangeAnalysisAnswerVehicle from './validate-body'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
