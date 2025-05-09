@@ -3,16 +3,20 @@ import {
   GetItemCommand,
 } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
-import { FeatureFlag, FeatureFlagKey } from 'src/models/dynamo/feature-flag'
+import {
+  FeatureFlag,
+  FeatureFlagKey,
+  FeatureFlagsEnum,
+} from 'src/models/dynamo/feature-flags/feature-flag'
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
 
 const DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG = getStringEnv('DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG')
 
-const getFeatureFlag = async (
+const getFeatureFlag = async <T extends FeatureFlagsEnum> (
   key: FeatureFlagKey,
   dynamodbClient: DynamoDBClient,
-): Promise<FeatureFlag | undefined> => {
+): Promise<FeatureFlag<T> | undefined> => {
   logger.debug({
     message: 'Getting feature flag by company id and feature_flag',
     company_id: key.company_id,
@@ -30,7 +34,7 @@ const getFeatureFlag = async (
     return undefined
   }
 
-  return unmarshall(result.Item) as FeatureFlag
+  return unmarshall(result.Item) as FeatureFlag<T>
 }
 
 export default getFeatureFlag

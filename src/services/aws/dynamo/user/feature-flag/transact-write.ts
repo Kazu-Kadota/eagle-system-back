@@ -1,7 +1,7 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { TransactWriteCommand } from '@aws-sdk/lib-dynamodb'
 import { splitEvery } from 'ramda'
-import { FeatureFlagBody, FeatureFlagKey, FeatureFlagsEnum } from 'src/models/dynamo/feature-flag'
+import { FeatureFlagBody, FeatureFlagKey, FeatureFlagsEnum } from 'src/models/dynamo/feature-flags/feature-flag'
 import { transactWriteItems, TransactWriteOperatorsMap } from 'src/utils/dynamo/transact-write'
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
@@ -9,17 +9,17 @@ import sleep from 'src/utils/sleep'
 
 const DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG = getStringEnv('DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG')
 
-export type TransactWriteFeatureFlagParams = {
-  feature_flags: Array<Partial<FeatureFlagKey & FeatureFlagBody>>
+export type TransactWriteFeatureFlagParams<T extends FeatureFlagsEnum> = {
+  feature_flags: Array<Partial<FeatureFlagKey & FeatureFlagBody<T>>>
   operation: TransactWriteOperatorsMap,
   dynamodbClient: DynamoDBClient,
 }
 
-const transactWriteFeatureFlag = async ({
+const transactWriteFeatureFlag = async<T extends FeatureFlagsEnum> ({
   feature_flags,
   operation,
   dynamodbClient,
-}: TransactWriteFeatureFlagParams): Promise<void> => {
+}: TransactWriteFeatureFlagParams<T>): Promise<void> => {
   logger.debug({
     message: 'TransactWrite to feature flags',
     operation,
@@ -36,7 +36,7 @@ const transactWriteFeatureFlag = async ({
         feature_flag: feature_flag as FeatureFlagsEnum,
       }
 
-      const body: Partial<FeatureFlagBody> = {
+      const body = {
         ...body_items,
       }
 

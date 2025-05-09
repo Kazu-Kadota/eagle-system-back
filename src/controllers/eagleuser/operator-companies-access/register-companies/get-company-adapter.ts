@@ -1,6 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { Company } from 'src/models/dynamo/company'
-import queryByName from 'src/services/aws/dynamo/company/query-by-name'
+import queryCompanyByName from 'src/services/aws/dynamo/company/query-by-name'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
@@ -8,7 +8,7 @@ const getCompanyByNameAdapter = async (
   company_name: string,
   dynamodbClient: DynamoDBClient,
 ): Promise<Company> => {
-  const company = await queryByName(company_name, dynamodbClient)
+  const company = await queryCompanyByName(company_name, dynamodbClient)
 
   if (!company || !company[0]) {
     logger.warn({

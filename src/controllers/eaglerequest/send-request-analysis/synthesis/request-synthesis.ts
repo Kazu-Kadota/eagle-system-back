@@ -27,6 +27,7 @@ export type SynthesisAnalysisResponse = {
 export type SynthesisAnalysisRequest = {
   analysis_type: AnalysisTypeEnum
   company_name: string
+  document: string
   dynamodbClient: DynamoDBClient
   person_id?: string
   person_request_id?: string
@@ -40,6 +41,7 @@ export type SynthesisAnalysisRequest = {
 const requestSynthesis = async ({
   analysis_type,
   company_name,
+  document,
   dynamodbClient,
   text,
   person_id,
@@ -115,6 +117,7 @@ const requestSynthesis = async ({
   const data_request_synthesis: SynthesisRequestBody = {
     analysis_type: AnalysisTypeEnum.SYNTHESIS,
     company_name,
+    document,
     status: RequestStatusEnum.PROCESSING,
     text_input: s3_path,
     user_id: user_info.user_id,

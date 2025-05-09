@@ -3,6 +3,7 @@ import { Timestamp } from './timestamp'
 
 export type SynthesisRequestParams = {
   company_name: string
+  document: string
   person_id?: string
   person_request_id?: string
   text: string
@@ -32,6 +33,7 @@ export type SynthesisRequestKey = {
 export type SynthesisRequestBody = {
   analysis_type: AnalysisTypeEnum.SYNTHESIS
   company_name: string
+  document: string
   finished_at?: string
   person_id?: string
   person_request_id?: string
@@ -48,6 +50,7 @@ export type SynthesisRequest = SynthesisRequestKey & SynthesisRequestBody & Time
 
 export type SynthesisReport = Omit<SynthesisRequest,
   'analysis_type'
+  | 'document'
   | 'person_id'
   | 'person_request_id'
   | 'status'

@@ -1,7 +1,7 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { FeatureFlagBody, FeatureFlagKey } from 'src/models/dynamo/feature-flag'
+import { FeatureFlagBody, FeatureFlagKey, FeatureFlagsEnum } from 'src/models/dynamo/feature-flags/feature-flag'
 import { Controller } from 'src/models/lambda'
-import queryFeatureFlag from 'src/services/aws/dynamo/user/feature-flag/query-by-company-id'
+import queryFeatureFlag from 'src/services/aws/dynamo/user/feature-flag/query'
 import transactWriteFeatureFlag from 'src/services/aws/dynamo/user/feature-flag/transact-write'
 import logger from 'src/utils/logger'
 
@@ -10,10 +10,6 @@ import validateBody from './validate-body'
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 
 const setFeatureFlagController: Controller = async (req) => {
-  logger.debug({
-    message: 'Request to set feature flag',
-  })
-
   const body = validateBody(JSON.parse(req.body as string))
 
   const current_company_feature_flags = await queryFeatureFlag({
@@ -30,7 +26,7 @@ const setFeatureFlagController: Controller = async (req) => {
     }))
 
     await transactWriteFeatureFlag({
-      feature_flags: change_company_feature_flags as Array<FeatureFlagKey & FeatureFlagBody>,
+      feature_flags: change_company_feature_flags as Array<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum>>,
       operation: 'put',
       dynamodbClient,
     })
@@ -48,7 +44,7 @@ const setFeatureFlagController: Controller = async (req) => {
     }).filter((value) => value !== undefined)
 
     await transactWriteFeatureFlag({
-      feature_flags: change_company_feature_flags as Array<FeatureFlagKey & FeatureFlagBody>,
+      feature_flags: change_company_feature_flags as Array<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum>>,
       operation: 'put',
       dynamodbClient,
     })
@@ -61,7 +57,7 @@ const setFeatureFlagController: Controller = async (req) => {
 
   return {
     body: {
-      message: 'Success on set feature flag',
+      message: 'Sucesso em cadastrar novo produto',
     },
   }
 }
