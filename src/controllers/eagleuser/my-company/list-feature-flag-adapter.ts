@@ -1,7 +1,6 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import queryFeatureFlag, { QueryByCompanyId } from 'src/services/aws/dynamo/user/feature-flag/query-by-company-id'
-
-export type ListFeatureFlagAdapterResponse = Array<string>
+import { FeatureFlagsEnum } from 'src/models/dynamo/feature-flags/feature-flag'
+import queryFeatureFlag, { QueryByCompanyId, QueryByCompanyIdResponse } from 'src/services/aws/dynamo/user/feature-flag/query'
 
 export type ListFeatureFlagAdapterParams = {
   company_id: string
@@ -11,8 +10,8 @@ export type ListFeatureFlagAdapterParams = {
 const listFeatureFlagAdapter = async ({
   company_id,
   dynamodbClient,
-}: ListFeatureFlagAdapterParams): Promise<ListFeatureFlagAdapterResponse> => {
-  const result = []
+}: ListFeatureFlagAdapterParams): Promise<Array<FeatureFlagsEnum>> => {
+  const result: Array<FeatureFlagsEnum> = []
   let last_evaluated_key
 
   const query_by_company_id_params: QueryByCompanyId = {
@@ -20,7 +19,7 @@ const listFeatureFlagAdapter = async ({
   }
 
   do {
-    const list_feature_flag = await queryFeatureFlag(
+    const list_feature_flag: QueryByCompanyIdResponse<FeatureFlagsEnum> | undefined = await queryFeatureFlag<FeatureFlagsEnum>(
       query_by_company_id_params,
       dynamodbClient,
       last_evaluated_key,

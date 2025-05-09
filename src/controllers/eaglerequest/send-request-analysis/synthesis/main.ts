@@ -82,6 +82,7 @@ const requestSynthesisController: Controller = async (req) => {
   const synthesis_request: SynthesisAnalysisRequest = {
     analysis_type: AnalysisTypeEnum.SYNTHESIS,
     company_name,
+    document: body.document,
     dynamodbClient,
     person_id: body.person_id,
     person_request_id: body.person_request_id,

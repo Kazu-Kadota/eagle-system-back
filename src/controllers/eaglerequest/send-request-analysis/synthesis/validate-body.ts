@@ -4,12 +4,18 @@ import { SynthesisRequestParams } from 'src/models/dynamo/request-synthesis'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
+const documentRegex = /^([0-9]{3}\.[0-9]{3}\.[0-9]{3}\-[0-9]{2}|[0-9]{2}\.[0-9]{3}\.[0-9]{3}\/[0-9]{4}\-[0-9]{2})$/
+
 const schema = Joi.object<SynthesisRequestParams, true>({
   company_name: Joi
     .string()
     .min(3)
     .max(128)
     .optional(),
+  document: Joi
+    .string()
+    .regex(documentRegex)
+    .required(),
   person_id: Joi
     .string()
     .uuid()

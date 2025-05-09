@@ -3,12 +3,12 @@ import { Response } from 'src/models/lambda'
 import LambdaHandlerNameSpace from 'src/utils/lambda/handler'
 import logger from 'src/utils/logger'
 
-import modifyAllowanceFeatureFlagController from './main'
+import updateFeatureFlagController from './main'
 
 export const handler = async (
   event: APIGatewayProxyEvent,
 ): Promise<Response<any>> => {
-  logger.setService('eaglerequest')
+  logger.setService('ealeuser')
 
   const allowed_users: LambdaHandlerNameSpace.UserAuthentication = {
     admin: true,
@@ -17,7 +17,7 @@ export const handler = async (
   }
 
   const controller = new LambdaHandlerNameSpace
-    .LambdaHandlerFunction(modifyAllowanceFeatureFlagController, allowed_users)
+    .LambdaHandlerFunction(updateFeatureFlagController, allowed_users)
 
   return controller.handler(event)
 }

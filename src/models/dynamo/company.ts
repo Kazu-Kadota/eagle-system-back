@@ -1,19 +1,18 @@
+import { Timestamp } from './timestamp'
+
 export enum CompanyTypeEnum {
   CLIENT = 'client',
   FONT = 'font',
 }
 
-export interface CompanyKey {
+export type CompanyKey = {
   company_id: string
 }
 
-export interface CompanyBody {
+export type CompanyBody = {
   cnpj: string
   name: string
   type: CompanyTypeEnum
 }
 
-export interface Company extends CompanyKey, CompanyBody {
-  created_at: string
-  updated_at: string
-}
+export type Company = CompanyKey & CompanyBody & Timestamp & {}

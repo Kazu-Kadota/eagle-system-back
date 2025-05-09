@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { FeatureFlagKey, FeatureFlagsEnum } from 'src/models/dynamo/feature-flag'
+import { FeatureFlagKey, FeatureFlagsEnum } from 'src/models/dynamo/feature-flags/feature-flag'
 import getFeatureFlag from 'src/services/aws/dynamo/user/feature-flag/get'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'

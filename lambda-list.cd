@@ -12,6 +12,7 @@ eaglerequest-analysis-vehicle-second-driver
 eaglerequest-answer-analysis
 eaglerequest-change-analysis-answer-person
 eaglerequest-change-analysis-answer-vehicle
+eaglerequest-delete-synthesis
 eaglerequest-delete-waiting-analysis-person
 eaglerequest-delete-waiting-analysis-vehicle
 eaglerequest-get-synthesis
@@ -20,6 +21,7 @@ eaglerequest-get-vehicle
 eaglerequest-list-people
 eaglerequest-list-vehicles
 eaglerequest-query-analysis-by-document-plate
+eaglerequest-query-synthesis-by-company
 eaglerequest-transsat-receive-synthesis
 eaglerequest-worker-answer-analysis-person-cnh
 eaglerequest-worker-answer-analysis-person-cnh-v2
@@ -28,9 +30,14 @@ eaglerequest-worker-answer-analysis-person-process
 eaglerequest-worker-answer-analysis-vehicle-antt
 eaglerequest-worker-answer-analysis-vehicle-basic-data
 eagleuser-change-password
-eagleuser-feature-flag-modify-allowance
 eagleuser-feature-flag-set
-eagleuser-feature-flag-get-all-by-company
+eagleuser-feature-flag-update
+eagleuser-feature-flag-list
+eagleuser-feature-flag-delete
+eagleuser-feature-flag-bff-set
+eagleuser-feature-flag-bff-update
+eagleuser-feature-flag-bff-list
+eagleuser-feature-flag-bff-delete
 eagleuser-list-companies
 eagleuser-list-users
 eagleuser-login
