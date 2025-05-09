@@ -42,6 +42,8 @@ eagleuser-list-companies
 eagleuser-list-users
 eagleuser-login
 eagleuser-my-company
+eagleuser-operator-companies-access-get
+eagleuser-operator-companies-access-list
 eagleuser-operator-companies-access-users-delete
 eagleuser-operator-delete-companies-access
 eagleuser-operator-register-companies-access
