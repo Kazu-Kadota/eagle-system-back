@@ -12,7 +12,7 @@ export type FeatureFlagSetValidate<T extends FeatureFlagsWithBody> = {
   feature_flags: Array<{
     feature_flag: FeatureFlagsEnum
     enabled: boolean
-    configs: T extends FeatureFlagsWithBody ? typeof featureFlagsBodySchemas[T]['type'] : unknown
+    config: T extends FeatureFlagsWithBody ? typeof featureFlagsBodySchemas[T]['type'] : unknown
   }>
 }
 
@@ -30,19 +30,19 @@ const featureFlagSchema = Joi.object({
   enabled: Joi
     .boolean()
     .required(),
-  configs: Joi.any(),
+  config: Joi.any(),
 }).custom((value, helpers) => {
-  const { feature_flag, configs } = value
+  const { feature_flag, config } = value
 
   if (isKnownFeatureFlag(feature_flag)) {
-    const { error } = featureFlagsBodySchemas[feature_flag].schema.validate(configs)
+    const { error } = featureFlagsBodySchemas[feature_flag].schema.validate(config)
 
     if (error) {
       return helpers.error('any.custom', {
         message: `Invalid configs for feature_flag "${feature_flag}": ${error.message}`,
       })
     }
-  } else if (configs && Object.keys(configs).length > 0) {
+  } else if (config && Object.keys(config).length > 0) {
     return helpers.error('any.custom', {
       message: `Feature flag "${feature_flag}" does not support configuration`,
     })

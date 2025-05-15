@@ -9,6 +9,7 @@ import validateBody from './validate-body'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 
+// Not in use. Definition is done directly in DB
 const setFeatureFlagBFFController: Controller = async (req) => {
   const body = validateBody(JSON.parse(req.body as string))
 

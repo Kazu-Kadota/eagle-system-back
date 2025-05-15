@@ -15,7 +15,7 @@ const setFeatureFlagBFFController: Controller = async () => {
   return {
     body: {
       message: 'Sucesso em listar produtos bff',
-      feature_flags_bff,
+      feature_flags_bff: feature_flags_bff?.result,
     },
   }
 }
