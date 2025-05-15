@@ -7,9 +7,10 @@ export type FeatureFlagConfigSynthesisBody = {
 }
 
 export const featureFlagBodySynthesisJOISchema = Joi.object<FeatureFlagConfigSynthesisBody, true>({
-  range_date_limit: Joi.number().default(30).required(),
+  range_date_limit: Joi.number().min(1).default(30).max(10000).required(),
 })
 
+// Not in use. Definition is done directly in DB
 export type FeatureFlagBFFSynthesisBodyValueType = FeatureFlagBFFGeneralInformation & {}
 
 export type FeatureFlagBFFSynthesisBody = {

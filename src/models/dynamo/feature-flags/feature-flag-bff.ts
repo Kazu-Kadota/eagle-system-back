@@ -6,6 +6,8 @@ import {
   FeatureFlagsWithBody,
 } from './feature-flag'
 
+// Schema from DB is not right. Currently we do modification directly in DB, we don't use any route to define BFF
+
 export type FeatureFlagBFFGeneralInformation = {
   label: string
   'place-holder': string
