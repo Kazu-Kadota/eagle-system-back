@@ -1,8 +1,8 @@
 import { AttributeValue, DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { FeatureFlagsEnum } from 'src/models/dynamo/feature-flag'
+import { FeatureFlagsEnum } from 'src/models/dynamo/feature-flags/feature-flag'
 import { is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, PersonRegionTypeEnum, person_analysis_type_feature_flag_map, person_region_type_feature_flag_map } from 'src/models/dynamo/request-enum'
 import { PersonAnalysisItems } from 'src/models/dynamo/request-person'
-import queryByCompanyId, { QueryByCompanyId } from 'src/services/aws/dynamo/user/feature-flag/query-by-company-id'
+import queryFeatureFlag, { QueryByCompanyId } from 'src/services/aws/dynamo/user/feature-flag/query'
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
@@ -25,7 +25,7 @@ const verifyAllowanceWithFeatureFlag = async ({
   }
 
   do {
-    const list_feature_flag = await queryByCompanyId(query_by_company_id_params, dynamodbClient, last_evaluated_key)
+    const list_feature_flag = await queryFeatureFlag(query_by_company_id_params, dynamodbClient, last_evaluated_key)
 
     if (!list_feature_flag) {
       break

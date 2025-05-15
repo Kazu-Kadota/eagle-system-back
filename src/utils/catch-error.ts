@@ -25,7 +25,7 @@ const catchError = (err: any) => {
       headers: defaultHeaders,
       statusCode: err.$metadata.httpStatusCode,
       body: JSON.stringify({
-        message: 'Erro no servidor. Contatar o time técnico.' + err.name,
+        message: 'Erro no servidor. Contatar o time técnico. ' + err.name,
       }),
     }
   }
@@ -34,7 +34,7 @@ const catchError = (err: any) => {
     headers: defaultHeaders,
     statusCode: 500,
     body: JSON.stringify({
-      message: 'Erro no servidor. Contatar o time técnico.' + err.name,
+      message: 'Erro no servidor. Contatar o time técnico. ' + err.name,
     }),
   }
 }

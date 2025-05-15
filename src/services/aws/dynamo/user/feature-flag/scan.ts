@@ -4,25 +4,21 @@ import {
   AttributeValue,
 } from '@aws-sdk/client-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
-import { FeatureFlag } from 'src/models/dynamo/feature-flag'
+import { FeatureFlag, FeatureFlagsEnum } from 'src/models/dynamo/feature-flags/feature-flag'
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
 
 const DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG = getStringEnv('DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG')
 
-export interface ScanFeatureFlagResponse {
-  result: FeatureFlag[],
+export type ScanFeatureFlagResponse <T extends FeatureFlagsEnum> = {
+  result: FeatureFlag<T>[],
   last_evaluated_key?: Record<string, AttributeValue>
 }
 
-export interface ExclusiveStartKey {
-  value?: Record<string, AttributeValue>
-}
-
-const scanFeatureFlag = async (
+const scanFeatureFlag = async <T extends FeatureFlagsEnum = any> (
   dynamodbClient: DynamoDBClient,
   last_evaluated_key?: Record<string, AttributeValue>,
-): Promise<ScanFeatureFlagResponse | undefined> => {
+): Promise<ScanFeatureFlagResponse<T> | undefined> => {
   logger.debug({
     message: 'Scanning feature flag',
   })
@@ -38,7 +34,7 @@ const scanFeatureFlag = async (
     return undefined
   }
 
-  const result = Items.map((item) => (unmarshall(item) as FeatureFlag))
+  const result = Items.map((item) => (unmarshall(item) as FeatureFlag<T>))
 
   if (LastEvaluatedKey) {
     last_evaluated_key = LastEvaluatedKey

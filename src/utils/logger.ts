@@ -41,6 +41,10 @@ class Logger {
     this.config.user_id = user_id
   }
 
+  setCompany (company_id: string) {
+    this.config.company_id = company_id
+  }
+
   setRequestId (request_id: string) {
     this.config.request_id = request_id
   }

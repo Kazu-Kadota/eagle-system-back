@@ -34,6 +34,8 @@ const reportSynthesis: Controller = async (event) => {
     user_info,
     company_id: user_company.company_id,
     dynamoDBClient: dynamodbClient,
+    start_date: query.start_date,
+    final_date: query.final_date,
   })
 
   const data = {
