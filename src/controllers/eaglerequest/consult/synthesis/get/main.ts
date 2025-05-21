@@ -63,16 +63,16 @@ const getSynthesisController: Controller = async (event) => {
 
     const diff_date = (now.getTime() - new Date(synthesis.finished_at as string).getTime()) / 1000 / 60 / 60 / 24
 
-    if (feature_flag.range_date_limit > diff_date) {
+    if (feature_flag.config.range_date_limit > diff_date) {
       logger.warn({
         message: 'Range data limit exceed for this company',
         now,
         finished_at: synthesis.finished_at,
         diff_date,
-        range_date_limit: feature_flag.range_date_limit,
+        range_date_limit: feature_flag.config.range_date_limit,
       })
 
-      throw new ErrorHandler('Não é possível verificar síntese entre datas maiores de ' + feature_flag.range_date_limit + ' dias', 400)
+      throw new ErrorHandler('Não é possível verificar síntese entre datas maiores de ' + feature_flag.config.range_date_limit + ' dias', 400)
     }
   }
 

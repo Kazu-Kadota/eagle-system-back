@@ -46,15 +46,15 @@ const querySynthesisByCompanyController: Controller = async (event) => {
 
   const diff_date = (new Date(query.start_date).getTime() - new Date(query.end_date).getTime()) / 1000 / 60 / 60 / 24
 
-  if (user_info.user_type === UserGroupEnum.CLIENT && feature_flag.range_date_limit > diff_date) {
+  if (user_info.user_type === UserGroupEnum.CLIENT && feature_flag.config.range_date_limit > diff_date) {
     logger.warn({
       message: 'Range data limit exceed for this company',
       ...query,
       diff_date,
-      range_date_limit: feature_flag.range_date_limit,
+      range_date_limit: feature_flag.config.range_date_limit,
     })
 
-    throw new ErrorHandler('Não é possível verificar síntese entre datas maiores de ' + feature_flag.range_date_limit + ' dias', 400)
+    throw new ErrorHandler('Não é possível verificar síntese entre datas maiores de ' + feature_flag.config.range_date_limit + ' dias', 400)
   }
 
   const request_synthesis_query: QueryRequestSynthesisByCompany = {

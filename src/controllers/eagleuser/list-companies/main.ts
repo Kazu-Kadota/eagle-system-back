@@ -89,10 +89,11 @@ const listCompanies: Controller<ListCompaniesResponseBody> = async (req) => {
 
         if (feature_flag_arr && feature_flag_arr.feature_flag[0]) {
           const feature_flags = feature_flag_arr.feature_flag
-            .map<Pick<FeatureFlag<FeatureFlagsEnum>, 'feature_flag' | 'enabled'> | undefined>((value) => value.enabled
+            .map<Pick<FeatureFlag<FeatureFlagsEnum>, 'feature_flag' | 'enabled' | 'config'> | undefined>((value) => value.enabled
               ? {
                   feature_flag: value.feature_flag,
                   enabled: value.enabled,
+                  config: value.config,
                 }
               : undefined)
             .filter((value) => value !== undefined)

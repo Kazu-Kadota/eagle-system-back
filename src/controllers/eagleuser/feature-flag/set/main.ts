@@ -16,35 +16,40 @@ const setFeatureFlagController: Controller = async (req) => {
     company_id: body.company_id,
   }, dynamodbClient)
 
-  let change_company_feature_flags
+  let change_company_feature_flags: Array<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum>>
 
   if (!current_company_feature_flags) {
     change_company_feature_flags = body.feature_flags.map((value) => ({
       feature_flag: value.feature_flag,
       company_id: body.company_id,
       enabled: value.enabled,
+      config: value.config,
     }))
 
     await transactWriteFeatureFlag({
-      feature_flags: change_company_feature_flags as Array<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum>>,
+      feature_flags: change_company_feature_flags,
       operation: 'put',
       dynamodbClient,
     })
   } else {
     const current_company_feature_flags_names = current_company_feature_flags.feature_flag.map((value) => value.feature_flag)
 
-    change_company_feature_flags = body.feature_flags.map((value) => {
-      return current_company_feature_flags_names.includes(value.feature_flag)
-        ? undefined
-        : {
-            feature_flag: value.feature_flag,
-            company_id: body.company_id,
-            enabled: value.enabled,
-          }
-    }).filter((value) => value !== undefined)
+    change_company_feature_flags = body.feature_flags
+      .map<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum> | undefined>((value) => {
+        return current_company_feature_flags_names.includes(value.feature_flag)
+          ? undefined
+          : {
+              feature_flag: value.feature_flag,
+              company_id: body.company_id,
+              enabled: value.enabled,
+              config: value.config,
+            }
+      })
+      // @ts-ignore-next-line
+      .filter<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum>>((value) => value !== undefined)
 
     await transactWriteFeatureFlag({
-      feature_flags: change_company_feature_flags as Array<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum>>,
+      feature_flags: change_company_feature_flags,
       operation: 'put',
       dynamodbClient,
     })

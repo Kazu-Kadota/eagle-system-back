@@ -5,6 +5,8 @@ import queryFeatureFlag from 'src/services/aws/dynamo/user/feature-flag/query'
 import transactWriteFeatureFlag from 'src/services/aws/dynamo/user/feature-flag/transact-write'
 import logger from 'src/utils/logger'
 
+import removeEmpty from 'src/utils/remove-empty'
+
 import validateBody from './validate-body'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
@@ -31,18 +33,22 @@ const updateFeatureFlagController: Controller = async (req) => {
 
   const current_company_feature_flags_names = current_company_feature_flags.feature_flag.map((value) => value.feature_flag)
 
-  const change_company_feature_flags = body.feature_flags.map((value) => {
-    return current_company_feature_flags_names.includes(value.feature_flag)
-      ? {
-          feature_flag: value.feature_flag,
-          company_id: body.company_id,
-          enabled: value.enabled,
-        }
-      : undefined
-  }).filter((value) => value !== undefined)
+  const change_company_feature_flags = body.feature_flags
+    .map<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum> | undefined>((value) => {
+      return current_company_feature_flags_names.includes(value.feature_flag)
+        ? {
+            feature_flag: value.feature_flag,
+            company_id: body.company_id,
+            enabled: value.enabled,
+            config: value.config,
+          }
+        : undefined
+    })
+    // @ts-ignore-next-line
+    .filter<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum>>((value) => value !== undefined)
 
   await transactWriteFeatureFlag({
-    feature_flags: change_company_feature_flags as Array<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum>>,
+    feature_flags: removeEmpty(change_company_feature_flags),
     operation: 'update',
     dynamodbClient,
   })

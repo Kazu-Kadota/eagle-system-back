@@ -32,8 +32,9 @@ export type FeatureFlagKey = {
   feature_flag: FeatureFlagsEnum
 }
 
-export type FeatureFlagBody <T extends FeatureFlagsEnum> = FeatureFlagConfigBody<T> & {
+export type FeatureFlagBody <T extends FeatureFlagsEnum> = {
   enabled: boolean
+  config: FeatureFlagConfigBody<T>
 }
 
 export type FeatureFlag <T extends FeatureFlagsEnum> = FeatureFlagKey & FeatureFlagBody<T> & Timestamp & {}
