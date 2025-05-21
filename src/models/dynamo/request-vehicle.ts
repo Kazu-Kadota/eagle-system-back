@@ -45,6 +45,8 @@ export interface VehicleRequest extends VehicleRequestKey, VehicleRequestBody {
   finished_at?: string
   analysis_info?: string
   analysis_result?: string
+  synthesis_id?: string
+  synthesis_request_id?: string
   from_db?: boolean
 }
 

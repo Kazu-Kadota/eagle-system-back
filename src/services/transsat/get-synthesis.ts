@@ -27,7 +27,7 @@ const transsatGetSynthesis = async ({
   const options: AxiosRequestConfig<TranssatGetSynthesisParams> = {
     method: 'GET',
     baseURL: TRANSSAT_API_SYNTHESIS_ENDPOINT,
-    headers: transsatGetSynthesisHeaders(),
+    headers: await transsatGetSynthesisHeaders(),
     data: body,
   }
 

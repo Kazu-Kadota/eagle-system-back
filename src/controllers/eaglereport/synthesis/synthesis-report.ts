@@ -17,11 +17,11 @@ const synthesisReport = async (
   let count: number = 0
 
   do {
-    const query_waiting_processing_result: QueryRequestSynthesisByCompanyResponse | undefined = await queryRequestSynthesisByCompany(
+    const query_waiting_processing_result: QueryRequestSynthesisByCompanyResponse | undefined = await queryRequestSynthesisByCompany({
       data,
       dynamodbClient,
       last_evaluated_key,
-    )
+    })
 
     if (!query_waiting_processing_result) {
       break
@@ -30,6 +30,7 @@ const synthesisReport = async (
     for (const item of query_waiting_processing_result.result) {
       const {
         analysis_type,
+        document,
         person_id,
         person_request_id,
         status,

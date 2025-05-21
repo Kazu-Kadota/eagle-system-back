@@ -14,10 +14,9 @@ const getRequestPersonAdapter = async (
   const request_person = await getRequestPerson(key, dynamodbClient)
 
   if (request_person) {
-    if (
-      user_info.user_type === 'client'
-      && user_info.company_name !== request_person.company_name
-    ) {
+    const do_not_return = user_info.user_type === 'client' && user_info.company_name !== request_person.company_name
+
+    if (do_not_return) {
       logger.warn({
         message: 'Person not requested to analyze from company',
         company_name: user_info,
@@ -34,10 +33,9 @@ const getRequestPersonAdapter = async (
   const finished_person = await getFinishedRequestPerson(key, dynamodbClient)
 
   if (finished_person) {
-    if (
-      user_info.user_type === 'client'
-      && user_info.company_name !== finished_person.company_name
-    ) {
+    const do_not_return = user_info.user_type === 'client' && user_info.company_name !== finished_person.company_name
+
+    if (do_not_return) {
       logger.warn({
         message: 'Person not requested to analyze from company',
         company_name: user_info,

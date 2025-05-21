@@ -12,9 +12,12 @@ provider:
     DYNAMO_TABLE_EAGLEUSER_ACCESS_TOKEN: eagleuser-access-token-sdx
     DYNAMO_TABLE_EAGLEUSER_COMPANY: eagleuser-company-sdx
     DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG: eagleuser-feature-flag-sdx
+    DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG_BFF: eagleuser-feature-flag-bff-sdx
+    DYNAMO_TABLE_EAGLEUSER_OPERATOR_COMPANIES_ACCESS: eagleuser-operator-companies-access-sdx
     DYNAMO_TABLE_EAGLEUSER_USER: eagleuser-users-sdx
     DYNAMO_TABLE_EAGLEUSER_RECOVERY_PASSWORD: eagleuser-recovery-password-sdx
     DYNAMO_TABLE_EAGLEUSER_PASSWORD_HISTORY: eagleuser-password-history-sdx
+    DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS: eaglerequest-synthesis-sdx
     DYNAMO_TABLE_EAGLEREQUEST_ANALYSIS_PERSON: eaglerequest-analysis-person-sdx
     DYNAMO_TABLE_EAGLEREQUEST_ANALYSIS_VEHICLE: eaglerequest-analysis-vehicle-sdx
     DYNAMO_TABLE_EAGLEANALYSIS_PEOPLE: eagleanalysis-people-sdx
@@ -22,12 +25,24 @@ provider:
     DYNAMO_TABLE_EAGLEREQUEST_FINISHED_ANALYSIS_PERSON: eaglerequest-finished-analysis-person-sdx
     DYNAMO_TABLE_EAGLEREQUEST_FINISHED_ANALYSIS_VEHICLE: eaglerequest-finished-analysis-vehicle-sdx
     EVENTBRIDGE_ANALYSIS_ANSWER_PRODUCER_PUT_EVENT: eaglerequest-third-party-analysis-answer-producer-sdx
-    S3_PERSON_ANALYSIS_ANSWER: eaglerequest-s3-person-analysis-answer-sdx
+    S3_PERSON_ANALYSIS_ANSWER: eaglerequest-person-analysis-answer-sdx
+    S3_SYNTHESIS_INFORMATION: eaglerequest-synthesis-information-sdx
     SNS_EAGLEREQUEST_THIRD_PARTY_WORKERS_ARN: { "Fn::Join" : ["", ["arn:aws:sns:${region}:", { "Ref" : "AWS::AccountId" }, ":eaglerequest-third-party-workers" ] ]  }
     SYSTEMEAGLE_EMAIL: sdx.admin@systemeagle.com.br
     TECHMIZE_API_V2_DATA_SOURCE_CUSTOM_REQUEST_ENDPOINT: ${ssm:/sdx/techmize/api/v2/data_source/custom_request/endpoint}
     TECHMIZE_API_V2_DATA_SOURCE_GET_RESPONSE_ENDPOINT: ${ssm:/sdx/techmize/api/v2/data_source/get_response/endpoint}
     TECHMIZE_API_V2_TOKEN: ${ssm:/sdx/techmize/api/v2/token}
+    TECHMIZE_API_NEW_V1_REQUEST_GET_RESPONSE_ENDPOINT: ${ssm:/sdx/techmize/api/new/v1/request/get_response/endpoint}
+    TECHMIZE_API_NEW_V1_REQUEST_STORE_REQUEST_ENDPOINT: ${ssm:/sdx/techmize/api/new/v1/request/store_request/endpoint}
+    TECHMIZE_API_NEW_V1_TOKEN: ${ssm:/sdx/techmize/api/new/v1/token}
+    TRANSSAT_API_SYNTHESIS_ENDPOINT: ${ssm:/sdx/transsat/api/synthesis_endpoint}
+    TRANSSAT_API_POSTBACK_URL: ${ssm:/sdx/transsat/api/postback_url}
+    TRANSSAT_API_TOKEN_ENDPOINT: ${ssm:/sdx/transsat/api/token_endpoint}
+    TRANSSAT_API_GET_TOKEN_CLIENT_ID: ${ssm:/sdx/transsat/api/token_client_id}
+    TRANSSAT_API_GET_TOKEN_CLIENT_SECRET: ${ssm:/sdx/transsat/api/token_client_secret}
+    TRANSSAT_API_GET_TOKEN_GRANT_TYPE: ${ssm:/sdx/transsat/api/token_grant_type}
+    TRANSSAT_API_GET_TOKEN_USERNAME: ${ssm:/sdx/transsat/api/token_username}
+    TRANSSAT_API_GET_TOKEN_PASSWORD: ${ssm:/sdx/transsat/api/token_password}
     USER_RECOVERY_KEY_URL: https://user.api.sdx.systemeagle.com.br/reset-password
 
 package:
@@ -148,6 +163,20 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
+  eagleuser-list-users:
+    handler: src/controllers/eagleuser/list-users/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /users
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
   eagleuser-my-company:
     handler: src/controllers/eagleuser/my-company/index.handler
     timeout: 600
@@ -162,13 +191,13 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
-  eagleuser-feature-flag-modify-allowance:
-    handler: src/controllers/eagleuser/feature-flag/modify-allowance/index.handler
+  eagleuser-feature-flag-update:
+    handler: src/controllers/eagleuser/feature-flag/update/index.handler
     timeout: 600
     events:
       - http:
           method: post
-          path: /feature-flag/modify-allowance
+          path: /feature-flag/company
           authorizer:
             type: CUSTOM
             authorizerId: abcjfk
@@ -182,7 +211,147 @@ functions:
     events:
       - http:
           method: put
-          path: /feature-flag/set
+          path: /feature-flag/company
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-list:
+    handler: src/controllers/eagleuser/feature-flag/list/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /feature-flag/company
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-delete:
+    handler: src/controllers/eagleuser/feature-flag/delete/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /feature-flag/company/delete
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-bff-update:
+    handler: src/controllers/eagleuser/feature-flag/bff/update/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /feature-flag/bff
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-bff-set:
+    handler: src/controllers/eagleuser/feature-flag/bff/set/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: put
+          path: /feature-flag/bff
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-bff-list:
+    handler: src/controllers/eagleuser/feature-flag/bff/list/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /feature-flag/bff
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-feature-flag-bff-delete:
+    handler: src/controllers/eagleuser/feature-flag/bff/delete/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /feature-flag/bff/delete
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-operator-companies-access-get:
+    handler: src/controllers/eagleuser/operator-companies-access/get/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /operator-companies-access
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-operator-companies-access-list:
+    handler: src/controllers/eagleuser/operator-companies-access/list/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /operator-companies-access/list
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-operator-companies-access-delete-companies:
+    handler: src/controllers/eagleuser/operator-companies-access/delete-companies/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /operator-companies-access/delete-companies
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eagleuser-operator-companies-access-delete-users:
+    handler: src/controllers/eagleuser/operator-companies-access/delete-users/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /operator-companies-access/delete-users
           authorizer:
             type: CUSTOM
             authorizerId: abcjfk
@@ -371,6 +540,126 @@ functions:
           localAuthorizer:
             name: "mylocalAuthProxyFn"
             type: "request"
+
+  eaglerequest-change-analysis-answer-person:
+    handler: src/controllers/eaglerequest/change-analysis-answer/person/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/person/change-answer
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-change-analysis-answer-vehicle:
+    handler: src/controllers/eaglerequest/change-analysis-answer/vehicle/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/vehicle/change-answer
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-delete-waiting-analysis-person:
+    handler: src/controllers/eaglerequest/delete-waiting-analysis/person/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/person/delete-waiting
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-delete-waiting-analysis-vehicle:
+    handler: src/controllers/eaglerequest/delete-waiting-analysis/vehicle/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /analysis/vehicle/delete-waiting
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-analysis-synthesis:
+    handler: src/controllers/eaglerequest/send-request-analysis/synthesis/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /synthesis
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-delete-synthesis:
+    handler: src/controllers/eaglerequest/delete-synthesis/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /synthesis/delete
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-get-synthesis:
+    handler: src/controllers/eaglerequest/consult/synthesis/get/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /synthesis
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-list-synthesis:
+    handler: src/controllers/eaglerequest/consult/synthesis/query-by-company/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /synthesis/list
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-transsat-receive-synthesis:
+    handler: src/controllers/eaglerequest/transsat-receive-synthesis/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: post
+          path: /synthesis/receive
 
   worker-techmize-v2-answer-analysis-person-basic-data:
     handler: src/worker/techmize/v2/answer-analysis/person/basic-data/index.handler
