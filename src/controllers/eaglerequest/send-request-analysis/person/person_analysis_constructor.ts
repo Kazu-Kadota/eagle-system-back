@@ -68,15 +68,6 @@ const personAnalysisConstructor = async (
     }
 
     return person_analyzes
-  } else if (person_analysis_type === PersonAnalysisTypeEnum.PROCESS) {
-    const person_analysis_constructor: PersonAnalysisRequest = {
-      ...person_analysis_request,
-      person_analysis_type,
-    }
-
-    person_analyzes.push(await personAnalysis(person_analysis_constructor))
-
-    return person_analyzes
   } else if (is_person_analysis_type_automatic_arr.includes(person_analysis_type)) {
     const person_analysis_constructor: PersonAnalysisRequest = {
       ...person_analysis_request,
