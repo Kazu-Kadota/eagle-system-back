@@ -1,34 +1,70 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { APIGatewayProxyEvent } from 'aws-lambda'
-import { ReturnResponse } from 'src/models/lambda'
+import { FeatureFlagBody, FeatureFlagKey, FeatureFlagsEnum } from 'src/models/dynamo/feature-flags/feature-flag'
+import { Controller } from 'src/models/lambda'
+import queryFeatureFlag from 'src/services/aws/dynamo/user/feature-flag/query'
+import transactWriteFeatureFlag from 'src/services/aws/dynamo/user/feature-flag/transact-write'
 import logger from 'src/utils/logger'
 
-import setFeatureFlagAdapter from './set-feature-flag-adapter'
 import validateBody from './validate-body'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 
-const setFeatureFlagHandler = async (event: APIGatewayProxyEvent): Promise<ReturnResponse<any>> => {
-  logger.debug({
-    message: 'Request to set feature flag',
-  })
+const setFeatureFlagController: Controller = async (req) => {
+  const body = validateBody(JSON.parse(req.body as string))
 
-  const body = validateBody(JSON.parse(event.body as string))
+  const current_company_feature_flags = await queryFeatureFlag({
+    company_id: body.company_id,
+  }, dynamodbClient)
 
-  await setFeatureFlagAdapter(body, dynamodbClient)
+  let change_company_feature_flags: Array<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum>>
+
+  if (!current_company_feature_flags) {
+    change_company_feature_flags = body.feature_flags.map((value) => ({
+      feature_flag: value.feature_flag,
+      company_id: body.company_id,
+      enabled: value.enabled,
+      config: value.config,
+    }))
+
+    await transactWriteFeatureFlag({
+      feature_flags: change_company_feature_flags,
+      operation: 'put',
+      dynamodbClient,
+    })
+  } else {
+    const current_company_feature_flags_names = current_company_feature_flags.feature_flag.map((value) => value.feature_flag)
+
+    change_company_feature_flags = body.feature_flags
+      .map<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum> | undefined>((value) => {
+        return current_company_feature_flags_names.includes(value.feature_flag)
+          ? undefined
+          : {
+              feature_flag: value.feature_flag,
+              company_id: body.company_id,
+              enabled: value.enabled,
+              config: value.config,
+            }
+      })
+      // @ts-ignore-next-line
+      .filter<FeatureFlagKey & FeatureFlagBody<FeatureFlagsEnum>>((value) => value !== undefined)
+
+    await transactWriteFeatureFlag({
+      feature_flags: change_company_feature_flags,
+      operation: 'put',
+      dynamodbClient,
+    })
+  }
 
   logger.info({
     message: 'Success on set feature flag',
-    company_id: body.company_id,
-    feature_flag: body.feature_flag,
-    enabled: body.enabled,
+    feature_flags: change_company_feature_flags,
   })
 
   return {
     body: {
-      message: 'Success on set feature flag',
+      message: 'Sucesso em cadastrar novo produto',
     },
   }
 }
 
-export default setFeatureFlagHandler
+export default setFeatureFlagController

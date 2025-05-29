@@ -1,4 +1,4 @@
-import { is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, PersonRegionTypeEnum } from 'src/models/dynamo/request-enum'
+import { is_person_analysis_type_automatic_arr, PersonAnalysisTypeEnum, PersonRegionTypeEnum, PersonThirdPartyEnum } from 'src/models/dynamo/request-enum'
 import { PersonAnalysisItems } from 'src/models/dynamo/request-person'
 
 import { eagleTechimzePersonAnalysisTypeEnumMap } from 'src/models/techmize/eagle-techimze-enum-map'
@@ -68,15 +68,6 @@ const personAnalysisConstructor = async (
     }
 
     return person_analyzes
-  } else if (person_analysis_type === PersonAnalysisTypeEnum.PROCESS) {
-    const person_analysis_constructor: PersonAnalysisRequest = {
-      ...person_analysis_request,
-      person_analysis_type,
-    }
-
-    person_analyzes.push(await personAnalysis(person_analysis_constructor))
-
-    return person_analyzes
   } else if (is_person_analysis_type_automatic_arr.includes(person_analysis_type)) {
     const person_analysis_constructor: PersonAnalysisRequest = {
       ...person_analysis_request,
@@ -101,7 +92,9 @@ const personAnalysisConstructor = async (
       throw new ErrorHandler(`TECHMIZE: Error on process consult ${consultar_params.type_request}`, 500)
     }
 
-    person_analysis_constructor.third_party = techmize_response.data
+    person_analysis_constructor.third_party = {
+      [PersonThirdPartyEnum.TECHMIZE]: techmize_response.data,
+    }
 
     person_analyzes.push(await personAnalysis(person_analysis_constructor))
 

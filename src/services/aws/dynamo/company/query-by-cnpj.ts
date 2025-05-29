@@ -14,7 +14,7 @@ import logger from 'src/utils/logger'
 
 const DYNAMO_TABLE_EAGLEUSER_COMPANY = getStringEnv('DYNAMO_TABLE_EAGLEUSER_COMPANY')
 
-const queryByCnpj = async (
+const queryCompanyByCnpj = async (
   cnpj: string,
   dynamodbClient: DynamoDBClient,
 ): Promise<Company[] | undefined> => {
@@ -45,4 +45,4 @@ const queryByCnpj = async (
   return result
 }
 
-export default queryByCnpj
+export default queryCompanyByCnpj

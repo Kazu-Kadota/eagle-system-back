@@ -1,4 +1,4 @@
-import { FeatureFlagsEnum } from './feature-flag'
+import { FeatureFlagsEnum } from './feature-flags/feature-flag'
 
 export enum RequestStatusEnum {
   WAITING = 'WAITING',

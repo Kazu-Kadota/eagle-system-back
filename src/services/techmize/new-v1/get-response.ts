@@ -33,6 +33,10 @@ const techmizeNewV1GetResponse = async ({
     baseURL: TECHMIZE_API_NEW_V1_REQUEST_GET_RESPONSE_ENDPOINT,
     headers: techmizeApiNewV1Headers(),
     data: body,
+    timeout: 30000,
+    timeoutErrorMessage: 'TECHMIZE: Request time exceed 20 seconds',
+    maxContentLength: Infinity,
+    maxBodyLength: Infinity,
   }
 
   const { data } = await axios

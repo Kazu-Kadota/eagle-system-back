@@ -5,10 +5,8 @@ import {
 } from '@aws-sdk/client-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
 import { SynthesisRequest } from 'src/models/dynamo/request-synthesis'
-import base64ToString from 'src/utils/base64-to-string'
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
-import stringToBase64 from 'src/utils/string-to-base64'
 
 const DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS = getStringEnv('DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS')
 
@@ -18,21 +16,23 @@ export type QueryRequestSynthesisByCompany = {
   company_name: string
 }
 
-export type ExclusiveStartKey = {
-  value?: Record<string, AttributeValue>
-}
-
 export type QueryRequestSynthesisByCompanyResponse = {
   result: SynthesisRequest[]
-  last_evaluated_key?: string
+  last_evaluated_key?: Record<string, AttributeValue>
   count: number
 }
 
-const queryRequestSynthesisByCompany = async (
-  data: QueryRequestSynthesisByCompany,
-  dynamodbClient: DynamoDBClient,
-  last_evaluated_key?: string,
-): Promise<QueryRequestSynthesisByCompanyResponse | undefined> => {
+export type QueryRequestSynthesisByCompanyParams = {
+  data: QueryRequestSynthesisByCompany
+  dynamodbClient: DynamoDBClient
+  last_evaluated_key?: Record<string, AttributeValue>
+}
+
+const queryRequestSynthesisByCompany = async ({
+  data,
+  dynamodbClient,
+  last_evaluated_key,
+}: QueryRequestSynthesisByCompanyParams): Promise<QueryRequestSynthesisByCompanyResponse | undefined> => {
   const {
     start_date,
     final_date,
@@ -46,16 +46,10 @@ const queryRequestSynthesisByCompany = async (
     company_name,
   })
 
-  const exclusive_start_key = {} as ExclusiveStartKey
-
-  if (last_evaluated_key) {
-    exclusive_start_key.value = JSON.parse(base64ToString(last_evaluated_key))
-  }
-
   const command = new QueryCommand({
     TableName: DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS,
     IndexName: 'company-name-index',
-    KeyConditionExpression: '#company_name = :company_name',
+    KeyConditionExpression: '#company_name = :company_name AND #created_at BETWEEN :start_date AND :final_date',
     ExpressionAttributeNames: {
       '#created_at': 'created_at',
       '#company_name': 'company_name',
@@ -65,8 +59,7 @@ const queryRequestSynthesisByCompany = async (
       ':final_date': { S: final_date },
       ':company_name': { S: company_name },
     },
-    ExclusiveStartKey: exclusive_start_key.value,
-    FilterExpression: '#created_at BETWEEN :start_date AND :final_date',
+    ExclusiveStartKey: last_evaluated_key,
   })
 
   const { Items, LastEvaluatedKey, Count } = await dynamodbClient.send(command)
@@ -81,15 +74,9 @@ const queryRequestSynthesisByCompany = async (
 
   const result = Items.map((item) => (unmarshall(item) as SynthesisRequest))
 
-  let last_evaluated_key_base64
-
-  if (LastEvaluatedKey) {
-    last_evaluated_key_base64 = stringToBase64(JSON.stringify(LastEvaluatedKey))
-  }
-
   return {
     result,
-    last_evaluated_key: last_evaluated_key_base64,
+    last_evaluated_key: LastEvaluatedKey,
     count: Count,
   }
 }

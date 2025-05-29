@@ -5,10 +5,13 @@ import { SynthesisRequestKey } from 'src/models/dynamo/request-synthesis'
 import { UserGroupEnum } from 'src/models/dynamo/user'
 import { Controller } from 'src/models/lambda'
 import s3SynthesisInformationThirdPartyGet from 'src/services/aws/s3/synthesis/answer/third-party/get'
+import ErrorHandler from 'src/utils/error-handler'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
 import logger from 'src/utils/logger'
 
+import getFeatureFlagAdapter from './get-feature-flag-adapter'
 import getRequestSynthesisAdapter from './get-request-synthesis-adapter'
+import queryCompanyByNameAdapter from './query-company-adapter'
 import validateSynthesisQuery from './validate-query'
 
 const dynamodbClient = new DynamoDBClient({
@@ -51,14 +54,45 @@ const getSynthesisController: Controller = async (event) => {
     }
   }
 
-  const s3_key = `${synthesis_id}/${request_id}/${synthesis.third_party}/text_output.json`
+  if (user_info.user_type === UserGroupEnum.CLIENT) {
+    const company = await queryCompanyByNameAdapter(synthesis.company_name, dynamodbClient)
+
+    const feature_flag = await getFeatureFlagAdapter(company.company_id, dynamodbClient)
+
+    const now = new Date()
+
+    const diff_date = (now.getTime() - new Date(synthesis.finished_at as string).getTime()) / 1000 / 60 / 60 / 24
+
+    if (feature_flag.config.range_date_limit > diff_date) {
+      logger.warn({
+        message: 'Range data limit exceed for this company',
+        now,
+        finished_at: synthesis.finished_at,
+        diff_date,
+        range_date_limit: feature_flag.config.range_date_limit,
+      })
+
+      throw new ErrorHandler('Não é possível verificar síntese entre datas maiores de ' + feature_flag.config.range_date_limit + ' dias', 400)
+    }
+  }
+
+  const s3_key_output = `${synthesis_id}/${request_id}/${synthesis.third_party?.company}/text_output.json`
 
   const text_output = await s3SynthesisInformationThirdPartyGet({
-    key: s3_key,
+    key: s3_key_output,
     s3_client: s3Client,
   })
 
   synthesis.text_output = text_output
+
+  const s3_key_input = `${synthesis_id}/${request_id}/${synthesis.third_party?.company}/text_input.json`
+
+  const text_input = await s3SynthesisInformationThirdPartyGet({
+    key: s3_key_input,
+    s3_client: s3Client,
+  })
+
+  synthesis.text_input = text_input as string
 
   if (user_info.user_type === UserGroupEnum.CLIENT) {
     delete synthesis.third_party

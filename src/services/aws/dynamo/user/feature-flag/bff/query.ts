@@ -4,7 +4,8 @@ import {
   QueryCommand,
 } from '@aws-sdk/client-dynamodb'
 import { unmarshall } from '@aws-sdk/util-dynamodb'
-import { FeatureFlag } from 'src/models/dynamo/feature-flag'
+import { FeatureFlagsEnum } from 'src/models/dynamo/feature-flags/feature-flag'
+import { FeatureFlagBFF, FeatureFlagBFFKey } from 'src/models/dynamo/feature-flags/feature-flag-bff'
 import {
   createConditionExpression,
   createExpressionAttributeNames,
@@ -13,29 +14,25 @@ import {
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
 
-const DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG = getStringEnv('DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG')
+const DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG_BFF = getStringEnv('DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG_BFF')
 
-export type QueryByCompanyIdResponse = {
+export type QueryFeatureFlagBFFResponse <T extends FeatureFlagsEnum> = {
   last_evaluated_key?: Record<string, AttributeValue>
-  feature_flag: FeatureFlag[]
+  feature_flag: FeatureFlagBFF<T>[]
 }
 
-export type QueryByCompanyId = {
-  company_id: string
-}
-
-const queryByCompanyId = async (
-  query: QueryByCompanyId,
+const queryFeatureFlagBFF = async <T extends FeatureFlagsEnum> (
+  query: Partial<FeatureFlagBFFKey>,
   dynamodbClient: DynamoDBClient,
   last_evaluated_key?: Record<string, AttributeValue>,
-): Promise<QueryByCompanyIdResponse | undefined> => {
+): Promise<QueryFeatureFlagBFFResponse<T> | undefined> => {
   logger.debug({
-    message: 'Querying feature flag by company_id',
-    company_id: query.company_id,
+    message: 'Querying feature flag BFF',
+    ...query,
   })
 
   const command = new QueryCommand({
-    TableName: DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG,
+    TableName: DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG_BFF,
     KeyConditionExpression: createConditionExpression(query, true),
     ExpressionAttributeNames: createExpressionAttributeNames(query),
     ExpressionAttributeValues: createExpressionAttributeValues(query),
@@ -48,7 +45,7 @@ const queryByCompanyId = async (
     return undefined
   }
 
-  const result = Items.map((item) => (unmarshall(item) as FeatureFlag))
+  const result = Items.map((item) => (unmarshall(item) as FeatureFlagBFF<T>))
 
   if (LastEvaluatedKey) {
     last_evaluated_key = LastEvaluatedKey
@@ -60,4 +57,4 @@ const queryByCompanyId = async (
   }
 }
 
-export default queryByCompanyId
+export default queryFeatureFlagBFF

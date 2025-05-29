@@ -5,7 +5,7 @@ import {
   DynamoDBDocumentClient,
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb'
-import { FeatureFlagBody, FeatureFlagKey } from 'src/models/dynamo/feature-flag'
+import { FeatureFlagBody, FeatureFlagKey, FeatureFlagsEnum } from 'src/models/dynamo/feature-flags/feature-flag'
 import {
   createConditionExpression,
   createExpressionAttributeNames,
@@ -17,16 +17,15 @@ import logger from 'src/utils/logger'
 
 const DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG = getStringEnv('DYNAMO_TABLE_EAGLEUSER_FEATURE_FLAG')
 
-const updateFeatureFlag = async (
+const updateFeatureFlag = async<T extends FeatureFlagsEnum> (
   key: FeatureFlagKey,
-  body: Partial<FeatureFlagBody>,
+  body: Partial<FeatureFlagBody<T>>,
   dynamodbClient: DynamoDBClient,
 ): Promise<void> => {
   const dynamoDocClient = DynamoDBDocumentClient.from(dynamodbClient)
   logger.debug({
     message: 'Updating feature flag in table',
-    company_id: key.company_id,
-    feature_flag: key.feature_flag,
+    ...key,
   })
 
   const now = new Date().toISOString()
