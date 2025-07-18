@@ -86,7 +86,7 @@ const techmizeNewV1AnswerAnalysisVehicleBasicData: SQSStepFunctionController<Tec
     : mockTechmizeNewV1AnswerAnalysisVehicleBasicDataGetResponse
 
   if (vehicle_basic_data_result.code === 0) {
-    if (vehicle_basic_data_result.message === techmizeNewV1GetResponseNotFinishedErrorResponseMessage) {
+    if (vehicle_basic_data_result.data === techmizeNewV1GetResponseNotFinishedErrorResponseMessage) {
       logger.info({
         message: `TECHMIZE: Response of protocol ${body.protocol} returned message waiting`,
         error: {
