@@ -86,7 +86,7 @@ const techmizeNewV1AnswerAnalysisVehicleANTT: SQSStepFunctionController<Techimze
     : mockTechmizeNewV1AnswerAnalysisVehicleANTTGetResponse
 
   if (antt_result.code === 0) {
-    if (antt_result.message === techmizeNewV1GetResponseNotFinishedErrorResponseMessage) {
+    if (antt_result.data === techmizeNewV1GetResponseNotFinishedErrorResponseMessage) {
       logger.info({
         message: `TECHMIZE: Response of protocol ${body.protocol} returned message waiting`,
         error: {
