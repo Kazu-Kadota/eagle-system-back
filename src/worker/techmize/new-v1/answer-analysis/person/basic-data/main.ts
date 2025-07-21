@@ -180,6 +180,7 @@ const techmizeNewV1AnswerAnalysisPersonBasicData: SQSStepFunctionController<Tech
 
   await sendTaskSuccess({
     output: JSON.stringify([{
+      code: 1,
       message: `TECHMIZE: Response of protocol ${body.protocol} returned code 1`,
     }]),
     sfnClient: message.sfnClient,
