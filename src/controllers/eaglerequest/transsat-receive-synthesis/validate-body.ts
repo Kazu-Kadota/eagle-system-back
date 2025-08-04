@@ -5,8 +5,6 @@ import { TranssatPostbackSynthesisBody, TranssatPostbackSynthesisOcorrencia } fr
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
-const date_regex = /^\d{2}\/\d{2}\/\d{4}$/
-
 const schema_metadata = Joi.object<SyntheisRequestReceiveMetadata, true>({
   request_id: Joi
     .string()
@@ -47,12 +45,8 @@ const schema_ocorrencias = Joi.array<TranssatPostbackSynthesisOcorrencia>().item
       .min(1)
       .required(),
     data: Joi.string()
-      .trim()
-      .pattern(date_regex)
-      .required()
-      .messages({
-        'string.pattern.base': '"data" deve estar no formato dd/mm/yyyy',
-      }),
+      .max(32)
+      .required(),
     laudo: Joi
       .boolean()
       .required(),
@@ -97,21 +91,17 @@ const schema_ocorrencias = Joi.array<TranssatPostbackSynthesisOcorrencia>().item
       .min(1)
       .required(),
   }),
-).required()
+).optional()
 
 const schema = Joi.object<TranssatPostbackSynthesisBody>({
   cpf: Joi
     .string()
     .min(11)
-    .max(11)
+    .max(14)
     .required(),
   data_nascimento: Joi.string()
-    .trim()
-    .pattern(date_regex)
-    .required()
-    .messages({
-      'string.pattern.base': '"data" deve estar no formato dd/mm/yyyy',
-    }),
+    .max(32)
+    .required(),
   metadata: schema_metadata,
   nome: Joi
     .string()
@@ -141,6 +131,8 @@ const validateBodyReceiveSynthesis = (
   })
 
   if (error) {
+    logger.debug(data)
+    logger.debug(error)
     logger.error('Error on validate "receive synthesis" body')
 
     throw new ErrorHandler(error.stack as string, 400)

@@ -12,19 +12,19 @@ import {
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
 
-const DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS = getStringEnv('DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS')
+const DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS_FINISHED = getStringEnv('DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS_FINISHED')
 
-const deleteRequestSynthesis = async (
+const deleteRequestSynthesisFinished = async (
   key: SynthesisRequestKey,
   dynamodbClient: DynamoDBClient,
 ): Promise<void> => {
   logger.debug({
-    message: 'Deleting synthesis',
+    message: 'Deleting finished synthesis',
     ...key,
   })
 
   const command = new DeleteItemCommand({
-    TableName: DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS,
+    TableName: DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS_FINISHED,
     Key: marshall(key),
     ExpressionAttributeNames: createExpressionAttributeNames(key),
     ExpressionAttributeValues: createExpressionAttributeValues(key),
@@ -34,4 +34,4 @@ const deleteRequestSynthesis = async (
   await dynamodbClient.send(command)
 }
 
-export default deleteRequestSynthesis
+export default deleteRequestSynthesisFinished

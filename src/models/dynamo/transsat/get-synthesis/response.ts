@@ -1,23 +1,25 @@
 export type TranssatGetSynthesisResponseOcorrencia = {
-  numero_nacional_procedimento: string
-  condutor_do_veiculo: string
-  relato: string
-  data: string
-  laudo: boolean
-  natureza_ocorrencia: string
-  testemunha: string
-  vitima: string
-  situacao_procedimento: string
-  municipio: string
   autor: string
+  condutor_do_veiculo: string
+  data: string
+  id_ocorrencias: number
+  laudo: boolean
+  municipio: string
+  natureza_ocorrencia: string
+  numero_nacional_procedimento: string
+  relato: string
+  situacao_procedimento: string
+  testemunha: string
   unidade_policial_registro: string
+  vitima: string
 }
 
 export type TranssatGetSynthesisResponse = {
-  nome_da_mae: string
-  quantidade: number
-  ocorrencias: TranssatGetSynthesisResponseOcorrencia[]
   cpf: string
   data_nascimento: string
+  nome_mae: string
   nome: string
+  ocorrencias: TranssatGetSynthesisResponseOcorrencia[]
+  qtd: number
+  referencia: string
 }

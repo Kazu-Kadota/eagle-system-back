@@ -17,14 +17,14 @@ import logger from 'src/utils/logger'
 
 const DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS_FINISHED = getStringEnv('DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS_FINISHED')
 
-const updateRequestSynthesis = async (
+const updateRequestSynthesisFinished = async (
   key: SynthesisRequestKey,
   body: Partial<SynthesisRequestBody>,
   dynamodbClient: DynamoDBClient,
 ): Promise<void> => {
   const dynamoDocClient = DynamoDBDocumentClient.from(dynamodbClient)
   logger.debug({
-    message: 'Updating synthesis finished in table',
+    message: 'Updating finished synthesis in table',
     ...key,
   })
 
@@ -48,4 +48,4 @@ const updateRequestSynthesis = async (
   await dynamoDocClient.send(command)
 }
 
-export default updateRequestSynthesis
+export default updateRequestSynthesisFinished
