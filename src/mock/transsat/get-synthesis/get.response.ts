@@ -1,10 +1,11 @@
 import { TranssatGetSynthesisResponse } from 'src/models/dynamo/transsat/get-synthesis/response'
 
 export const mockTranssatGetSynthesisResponse: TranssatGetSynthesisResponse = {
-  nome_da_mae: 'ROSALVA RIOS BRITES',
-  quantidade: 2,
+  nome_mae: 'ROSALVA RIOS BRITES',
+  qtd: 2,
   ocorrencias: [
     {
+      id_ocorrencias: 569,
       numero_nacional_procedimento: '301/2019',
       condutor_do_veiculo: 'Não Informado',
       relato:
@@ -20,6 +21,7 @@ export const mockTranssatGetSynthesisResponse: TranssatGetSynthesisResponse = {
       unidade_policial_registro: 'DEL.POL.MIRACATU',
     },
     {
+      id_ocorrencias: 569,
       numero_nacional_procedimento: '310/2019',
       condutor_do_veiculo: 'Não Informado',
       relato:
@@ -38,4 +40,5 @@ export const mockTranssatGetSynthesisResponse: TranssatGetSynthesisResponse = {
   cpf: '01536547751',
   data_nascimento: '03/05/1966',
   nome: 'LUIZ RIOS BRITES',
+  referencia: '68b70730-7112-49ab-b369-4cda3e4bc44d',
 }

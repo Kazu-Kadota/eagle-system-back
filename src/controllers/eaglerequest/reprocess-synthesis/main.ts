@@ -6,11 +6,12 @@ import { Controller } from 'src/models/lambda'
 import deleteRequestSynthesis from 'src/services/aws/dynamo/request/synthesis/delete'
 import putRequestSynthesisFinished from 'src/services/aws/dynamo/request/synthesis/finished/put'
 import s3SynthesisInformationThirdPartyPut from 'src/services/aws/s3/synthesis/answer/third-party/put'
+import transsatGetSynthesis from 'src/services/transsat/get-synthesis'
 import logger from 'src/utils/logger'
 import removeEmpty from 'src/utils/remove-empty'
 
 import getRequestSynthesisAdapter from './get-request-synthesis-adapter'
-import validateBodyReceiveSynthesis from './validate-body'
+import validateBodyReprocessSynthesis from './validate-body'
 
 const dynamodbClient = new DynamoDBClient({ region: 'us-east-1' })
 
@@ -19,13 +20,13 @@ const s3Client = new S3Client({
   maxAttempts: 5,
 })
 
-const transsatReceiveSynthesisController: Controller = async (req) => {
+const reprocessSynthesisController: Controller = async (req) => {
   const event_body = removeEmpty(JSON.parse(req.body as string))
 
-  const body = validateBodyReceiveSynthesis(event_body)
+  const body = validateBodyReprocessSynthesis(event_body)
 
-  const request_id = body.metadata.request_id
-  const synthesis_id = body.metadata.synthesis_id
+  const request_id = body.request_id
+  const synthesis_id = body.synthesis_id
 
   const synthesis_key: SynthesisRequestKey = {
     request_id,
@@ -37,13 +38,19 @@ const transsatReceiveSynthesisController: Controller = async (req) => {
     ...synthesis_key,
   })
 
+  const referencia = synthesis_body.third_party?.data.referencia
+
+  const third_party_response = await transsatGetSynthesis({
+    referencia,
+  })
+
   const s3_path = await s3SynthesisInformationThirdPartyPut({
     is_text_input: false,
     request_id,
     s3_client: s3Client,
     synthesis_id,
     third_party: SynthesisThirdPartyEnum.TRANSSAT,
-    body: JSON.stringify(body),
+    body: JSON.stringify(third_party_response),
   })
 
   synthesis_body.text_output = s3_path
@@ -55,16 +62,16 @@ const transsatReceiveSynthesisController: Controller = async (req) => {
   await deleteRequestSynthesis(synthesis_key, dynamodbClient)
 
   logger.info({
-    message: 'Successfully received synthesis',
+    message: 'Successfully reprocessed synthesis',
     ...synthesis_key,
   })
 
   return {
     body: {
-      message: 'Successfully received synthesis',
+      message: 'Successfully reprocessed synthesis',
       ...synthesis_key,
     },
   }
 }
 
-export default transsatReceiveSynthesisController
+export default reprocessSynthesisController

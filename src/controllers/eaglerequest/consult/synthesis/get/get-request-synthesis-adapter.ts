@@ -1,6 +1,7 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { SynthesisRequestBody, SynthesisRequestKey } from 'src/models/dynamo/request-synthesis'
 import { UserGroupEnum } from 'src/models/dynamo/user'
+import getRequestSynthesisFinished from 'src/services/aws/dynamo/request/synthesis/finished/get'
 import getRequestSynthesis from 'src/services/aws/dynamo/request/synthesis/get'
 import ErrorHandler from 'src/utils/error-handler'
 import { UserInfoFromJwt } from 'src/utils/extract-jwt-lambda'
@@ -20,30 +21,50 @@ const getRequestSynthesisAdapter = async (params: GetRequestSynthesisAdapterPara
   }
   const synthesis = await getRequestSynthesis(synthesis_key, params.dynamodbClient)
 
-  if (!synthesis) {
-    logger.warn({
-      message: 'Synthesis not exist',
-      ...synthesis_key,
-    })
+  if (synthesis) {
+    const is_client_not_same_company = params.user_info.user_type === UserGroupEnum.CLIENT
+      && synthesis.company_name !== params.user_info.company_name
 
-    throw new ErrorHandler('Synthesis not exist', 404)
+    if (is_client_not_same_company) {
+      logger.warn({
+        message: 'Client not requested this synthesis',
+        ...synthesis_key,
+      })
+
+      throw new ErrorHandler('Synthesis not exist', 404)
+    }
+
+    const { synthesis_id, request_id, ...synthesis_body } = synthesis
+
+    return synthesis_body
   }
 
-  const is_client_not_same_company = params.user_info.user_type === UserGroupEnum.CLIENT
-    && synthesis.company_name !== params.user_info.company_name
+  const finished_synthesis = await getRequestSynthesisFinished(synthesis_key, params.dynamodbClient)
 
-  if (is_client_not_same_company) {
-    logger.warn({
-      message: 'Client not requested to synthesis this information',
-      ...synthesis_key,
-    })
+  if (finished_synthesis) {
+    const is_client_not_same_company = params.user_info.user_type === UserGroupEnum.CLIENT
+      && finished_synthesis.company_name !== params.user_info.company_name
 
-    throw new ErrorHandler('Synthesis not exist', 404)
+    if (is_client_not_same_company) {
+      logger.warn({
+        message: 'Client not requested this synthesis',
+        ...synthesis_key,
+      })
+
+      throw new ErrorHandler('Synthesis not exist', 404)
+    }
+
+    const { synthesis_id, request_id, ...synthesis_body } = finished_synthesis
+
+    return synthesis_body
   }
 
-  const { synthesis_id, request_id, ...synthesis_body } = synthesis
+  logger.warn({
+    message: 'Synthesis not exist',
+    ...synthesis_key,
+  })
 
-  return synthesis_body
+  throw new ErrorHandler('Synthesis not exist', 404)
 }
 
 export default getRequestSynthesisAdapter
