@@ -9,4 +9,6 @@ export const transsatGetTokenHeaders = (): RawAxiosRequestHeaders => ({
 export const transsatGetSynthesisHeaders = async (): Promise<RawAxiosRequestHeaders> => ({
   Authorization: 'Bearer ' + await transsatToken(),
   'Content-Type': 'application/json',
+  empresa_id: 8,
+  cliente_id: 1,
 })

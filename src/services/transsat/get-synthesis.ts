@@ -10,23 +10,24 @@ import { transsatGetSynthesisHeaders } from './headers'
 
 export type TranssatGetSynthesisParams = TranssatGetSynthesisRequestBody
 
-const TRANSSAT_API_SYNTHESIS_ENDPOINT = getStringEnv('TRANSSAT_API_SYNTHESIS_ENDPOINT')
+const TRANSSAT_API_SYNTHESIS_GET_REFERENCE = getStringEnv('TRANSSAT_API_SYNTHESIS_GET_REFERENCE')
 
 const transsatGetSynthesis = async ({
-  texto,
+  referencia,
 }: TranssatGetSynthesisParams): Promise<TranssatGetSynthesisResponse> => {
   logger.debug({
     message: 'TRANSSAT: Get response of text',
     service: 'transsat',
+    referencia,
   })
 
   const body: TranssatGetSynthesisParams = {
-    texto,
+    referencia,
   }
 
   const options: AxiosRequestConfig<TranssatGetSynthesisParams> = {
-    method: 'GET',
-    baseURL: TRANSSAT_API_SYNTHESIS_ENDPOINT,
+    method: 'POST',
+    baseURL: TRANSSAT_API_SYNTHESIS_GET_REFERENCE,
     headers: await transsatGetSynthesisHeaders(),
     data: body,
   }
@@ -35,7 +36,7 @@ const transsatGetSynthesis = async ({
     .request<TranssatGetSynthesisResponse>(options)
     .catch((err) => {
       logger.warn({
-        message: 'TRANSSAT: Error on request get response',
+        message: 'TRANSSAT: Error on request get reference response',
         error: {
           request: err.request,
           response: {
@@ -46,7 +47,7 @@ const transsatGetSynthesis = async ({
         },
       })
 
-      throw new ErrorHandler('TRANSSAT: Error on request get response', err.statusCode)
+      throw new ErrorHandler('TRANSSAT: Error on request get reference response', err.statusCode)
     })
 
   return data

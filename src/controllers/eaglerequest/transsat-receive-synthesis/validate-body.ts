@@ -5,7 +5,7 @@ import { TranssatPostbackSynthesisBody, TranssatPostbackSynthesisOcorrencia } fr
 import ErrorHandler from 'src/utils/error-handler'
 import logger from 'src/utils/logger'
 
-const date_regex = /^\d{2}\/\d{2}\/\d{4}$/
+const date_regex = /^\d[0-9]{2}\/\d[0-9]{2}\/\d[0-9]{4}$/
 
 const schema_metadata = Joi.object<SyntheisRequestReceiveMetadata, true>({
   request_id: Joi
@@ -97,7 +97,7 @@ const schema_ocorrencias = Joi.array<TranssatPostbackSynthesisOcorrencia>().item
       .min(1)
       .required(),
   }),
-).required()
+).optional()
 
 const schema = Joi.object<TranssatPostbackSynthesisBody>({
   cpf: Joi

@@ -104,7 +104,7 @@ const requestSynthesisController: Controller = async (req) => {
 
   return {
     body: {
-      message: 'Successfully requested synthesis',
+      message: 'Sucesso em requisitar sintese',
       ...synthesis,
     },
   }

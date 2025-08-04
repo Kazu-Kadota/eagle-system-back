@@ -18,10 +18,13 @@ eaglerequest-delete-waiting-analysis-vehicle
 eaglerequest-get-synthesis
 eaglerequest-get-person
 eaglerequest-get-vehicle
+eaglerequest-list-synthesis
 eaglerequest-list-people
 eaglerequest-list-vehicles
+eaglerequest-reprocess-synthesis
 eaglerequest-query-analysis-by-document-plate
 eaglerequest-query-synthesis-by-company
+eaglerequest-query-synthesis-by-document
 eaglerequest-transsat-receive-synthesis
 eaglerequest-worker-answer-analysis-person-cnh
 eaglerequest-worker-answer-analysis-person-cnh-v2

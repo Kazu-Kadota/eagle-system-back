@@ -13,33 +13,29 @@ import {
 import getStringEnv from 'src/utils/get-string-env'
 import logger from 'src/utils/logger'
 
-const DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS = getStringEnv('DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS')
+const DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS_FINISHED = getStringEnv('DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS_FINISHED')
 
-export type ScanRequestSynthesisRequest = {
+export type ScanRequestSynthesisFinished = {
   company_name?: string
 }
 
-export type ScanRequestSynthesisResponse = {
+export type ScanRequestSynthesisFinishedResponse = {
   result: SynthesisRequest[],
   last_evaluated_key?: Record<string, AttributeValue>
 }
 
-export type ExclusiveStartKey = {
-  value?: Record<string, AttributeValue>
-}
-
-const scanRequestSynthesis = async (
-  scan: ScanRequestSynthesisRequest,
+const scanRequestSynthesisFinished = async (
+  scan: ScanRequestSynthesisFinished,
   dynamodbClient: DynamoDBClient,
   last_evaluated_key?: Record<string, AttributeValue>,
-): Promise<ScanRequestSynthesisResponse | undefined> => {
+): Promise<ScanRequestSynthesisFinishedResponse | undefined> => {
   logger.debug({
     message: 'Scanning synthesis',
     company_name: scan.company_name || 'admin',
   })
 
   const command = new ScanCommand({
-    TableName: DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS,
+    TableName: DYNAMO_TABLE_EAGLEREQUEST_SYNTHESIS_FINISHED,
     ExpressionAttributeNames: createExpressionAttributeNames(scan),
     ExpressionAttributeValues: createExpressionAttributeValues(scan),
     ExclusiveStartKey: last_evaluated_key,
@@ -60,4 +56,4 @@ const scanRequestSynthesis = async (
   }
 }
 
-export default scanRequestSynthesis
+export default scanRequestSynthesisFinished
