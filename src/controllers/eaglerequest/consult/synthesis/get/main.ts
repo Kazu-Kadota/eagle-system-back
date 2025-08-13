@@ -74,6 +74,8 @@ const getSynthesisController: Controller = async (event) => {
 
       throw new ErrorHandler('Não é possível verificar síntese entre datas maiores de ' + feature_flag.config.range_date_limit + ' dias', 400)
     }
+
+    delete synthesis.third_party
   }
 
   const s3_key_output = `${synthesis_id}/${request_id}/${synthesis.third_party?.company}/text_output.json`
@@ -93,10 +95,6 @@ const getSynthesisController: Controller = async (event) => {
   })
 
   synthesis.text_input = text_input as string
-
-  if (user_info.user_type === UserGroupEnum.CLIENT) {
-    delete synthesis.third_party
-  }
 
   logger.info({
     message: 'Finish on get synthesis info',

@@ -639,13 +639,27 @@ functions:
             name: "mylocalAuthProxyFn"
             type: "request"
 
-  eaglerequest-list-synthesis:
+  eaglerequest-query-synthesis-by-company:
     handler: src/controllers/eaglerequest/consult/synthesis/query-by-company/index.handler
     timeout: 600
     events:
       - http:
           method: get
           path: /synthesis/list
+          authorizer:
+            type: CUSTOM
+            authorizerId: abcjfk
+          localAuthorizer:
+            name: "mylocalAuthProxyFn"
+            type: "request"
+
+  eaglerequest-query-synthesis-by-document:
+    handler: src/controllers/eaglerequest/consult/synthesis/query-by-company/index.handler
+    timeout: 600
+    events:
+      - http:
+          method: get
+          path: /synthesis/document
           authorizer:
             type: CUSTOM
             authorizerId: abcjfk
